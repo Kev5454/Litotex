@@ -1,25 +1,24 @@
-#######################################################
-#						                                          #
-# Litotex Browsergame Engine (http://www.litotex.info)#
-# VERSION: 0.7.1				                              #  
-# ENTWICKELT: litotex.info (http://www.litotex.info)  #
-# COPYRIGHT 2017 K. Wehmeyer (http://www.litotex.info)#
-# ENTWICKELT(Alt): FreeBG Team (http://www.freebg.de) #
-# COPYRIGHT 2008 FreeBG (http://www.freebg.de)	      #
-#						                                          #
-#	Hinweis:				                                    #
-# Diese Software ist urheberechtlich geschützt.	      #
-#					       	                                    #
-# Für jegliche Fehler oder Schäden, 		              #
-# die durch diese Software auftreten könnten,         #
-# übernimmt der Autor keine Haftung.		              #
-#                                                     #
-#  Alle Copyright - Hinweise innerhalb dieser Datei   #
-#  dürfen NICHT entfernt und NICHT verändert werden.  #
-#						                                          #
-#  Released under the GNU General Public License      #
-#                                                     #
-#######################################################
+
+Litotex Browsergame Engine (http://www.litotex.info)
+	VERSION: 0.7.1	
+	
+	ENTWICKELT: litotex.info (http://www.litotex.info)  
+	COPYRIGHT 2017 K. Wehmeyer (http://www.litotex.info)
+	
+	ENTWICKELT(Alt): FreeBG Team (http://www.freebg.de) 
+	COPYRIGHT 2008 FreeBG (http://www.freebg.de)	      
+
+Hinweis:				                                    
+	Diese Software ist urheberechtlich geschützt.	      
+
+	Für jegliche Fehler oder Schäden, 		              
+	die durch diese Software auftreten könnten,         
+	übernimmt der Autor keine Haftung.		              
+                                                   
+Alle Copyright - Hinweise innerhalb dieser Datei   
+dürfen NICHT entfernt und NICHT verändert werden.  
+
+Released under the GNU General Public License
 
 
 ALLGEMEIN
