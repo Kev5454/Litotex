@@ -40,22 +40,20 @@ else
     {
         require ('./includes/config.php');
     }
+    elseif (is_file('./config.php'))
+    {
+        require ('./config.php');
+    }
+    elseif (is_file('./../../includes/config.php'))
+    {
+        require ('./../../includes/config.php');
+    }
     else
-        if (is_file('./config.php'))
-        {
-            require ('./config.php');
-        }
-        else
-            if (is_file('./../../includes/config.php'))
-            {
-                require ('./../../includes/config.php');
-            }
-            else
-            {
-                echo ("Litotex System Error");
-                exit();
-            }
-            $_SESSION['litotex_start_g'] = $litotex_path;
+    {
+        echo ("Litotex System Error");
+        exit();
+    }
+    $_SESSION['litotex_start_g'] = $litotex_path;
     $_SESSION['litotex_start_g_url'] = $litotex_url;
 }
 
@@ -166,19 +164,6 @@ if (isset($_SESSION['userid']))
 
     $db->unbuffered_query("UPDATE cc" . $n . "_users SET lastactive='" . time() . "' WHERE userid='" . $userdata['userid'] .
         "'");
-
-    //disabled Admingame login
-    if (intval($db->num_rows($result)) == 0 && $modul_name != "logout")
-    {
-        show_error('ADMIN_LOGIN', "core");
-        exit();
-    }
-    if (intval($userdata['serveradmin']) == 1 && $modul_name != "logout")
-    {
-        show_error('ADMIN_LOGIN', "core");
-        exit();
-    }
-    //END disabled Admingame login
 
     // check race
     if ($userdata['rassenid'] == 0 && $modul_name != "members" && $modul_name != "logout" && $modul_name != "navigation" &&

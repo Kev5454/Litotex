@@ -1,49 +1,61 @@
 <?PHP
+
 @session_start();
 
-define("LITO_ROOT_PATH", $_SESSION['ftp_ordner']);
-$cur_pos=$_REQUEST['id'];
+define("LITO_ROOT_PATH", dirname(dirname(dirname(__file__))) . '/');
+define("LITO_SETUP_TEMP", LITO_ROOT_PATH . 'setup_tmp/');
 
-require("./ftp_class.php"); 
+$cur_pos = (int)$_REQUEST['id'];
 
+if ($cur_pos == 0)
+{
 
-	$ftp_server=$_SESSION['ftp_server'];
-	$ftp_user=$_SESSION['ftp_user'];
-	$ftp_kennwo=$_SESSION['ftp_kennwo'];
-	$ftp_port=$_SESSION['ftp_port'];
-	$ftp_ordner=$_SESSION['ftp_ordner'];
-	
+    $cacheDirs = array(
+        'cache',
+        'alli_flag',
+        'backup',
+        'battle_kr',
+        'image_user',
+        'images_sig',
+        'images_tmp',
+        'templates_c',
+        'templates_c/standard',
+        'acp/cache',
+        'acp/templates_c',
+        'acp/templates_c/standard',
+        'acp/tmp',
+        );
 
-	$ftp = new ftp($ftp_server, $ftp_user, $ftp_kennwo,$ftp_ordner, $ftp_port);
-	
-	if ($cur_pos==0){
-	 //$ftp->mk_dir($ftp_ordner."/cache"); 
-	 $ftp->mk_dir("cache"); 
+    foreach ($cacheDirs as $dirName)
+    {
+        $dirName = LITO_ROOT_PATH . $dirName . '/';
+        if (!is_dir($dirName))
+        {
+            mkdir($dirName, 0777, true);
+        }
+        chmod($dirName, 0777);
+    }
 
-		//$ftp->chown_perm(0777,$ftp_ordner."/cache");
-		$ftp->chown_perm(0777,"cache");
-		$inhalt=file('./../dirlist.txt');
-		foreach($inhalt as $filed){
-			$filed=str_replace("\n", "", $filed);
-				//$new_d=$ftp_ordner."/".$filed;
-				$new_d=$filed;
-				
-				$ftp->mk_dir($new_d);
-			}
-		
-		}
+    chmod(LITO_ROOT_PATH . "options/options.php", 0777);
 
-$inhalt=file('./../filelist.txt');
-$pfad_info = pathinfo($inhalt[$cur_pos]);
+    $dirs = file(LITO_ROOT_PATH . 'dirlist.txt');
+    foreach ($dirs as $dirName)
+    {
+        $dirname = str_replace("\n", "", LITO_ROOT_PATH . $dirName);
+        if (!is_dir($dirname))
+        {
+            mkdir($dirname, 0775, true);
+        }
+    }
+}
 
-echo("installiere: ". $pfad_info["basename"] );
-$path_use = explode('/', $pfad_info['dirname'], 3);
-$pfad_info["basename"] = str_replace("\n", "", $pfad_info["basename"]);
-//$new_ftp_path=$ftp_ordner."/".$pfad_info['dirname']."/".$pfad_info["basename"];
-$new_ftp_path=$pfad_info['dirname']."/".$pfad_info["basename"];
-$ftp->write_contents($new_ftp_path, file_get_contents("../".$pfad_info['dirname']."/".$pfad_info["basename"]), false);
-$ftp->disconnect();
-exit();
+$inhalt = file(LITO_ROOT_PATH . 'filelist.txt');
+$oldFileName = LITO_SETUP_TEMP . str_replace("\n", '', $inhalt[$cur_pos]);
+$newFileName = LITO_ROOT_PATH . str_replace("\n", '', $inhalt[$cur_pos]);
 
+echo ("installiere: " . str_replace(LITO_ROOT_PATH, '', $newFileName));
 
-?>
+if (!copy($oldFileName, $newFileName))
+{
+    echo ("Error: " . str_replace(LITO_ROOT_PATH, '', $newFileName));
+}

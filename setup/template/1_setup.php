@@ -1,16 +1,16 @@
 <?PHP
 
 /**
-Templatename: setup
+ * Templatename: setup
 
-Templatepackid: 1
+ * Templatepackid: 1
 
-Generate at 09:42:05, 17.09.2008
+ * Generate at 09:42:05, 17.09.2008
 
-**/
+ **/
 
 
-$template['setup']="<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?> <!DOCTYPE HTML PUBLIC \\\"-//W3C//DTD XHTML 1.0 Transitional//EN\\\">
+$template['setup'] = "<?xml version=\\\"1.0\\\" encoding=\\\"UTF-8\\\"?> <!DOCTYPE HTML PUBLIC \\\"-//W3C//DTD XHTML 1.0 Transitional//EN\\\">
 <html>
 <head>
 <title>Litotex Setup</title>
@@ -159,7 +159,7 @@ function startinstall(){
 	document.getElementById('submit').style.visibility = 'hidden';
 	
 	}
-  new Ajax.Updater('copy_files','./setup_tmp/setup/installer.php?id='+cur_file_count_pos,{ method : 'get', onSuccess : function(resp){ install_response(resp);} } );
+  new Ajax.Updater('copy_files','" . getBaseUrl() . "setup_tmp/setup/installer.php?id='+cur_file_count_pos,{ method : 'get', onSuccess : function(resp){ install_response(resp);} } );
   return false;
 
 }
@@ -213,5 +213,3 @@ function progressBar(rest)
 </body>
 </html>
 ";
-
-?>
