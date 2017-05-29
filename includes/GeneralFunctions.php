@@ -150,7 +150,7 @@ function getBaseUrl()
     $hostName = $_SERVER['HTTP_HOST'];
 
     // output: http://
-    $protocol = (strtolower(substr($_SERVER["SERVER_PROTOCOL"], 0, 5)) == 'https://' ? 'https://' : 'http://');
+    $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? 'https://' : 'http://');
 
     // return: http://localhost/myproject/
     if (substr($pathInfo['dirname'], -1) != '/')

@@ -36,8 +36,6 @@ if ($cur_pos == 0)
         chmod($dirName, 0777);
     }
 
-    chmod(LITO_ROOT_PATH . "options/options.php", 0777);
-
     $dirs = file(LITO_ROOT_PATH . 'dirlist.txt');
     foreach ($dirs as $dirName)
     {

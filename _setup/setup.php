@@ -150,7 +150,7 @@ function getBaseUrl()
     $hostName = $_SERVER['HTTP_HOST'];
 
     // output: http://
-    $protocol = (strtolower(substr($_SERVER["SERVER_PROTOCOL"], 0, 5)) == 'https://' ? 'https://' : 'http://');
+    $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? 'https://' : 'http://');
 
     // return: http://localhost/myproject/
     if (substr($pathInfo['dirname'], -1) != '/')
@@ -532,6 +532,8 @@ if ($step == 3)
     {
         unlink(LITO_ROOT_PATH . "filelist.txt");
     }
+
+    chmod(LITO_ROOT_PATH . "options/options.php", 0777);
 
     $error_msg = "";
     $sql_server = "localhost";
