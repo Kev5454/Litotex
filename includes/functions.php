@@ -65,41 +65,38 @@ function password($char)
         $password .= $pool{rand(0, strlen($pool) - 1)};
     }
     return $password;
-    exit();
-
 }
 
 function get_footer()
 {
     global $db, $time_start;
+    
     $time_end = explode(' ', substr(microtime(), 1));
     $time_end = $time_end[1] + $time_end[0];
     $run_time = $time_end - $time_start;
+    
     return "time: " . number_format($run_time, 5, '.', '') . " sec <br>query count: " . $db->number_of_querys();
-    //return "oooo";
 }
 
 function is_modul_name_aktive($modul_name)
 {
     global $db, $n, $userdata;
-    $result = $db->query("SELECT activated FROM cc" . $n . "_modul_admin where modul_name ='$modul_name'");
-    $row = $db->fetch_array($result);
-    return intval($row['activated']);
+    
+    $row = $db->select("SELECT activated FROM cc" . $n . "_modul_admin where modul_name ='$modul_name'");
+    return (int)($row['activated']);
 }
 
 function is_modul_id_aktive($modul_id)
 {
     global $db, $n, $userdata;
-    $result = $db->query("SELECT activated FROM cc" . $n . "_modul_admin where modul_admin_id ='$modul_id'");
-    $row = $db->fetch_array($result);
-    return intval($row['activated']);
+    
+    $row = $db->select("SELECT activated FROM cc" . $n . "_modul_admin where modul_admin_id ='$modul_id'");
+    return (int)($row['activated']);
 
 }
 function c_trim($string)
 {
-    $replace = strip_tags($string);
-    $replace = str_replace("'", "", $replace);
-    return trim($replace);
+    return trim(str_replace("'", "", strip_tags($string)));
 }
 
 
@@ -117,13 +114,14 @@ function get_navigation($modulname)
 
     if (is_modul_id_aktive($module[2]) == 1)
     {
-
         include (LITO_MODUL_PATH . $module[0] . '/' . $module[1]);
 
         $navi = new navigation();
+
         //hauptnavi
         $rrr = $navi->make_navigation($modulname, $module[2], $is_loged_in, 0);
         $tpl->assign('LITO_NAVIGATION', $rrr);
+
         //navigation left side
         $rrr_1 = $navi->make_navigation($modulname, $module[2], $is_loged_in, 1);
         $tpl->assign('LITO_NAVIGATION_1', $rrr_1);
@@ -133,20 +131,10 @@ function get_navigation($modulname)
         $tpl->assign('LITO_NAVIGATION_2', $rrr_2);
 
         unset($navi);
-
-
     }
     else
     {
-        if ($module[4] == 0)
-        {
-            return "";
-        }
-        else
-        {
-            return "Modul wurde deaktiviert.";
-
-        }
+        return ($module[4] == 0 ? '' : 'Modul wurde deaktiviert.');
     }
 }
 
@@ -182,10 +170,9 @@ function get_modulname($modul_type)
     // 25 = GAME CoreModul
     // 26 = GAME usr_signature
     global $tpl, $db, $n;
-    $result = $db->query("SELECT modul_name,startfile,modul_admin_id,show_error_msg,acp_modul,modul_type   FROM cc" . $n .
+    
+    return $db->select("SELECT modul_name,startfile,modul_admin_id,show_error_msg,acp_modul,modul_type   FROM cc" . $n .
         "_modul_admin where acp_modul ='0' and modul_type='$modul_type'");
-    $row = $db->fetch_array($result);
-    return $row;
 
 
 }
@@ -193,12 +180,12 @@ function get_modulname($modul_type)
 function template_out($template_name, $from_modulname)
 {
     global $db, $tpl, $lang_suffix, $n, $userdata;
+
     $lang_file = LITO_LANG_PATH . $from_modulname . '/lang_' . $lang_suffix . '.php';
     $tpl->config_load($lang_file);
 
     if (intval($userdata['rassenid']) > 0 || $is_loged_in == 0)
     {
-
         get_navigation($from_modulname);
     }
 
@@ -221,19 +208,17 @@ function template_out($template_name, $from_modulname)
 function trace_msg($message, $error_type)
 {
     global $db, $n, $userdata;
-
     $message = addslashes($message);
-    $db->query("INSERT INTO cc" . $n . "_debug(db_time, db_text ,db_type ,fromuserid) VALUES ('" . time() . "','$message','" .
-        $error_type . "','" . $userdata['userid'] . "')");
 
+    $db->insert("INSERT INTO cc" . $n . "_debug(db_time, db_text ,db_type ,fromuserid) VALUES ('" . time() . "','$message','" .
+        $error_type . "','" . $userdata['userid'] . "')");
     return;
 }
 
 function get_race($rassenid)
 {
     global $db, $n;
-    $result = $db->query("SELECT * FROM cc" . $n . "_rassen WHERE rassenid='$rassenid'");
-    $row = $db->fetch_array($result);
+    $row = $db->select("SELECT rassenname FROM cc" . $n . "_rassen WHERE rassenid='$rassenid'");
     return $row['rassenname'];
 }
 
@@ -242,9 +227,7 @@ function send_register_mail($mail_send_to, $filename, $modulname, $u_name, $pass
 {
     global $op_admin_email, $op_set_author, $op_set_gamename, $tpl, $op_send_html_mail;
 
-
     require_once (LITO_ROOT_PATH . "includes/mime_mail.class.php");
-
 
     $mime = new MIME_Mail;
     $html = "";
@@ -261,17 +244,23 @@ function send_register_mail($mail_send_to, $filename, $modulname, $u_name, $pass
     $html = $tpl->fetch(LITO_THEMES_PATH . $modulname . '/' . $filename);
     $txt = $tpl->fetch(LITO_THEMES_PATH . $modulname . '/' . $filename_txt);
 
-    $html = str_replace("[REG_USERNAME]", $u_name, $html);
-    $html = str_replace("[REG_PASSWORD]", $password, $html);
-    $html = str_replace("[REG_X_POS]", $x_pos, $html);
-    $html = str_replace("[REG_Y_POS]", $y_pos, $html);
-    $html = str_replace("[REG_GAME_NAME]", $op_set_gamename, $html);
+    $search = array(
+        "[REG_USERNAME]",
+        "[REG_PASSWORD]",
+        "[REG_X_POS]",
+        "[REG_Y_POS]",
+        "[REG_GAME_NAME]",
+        );
+    $replace = array(
+        $u_name,
+        $password,
+        $x_pos,
+        $y_pos,
+        $op_set_gamename,
+        );
 
-    $txt = str_replace("[REG_USERNAME]", $u_name, $txt);
-    $txt = str_replace("[REG_PASSWORD]", $password, $txt);
-    $txt = str_replace("[REG_X_POS]", $x_pos, $txt);
-    $txt = str_replace("[REG_Y_POS]", $y_pos, $txt);
-    $txt = str_replace("[REG_GAME_NAME]", $op_set_gamename, $txt);
+    $html = str_replace($search, $replace, $html);
+    $txt = str_replace($search, $replace, $txt);
 
 
     $key = "Mailer";
@@ -301,66 +290,49 @@ function send_register_mail($mail_send_to, $filename, $modulname, $u_name, $pass
 
 function get_soldiers_name($tabless, $rasse)
 {
-    global $db, $n, $userdata, $tpl;
-    $result = $db->query("SELECT name FROM cc" . $n . "_soldiers WHERE tabless='" . $tabless . "' and race='" . $rasse . "'");
-    $row = $db->fetch_array($result);
-    $ret = $row['name'];
-    if ($ret == "")
-    {
-        $ret = "unbekannt";
-    }
-    return $ret;
+    global $db, $n;
+
+    $row = $db->select("SELECT id, name FROM cc" . $n . "_soldiers WHERE tabless='$tabless' and race='$rasse'");
+    return ($row['name'] == '"unbekannt"' ? : $row['name']);
 }
 
 function get_buildings_name($tabless, $rasse)
 {
-    global $db, $n, $userdata, $tpl;
-    $result = $db->query("SELECT name FROM cc" . $n . "_buildings WHERE tabless='" . $tabless . "' and race='" . $rasse .
-        "'");
-    $row = $db->fetch_array($result);
-    $ret = $row['name'];
-    if ($ret == "")
-    {
-        $ret = "unbekannt";
-    }
-    return $ret;
+    global $db, $n;
+
+    $row = $db->select("SELECT name FROM cc" . $n . "_buildings WHERE tabless='$tabless' and race='$rasse'");
+    return ($row['name'] == '"unbekannt"' ? : $row['name']);
 }
 
 function get_race_id_from_user($fuserid)
 {
     global $db, $n;
-    $result = $db->query("SELECT rassenid,userid FROM cc" . $n . "_users WHERE userid='" . $fuserid . "'");
-    $row = $db->fetch_array($result);
+
+    $row = $db->select("SELECT rassenid,userid FROM cc" . $n . "_users WHERE userid='$fuserid'");
     return $row['rassenid'];
 }
 
 function get_soldiers_speed($tabless, $rasse)
 {
-    global $db, $n, $userdata, $tpl;
-    $result = $db->query("SELECT traveltime FROM cc" . $n . "_soldiers WHERE tabless='" . $tabless . "' and race='" . $rasse .
-        "'");
-    $row = $db->fetch_array($result);
-    $ret = $row['traveltime'];
-    if ($ret == "")
-    {
-        $ret = 11;
-    }
-    return $ret;
+    global $db, $n;
 
+    $row = $db->select("SELECT traveltime FROM cc" . $n . "_soldiers WHERE tabless='$tabless' and race='$rasse'");
+    return ($row['traveltime'] == '' ? 11 : $row['traveltime']);
 }
+
 function get_distance_simple($startX, $startY, $endX, $endY)
 {
     $x = $endX - $startX;
     $y = $endY - $startY;
 
-    $distance = sqrt(pow($x, 2) + pow($y, 2));
-    return $distance;
+    return sqrt(pow($x, 2) + pow($y, 2));
 }
 
 
 function get_duration_time($startX, $startY, $endX, $endY, $Sol_speed)
 {
     global $op_land_duration;
+
     $duration = ceil(get_distance_simple($startX, $startY, $endX, $endY));
     $an_time = time() + round($duration * $op_land_duration * $Sol_speed / 100);
     return $an_time;
@@ -370,20 +342,18 @@ function get_duration_time($startX, $startY, $endX, $endY, $Sol_speed)
 function get_island($islandid)
 {
     global $db, $n;
-    $result = $db->query("SELECT islandid,name FROM cc" . $n . "_countries WHERE islandid='$islandid'");
-    $row = $db->fetch_array($result);
+
+    $row = $db->select("SELECT islandid,name FROM cc" . $n . "_countries WHERE islandid='$islandid'");
     return c_trim($row['name']);
 }
 
 function timebanner_init($banner_with, $image)
 {
-    // make a new Timebanner
     global $tpl;
 
     $tpl->assign('LITO_ROOT_PATH_URL', LITO_ROOT_PATH_URL);
+
     $timebanner_init = $tpl->fetch(LITO_THEMES_PATH . 'core/time_banner_init.html');
-
-
     $tpl->assign('TIME_BANNER_INIT', $timebanner_init);
 
     return "";
@@ -393,7 +363,6 @@ function make_timebanner($timestart, $timeend, $banner_id, $reload_url, $css = "
 {
     // make a new Timebanner
     global $tpl;
-    $timecurrent = time();
 
     $tpl->assign('banner_css', $css);
     $tpl->assign('banner_id', $banner_id);
@@ -401,16 +370,15 @@ function make_timebanner($timestart, $timeend, $banner_id, $reload_url, $css = "
     $tpl->assign('endzeit', $timeend);
     $tpl->assign('NAVIGATE2SITE', $reload_url);
 
-    $tpl->assign('banner_curtime', $timecurrent);
-    $time_baner = $tpl->fetch(LITO_THEMES_PATH . 'core/time_banner.html');
-    return $time_baner;
+    $tpl->assign('banner_curtime', time());
+    return $tpl->fetch(LITO_THEMES_PATH . 'core/time_banner.html');
 }
 
 function make_ingamemail($fromuser, $touser, $subject, $mailtext)
 {
     global $db, $n, $userdata;
 
-    $db->query("INSERT INTO cc" . $n .
+    $db->insert("INSERT INTO cc" . $n .
         "_messages (username,fromuserid,touserid,text,time,isnew,inbox,subject,pri) VALUES ('" . $userdata['username'] . "','" .
         $fromuser . "','" . $touser . "','" . $mailtext . "','" . time() . "','1','1','" . $subject . "','0')");
 }
@@ -418,8 +386,8 @@ function make_ingamemail($fromuser, $touser, $subject, $mailtext)
 function username($userid)
 {
     global $db, $n;
-    $result = $db->query("SELECT username,userid FROM cc" . $n . "_users WHERE userid='$userid'");
-    $row = $db->fetch_array($result);
+
+    $row = $db->select("SELECT username,userid FROM cc" . $n . "_users WHERE userid='$userid'");
     return c_trim($row['username']);
 }
 
@@ -444,8 +412,6 @@ function bb2html($text)
     $text = eregi_replace("\[mail\]([^\[]+)\[/mail\]", "<a href=\"mailto:\\1\">\\1</a>", $text);
 
     return $text;
-
-
 }
 
 function html2bb($text)
@@ -504,16 +470,14 @@ function html2bb($text)
         "<table width=100% bgcolor=lightgray><tr><td bgcolor=white>",
         "</td></tr></table>",
         '">');
-    $newtext = str_replace($htmlcode, $bbcode, $text);
-    $newtext = strip_tags($newtext);
 
-    return $newtext;
+    return strip_tags(str_replace($htmlcode, $bbcode, $text));
 }
 function get_userid($username)
 {
     global $db, $n;
-    $result = $db->query("SELECT userid,username FROM cc" . $n . "_users WHERE username='$username'");
-    $row = $db->fetch_array($result);
+
+    $row = $db->select("SELECT userid,username FROM cc" . $n . "_users WHERE username='$username'");
     return $row['userid'];
 }
 
@@ -521,217 +485,170 @@ function get_userid($username)
 function is_username($username)
 {
     global $db, $n;
-    $result = $db->query("SELECT userid,username FROM cc" . $n . "_users WHERE username='$username'");
-    $row = $db->fetch_array($result);
-    if ($row['username'] != $username) $is = 0;
-    else  $is = 1;
-    return $is;
+
+    $row = $db->select("SELECT userid,username FROM cc" . $n . "_users WHERE username='$username'");
+    return ($row['username'] != $username ? 0 : 1);
 }
 
 /** get name of group**/
 function group($gid)
 {
     global $db, $n;
-    $result = $db->query("SELECT name FROM cc" . $n . "_groups WHERE groupid='$gid'");
-    $row = $db->fetch_array($result);
+
+    $row = $db->select("SELECT name FROM cc" . $n . "_groups WHERE groupid='$gid'");
     return $row['name'];
 }
 
 function get_userid_from_countrie($countrie_id)
 {
     global $db, $n;
-    $result = $db->query("SELECT userid,islandid FROM cc" . $n . "_countries WHERE islandid='$countrie_id'");
-    $row = $db->fetch_array($result);
+
+    $row = $db->select("SELECT userid,islandid FROM cc" . $n . "_countries WHERE islandid='$countrie_id'");
     return $row['userid'];
 }
 
 function get_race_id_from_countrie($countrie_id)
 {
     global $db, $n;
-    $result = $db->query("SELECT race,islandid FROM cc" . $n . "_countries WHERE islandid='" . $countrie_id . "'");
-    $row = $db->fetch_array($result);
 
+    $row = $db->select("SELECT race,islandid FROM cc" . $n . "_countries WHERE islandid='$countrie_id'");
     return $row['race'];
-
 }
 
 function get_race_id_from_group($group_id)
 {
     global $db, $n;
-    $result = $db->query("SELECT islandid,groupid FROM cc" . $n . "_groups WHERE groupid='" . $group_id . "'");
-    $row = $db->fetch_array($result);
-    $countrie_id = $row['islandid'];
 
-    $rass_is = get_race_id_from_countrie($countrie_id);
-    return $rass_is;
-
+    $row = $db->select("SELECT islandid,groupid FROM cc" . $n . "_groups WHERE groupid='$group_id'");
+    return get_race_id_from_countrie($row['islandid']);
 }
 
 function get_countrie_name_from_group_id($group_id, $inclu_koords = 0)
 {
     global $db, $n;
-    $result = $db->query("SELECT islandid,groupid FROM cc" . $n . "_groups WHERE groupid='" . $group_id . "'");
-    $row = $db->fetch_array($result);
-    $is_id = $row['islandid'];
 
-    $ret_name = get_countrie_name_from_id($is_id, $inclu_koords);
-
-    return $ret_name;
-
+    $row = $db->select("SELECT islandid,groupid FROM cc" . $n . "_groups WHERE groupid='$group_id'");
+    return get_countrie_name_from_id($row['islandid'], $inclu_koords);
 }
 
 
 function get_countrie_name_from_id($country_id, $koords = 0)
 {
     global $db, $n;
-    $result = $db->query("SELECT name,islandid,x,y FROM cc" . $n . "_countries WHERE islandid='" . $country_id . "'");
-    $row = $db->fetch_array($result);
 
-    $ret_name = $row['name'];
-    if ($koords == 1)
-    {
-        $ret_name = $ret_name . " (" . $row['x'] . ":" . $row['y'] . ")";
-    }
-
-    return $ret_name;
-
+    $row = $db->select("SELECT name,islandid,x,y FROM cc" . $n . "_countries WHERE islandid='$country_id'");
+    return $row['name'] . ($koords == 1 ? " (" . $row['x'] . ":" . $row['y'] . ")" : '');
 }
 
 function get_user_id_from_group_id($group_id)
 {
     global $db, $n;
-    $result = $db->query("SELECT islandid,groupid FROM cc" . $n . "_groups WHERE groupid='" . $group_id . "'");
-    $row = $db->fetch_array($result);
-    $is_id = $row['islandid'];
-    $ret_name = get_userid_from_countrie($is_id);
 
-    return $ret_name;
+    $row = $db->select("SELECT islandid,groupid FROM cc" . $n . "_groups WHERE groupid='$group_id'");
+    return get_userid_from_countrie($row['islandid']);
 
 }
 
 function get_allianz_flag($ali_id)
 {
-    $filename_flag = "./../../alli_flag/flag_" . $ali_id . ".png";
-    if (file_exists($filename_flag))
+    $FileNameFlag = getBaseUrl() . "alli_flag/flag_" . $ali_id . ".png";
+    if (!file_exists($FileNameFlag))
     {
-        $_name = "<img src=\"$filename_flag\" border=\"1\">";
-        return ($_name);
+        $FileNameFlag = LITO_IMG_PATH_URL . "alliance/no.png";
     }
-    else
-    {
-        $filename_flag = LITO_IMG_PATH_URL . "alliance/no.png";
-        $_name = "<img src=\"$filename_flag\" border=\"1\">";
-        return ($_name);
-    }
+    return "<img src=\"$FileNameFlag\" border=\"1\">";
 
 }
 
 function generate_allilink($ali_id)
 {
-
     if ($ali_id <= 0)
     {
         return "";
     }
+
     $module = get_modulname(4);
-    $modul_org = "./../" . $module[0] . "/" . $module[1];
+    $url = getSiteUrl($module[0], $module[1], "?action=get_info&id=$ali_id");
     $a_name = allianz($ali_id);
 
-    $user_link = "<a href=\"$modul_org?action=get_info&id=$ali_id\">$a_name</a>";
-    return $user_link;
+    return "<a href=\"$url\">$a_name</a>";
 }
 
 function generate_userlink($user_id, $username)
 {
-    $user_link = "<a href=\"../members/members.php?action=profile&id=$user_id\">$username</a>";
-    return $user_link;
+    $url = getSiteUrl('members', 'members.php', "?action=profile&id=$user_id");
+    return "<a href=\"$url\">$username</a>";
 }
 
 function generate_messagelink($username, $show_icon = 0)
 {
-    $module = get_modulname(6);
-    $msg_modul_org = "./../" . $module[0] . "/" . $module[1];
-    $icon_url = "";
-    if ($show_icon == 1)
-    {
-        $icon_url = "<div id=\"msglinkimg\"><img src=\"" . LITO_IMG_PATH_URL . $module[0] . "/newpost.png\" alt=\"Nachricht senden\" title=\"Nachricht senden\" border=\"0\"></div>";
-    }
 
-    $msg_link = "<div id=\"msglink\"><a href=\"$msg_modul_org?action=send&username=$username\">" . $icon_url .
-        " Nachricht senden</a></div>";
-    return $msg_link;
+    $module = get_modulname(6);
+    $icon_url = ($show_icon == 1 ? "<div id=\"msglinkimg\"><img src=\"" . LITO_IMG_PATH_URL . $module[0] . "/newpost.png\" alt=\"Nachricht senden\" title=\"Nachricht senden\" border=\"0\"></div>" :
+        "");
+
+    $url = getSiteUrl($module[0], $module[1], "?action=send&username=$username");
+    return "<div id=\"msglink\"><a href=\"$url\">$icon_url Nachricht senden</a></div>";
 }
 function generate_messagelink_smal($username)
 {
     $module = get_modulname(6);
-    $msg_modul_org = "./../" . $module[0] . "/" . $module[1];
+    $url = getSiteUrl($module[0], $module[1], "?action=send&username=$username");
+
     $icon_url = "<img src=\"" . LITO_IMG_PATH_URL . $module[0] . "/newpost.png\" alt=\"Nachricht senden\" title=\"Nachricht senden\" border=\"0\">";
-    $msg_link = "<div id=\"msglink\"><a href=\"$msg_modul_org?action=send&username=$username\">" . $icon_url . "</a></div>";
-    return $msg_link;
+    return "<div id=\"msglink\"><a href=\"$url\">" . $icon_url . "</a></div>";
 }
 
 function allianz($aid)
 {
     global $db, $n;
-    $result = $db->query("SELECT name,aid FROM cc" . $n . "_allianz WHERE aid='$aid'");
-    $row = $db->fetch_array($result);
-    if ($row['aid'] != $aid) $value = 0;
-    else  $value = c_trim($row['name']);
-    return $value;
+
+    $row = $db->select("SELECT name,aid FROM cc" . $n . "_allianz WHERE aid='$aid'");
+    return ($row['aid'] != $aid ? 0 : c_trim($row['name']));
 }
 
 function get_allianz_points($aid)
 {
     global $db, $n;
-    $result = $db->query("SELECT points,aid FROM cc" . $n . "_allianz WHERE aid='$aid'");
-    $row = $db->fetch_array($result);
-    if ($row['aid'] != $aid) $value = 0;
-    else  $value = $row['points'];
-    return $value;
-}
 
+    $row = $db->select("SELECT points,aid FROM cc" . $n . "_allianz WHERE aid='$aid'");
+    return ($row['aid'] != $aid ? 0 : $row['points']);
+}
 
 function get_new_msg_count()
 {
     global $db, $n, $userdata;
-    $result = $db->query("SELECT count(isnew) as anz  FROM cc" . $n . "_messages WHERE touserid='" . $userdata[userid] .
-        "' and isnew='1'");
-    $row = $db->fetch_array($result);
 
+    $row = $db->select("SELECT count(isnew) as anz  FROM cc" . $n . "_messages WHERE touserid='" . $userdata['userid'] .
+        "' and isnew='1'");
     return $row['anz'];
 
 }
 function is_build_id_present($bid)
 {
     global $db, $n, $userdata;
-    $result = $db->query("SELECT name FROM cc" . $n . "_buildings WHERE bid  ='" . $bid . "'");
-    $row = $db->fetch_array($result);
-    if ($row['name'] == "")
-    {
-        return 0;
-    }
-    else
-    {
-        return 1;
-    }
 
+    $row = $db->select("SELECT name FROM cc" . $n . "_buildings WHERE bid  ='$bid'");
+
+    return ($row['name'] == "" ? 0 : 1);
 }
 function resreload($countryid)
 {
     global $db, $n, $userdata, $op_store_mulit, $op_set_store_max, $op_res_reload_time, $op_set_res1, $op_set_res2, $op_set_res3,
         $op_set_res4, $op_mup_res1, $op_mup_res2, $op_mup_res3, $op_mup_res4;
+
     if (intval($op_res_reload_type == 1))
     {
         return;
     }
+
     if ($countryid <= 0)
     {
         return;
     }
 
 
-    $result = $db->query("SELECT * FROM cc" . $n . "_countries WHERE islandid  ='" . $countryid . "'");
-    $row = $db->fetch_array($result);
+    $row = $db->select("SELECT * FROM cc" . $n . "_countries WHERE islandid  ='$countryid'");
     $time4ressources = time() - $row['lastressources'];
     $numOfRessources = abs($time4ressources / $op_res_reload_time);
     $numOfRessources1 = floor($time4ressources / $op_res_reload_time);
@@ -765,13 +682,13 @@ function resreload($countryid)
         $SetRes2 = round($SetRes2, 0);
         $SetRes3 = round($SetRes3, 0);
         $SetRes4 = round($SetRes4, 0);
+
         $new_last_res_time = ($row['lastressources'] + ($numOfRessources1 * $op_res_reload_time));
         //$div =time()-$new_last_res_time;
         //trace_msg ("last_res_time : $new_last_res_time currenttime: ".time()." anzhal:$numOfRessources anzahl_1:$numOfRessources1   last:".$row['lastressources']." new_div:$div --$time4ressources  " ,77);
         trace_msg("Function resreload ($countryid) res1:$SetRes1 res2:$SetRes2 res3:$SetRes3 res4:$SetRes4 storemax:$store_max",
             77);
-        $db->query("UPDATE cc" . $n . "_countries SET res1='$SetRes1', res2='$SetRes2', res3='$SetRes3', res4='$SetRes4', lastressources='" .
-            $new_last_res_time . "' WHERE islandid='" . $countryid . "'");
+        $db->update("UPDATE cc" . $n . "_countries SET res1='$SetRes1', res2='$SetRes2', res3='$SetRes3', res4='$SetRes4', lastressources='$new_last_res_time' WHERE islandid='$countryid'");
 
         if ($countryid == $userdata['islandid'])
         {
@@ -787,7 +704,6 @@ function resreload($countryid)
 
 function get_banner_code()
 {
-
     global $db, $n, $userdata;
 
     if (is_modul_name_aktive("acp_bannermgr") == 0)
@@ -795,11 +711,10 @@ function get_banner_code()
         return;
     }
 
-    $result = $db->query("SELECT * FROM cc" . $n . "_banner_mgr where active = 1 ORDER BY RAND() limit 1"); // WHERE  userid  ='$user_id'");
-    $row = $db->fetch_array($result);
+    $row = $db->select("SELECT * FROM cc" . $n . "_banner_mgr where active = 1 ORDER BY RAND() limit 1"); // WHERE  userid  ='$user_id'");
     if (intval($row['banner_id']) > 0)
     {
-        $result = $db->query("update cc" . $n . "_banner_mgr set banner_count=banner_count+1 where banner_id='" . $row['banner_id'] .
+        $result = $db->update("update cc" . $n . "_banner_mgr set banner_count=banner_count+1 where banner_id='" . $row['banner_id'] .
             "'");
     }
     return $row['banner_code'];
@@ -809,8 +724,5 @@ function get_banner_code()
 function make_tooltip_text($text)
 {
     $text = str_replace('"', "\'", $text);
-    $tt = "onmouseover=\"Tip('$text',PADDING, 1,BGCOLOR, '#D3E3F6',TEXTALIGN,'left',SHADOW, true)\" onmouseout=\"UnTip()\"";
-    return $tt;
+    return "onmouseover=\"Tip('$text',PADDING, 1,BGCOLOR, '#D3E3F6',TEXTALIGN,'left',SHADOW, true)\" onmouseout=\"UnTip()\"";
 }
-
-?>

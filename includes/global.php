@@ -21,8 +21,23 @@ Released under the GNU General Public License
 ************************************************************
 */
 
-@session_start();
 error_reporting(E_ALL ^ E_NOTICE);
+
+if (version_compare(PHP_VERSION, '5.4.0') >= 0)
+{
+    if (session_status() == PHP_SESSION_NONE)
+    {
+        session_start();
+    }
+}
+else
+{
+    if (session_id() == '')
+    {
+        session_start();
+    }
+}
+
 session_name("lito");
 
 $sid = session_id();
@@ -158,9 +173,8 @@ if (isset($_SESSION['userid']))
     }
 
     // load Userdata array
-    $result = $db->query("SELECT u.*,c.* FROM cc" . $n . "_users AS u, cc" . $n . "_countries AS c WHERE u.userid='" . $_SESSION['userid'] .
+    $userdata = $db->select("SELECT u.*,c.* FROM cc" . $n . "_users AS u, cc" . $n . "_countries AS c WHERE u.userid='" . $_SESSION['userid'] .
         "' AND u.activeid=c.islandid");
-    $userdata = $db->fetch_array($result);
 
     $db->unbuffered_query("UPDATE cc" . $n . "_users SET lastactive='" . time() . "' WHERE userid='" . $userdata['userid'] .
         "'");
@@ -194,16 +208,15 @@ if (isset($_SESSION['userid']))
     // check allianz
     if ($userdata['allianzid'] != 0)
     {
-        $result = $db->query("SELECT * FROM cc" . $n . "_allianz WHERE aid='" . $userdata['allianzid'] . "'");
-        $allianz = $db->fetch_array($result);
+        $allianz = $db->select("SELECT * FROM cc" . $n . "_allianz WHERE aid='" . $userdata['allianzid'] . "'");
     }
 
     /** check islandid by start **/
     if ($userdata['activeid'] == 0)
     {
-        $result = $db->query("SELECT islandid,userid FROM cc" . $n . "_countries WHERE userid='" . $userdata['userid'] .
+        $row = $db->select("SELECT islandid,userid FROM cc" . $n . "_countries WHERE userid='" . $userdata['userid'] .
             "' ORDER BY islandid ASC LIMIT 1");
-        $row = $db->fetch_array($result);
+
         /** update userdata and reload **/
         $db->unbuffered_query("UPDATE cc" . $n . "_users SET activeid='" . $row['islandid'] . "' WHERE userid='" . $userdata['userid'] .
             "'");
@@ -224,4 +237,5 @@ if (isset($_SESSION['userid']))
     $tpl->assign('GLOBAL_RES3_NAME', $op_set_n_res3);
     $tpl->assign('GLOBAL_RES4_NAME', $op_set_n_res4);
 }
+
 $tpl->assign('IS_LOGED_IN', $is_loged_in);

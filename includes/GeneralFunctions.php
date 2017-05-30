@@ -138,7 +138,7 @@ function _scandir($src, $_arrayFiles = array())
     return $_arrayFiles;
 }
 
-function getBaseUrl()
+function getBaseUrl($_fullDomain = false)
 {
     // output: /myproject/index.php
     $currentPath = $_SERVER['PHP_SELF'];
@@ -150,12 +150,44 @@ function getBaseUrl()
     $hostName = $_SERVER['HTTP_HOST'];
 
     // output: http://
-    $protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? 'https://' : 'http://');
+    $protocol = (strtolower(substr($_SERVER["SERVER_PROTOCOL"], 0, 5)) == 'https://' ? 'https://' : 'http://');
+
+    if ($_fullDomain == false)
+    {
+        if (substr($pathInfo['dirname'], -1) != '/')
+        {
+            $pathInfo['dirname'] = $pathInfo['dirname'] . '/';
+        }
+    }
+    else
+    {
+        $pathInfo['dirname'] = '/';
+    }
 
     // return: http://localhost/myproject/
-    if (substr($pathInfo['dirname'], -1) != '/')
-    {
-        $pathInfo['dirname'] = $pathInfo['dirname'] . '/';
-    }
     return $protocol . $hostName . $pathInfo['dirname'];
+}
+
+function getSiteUrl($module, $moduleFile, $_getData = '')
+{
+    static $siteUrl = null;
+
+    if ($siteUrl == null)
+    {
+        // output: /myproject/index.php
+        $currentPath = $_SERVER['PHP_SELF'];
+
+        // output: Array ( [dirname] => /myproject [basename] => index.php [extension] => php [filename] => index )
+        $pathInfo = pathinfo($currentPath);
+
+        // output: localhost
+        $hostName = $_SERVER['HTTP_HOST'];
+
+        // output: http://
+        $protocol = (strtolower(substr($_SERVER["SERVER_PROTOCOL"], 0, 5)) == 'https://' ? 'https://' : 'http://');
+
+        $siteUrl = $protocol . $hostName . '/';
+    }
+    $acp_check = (substr($module, 0, 3) == 'acp' ? 'acp/' : '');
+    return $siteUrl . $acp_check . 'modules/' . $module . '/' . $moduleFile . $_getData;
 }
