@@ -22,8 +22,6 @@ Released under the GNU General Public License
 
 */
 
-
-@session_start();
 $modul_name = "login";
 require ("./../../includes/global.php");
 
@@ -34,10 +32,7 @@ if (is_modul_name_aktive($modul_name) == 0)
     exit();
 }
 
-
-if (isset($_REQUEST['action'])) $action = $_REQUEST['action'];
-else  $action = "main";
-
+$action = (isset($_REQUEST['action']) ? $_REQUEST['action'] : 'main');
 
 if ($action == "main")
 {
@@ -49,7 +44,6 @@ if ($action == "main")
 
 if ($action == "submit")
 {
-
     $username = strtolower($_POST['username']);
     $password = c_trim($_POST['password']);
 
@@ -59,8 +53,7 @@ if ($action == "submit")
         exit();
     }
 
-    $result = $db->query("SELECT * FROM cc" . $n . "_users WHERE username='$username'");
-    $row = $db->fetch_array($result);
+    $row = $db->select("SELECT * FROM cc" . $n . "_users WHERE username='$username'");
 
     if (strtolower($row['username']) != $username)
     {

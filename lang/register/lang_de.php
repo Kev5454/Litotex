@@ -22,5 +22,3 @@ LN_NOTE_REGISTER_FOROTT_4="Die wurde ein neues Kennwort per Email zugestellt.";
 LN_REGISTTER_P_2="Hier kannst du dir dein Passwort zuschicken lassen"
 LN_REGISTTER_P_5="Senden"
 BADWORD_FOUND="Dieser Username ist nicht erlaubt."
-
-&uuml;

@@ -24,9 +24,7 @@ Released under the GNU General Public License
 require("./../../includes/global.php");
 
 $modul_name="message";
-
-if(isset($_REQUEST['action'])) $action=$_REQUEST['action'];
-else $action="main";
+$action = (isset($_REQUEST['action']) ? $_REQUEST['action'] : 'main');
 
 
 
@@ -39,12 +37,6 @@ if (is_modul_name_aktive($modul_name)==0){
 	show_error('MODUL_LOAD_ERROR','core');
 	exit();
 }
-
-if (isset ($_REQUEST['action']))
-$action = $_REQUEST['action'];
-else
-$action = "main";
-
 
 if ($action == "main") {
 

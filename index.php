@@ -21,15 +21,10 @@ Released under the GNU General Public License
 ************************************************************  
 */
 
-@session_start();
-
 require ('./includes/global.php');
 
 $modul_name = "index";
-
-if (isset($_REQUEST['action'])) $action = $_REQUEST['action'];
-else  $action = "main";
-
+$action = (isset($_REQUEST['action']) ? $_REQUEST['action'] : 'main');
 
 if ($action == "main")
 {

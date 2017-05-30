@@ -113,11 +113,6 @@ require ('functions.php');
 
 require (LITO_INCLUDES_PATH . 'smarty/SmartyBC.class.php'); // Smarty class laden und pr�fen
 
-if (intval($op_use_ftp_mode == 1))
-{
-    define("C_FTP_METHOD", '1');
-}
-
 
 $db = new db($dbhost, $dbuser, $dbpassword, $dbbase);
 
@@ -138,9 +133,7 @@ setlocale(LC_ALL, array(
 
 if (isset($_SESSION['userid']))
 {
-    $result = $db->query("SELECT * FROM cc" . $n . "_users WHERE userid='" . $_SESSION['userid'] . "'");
-    $userdata = $db->fetch_array($result);
-
+    $userdata = $db->select("SELECT * FROM cc" . $n . "_users WHERE userid='" . $_SESSION['userid'] . "'");
 
     $tpl->assign('if_user_login', 1);
     $tpl->assign('LOGIN_USERNAME', $userdata['username']);

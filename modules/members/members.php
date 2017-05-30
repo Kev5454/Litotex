@@ -21,18 +21,20 @@ Released under the GNU General Public License
 ************************************************************
 
 */
-@session_start();
+
 $modul_name = "members";
 require ("./../../includes/global.php");
 
-if (isset($_REQUEST['action'])) $action = $_REQUEST['action'];
-else  $action = "main";
+$action = (isset($_REQUEST['action']) ? $_REQUEST['action'] : 'main');
 
 
-if (!isset($_SESSION['userid'])) show_error("ups", members);
+if (!isset($_SESSION['userid']))
+{
+    show_error('LOGIN_ERROR', 'core');
+}
 
 
-if (intval($userdata['rassenid']) == 0 && $action != "save_race")
+if ((int)$userdata['rassenid'] == 0 && $action != "save_race")
 {
     $action = "race_choose";
 }
@@ -43,68 +45,42 @@ $msg_modul_org = "./../" . $module[0] . "/" . $module[1];
 
 if ($action == "main")
 {
-    $daten[] = "";
+    $daten = array();
     $i = 0;
     $result_land = $db->query("SELECT * FROM cc" . $n . "_countries WHERE userid='" . $userdata['userid'] .
         "' ORDER BY islandid");
 
-    while ($row_land = $db->fetch_array($result_land))
+    if ($result_land != false)
     {
-
-        $daten[$i]['name'] = $row_land['name'];
-        $daten[$i]['res1'] = $row_land['res1'];
-        $daten[$i]['res2'] = $row_land['res2'];
-        $daten[$i]['res3'] = $row_land['res3'];
-        $daten[$i]['res4'] = $row_land['res4'];
-        $daten[$i]['islandid'] = $row_land['islandid'];
-
-
-        if ($row_land['endbuildtime'] > 0)
+        while ($row_land = $db->fetch_array($result_land))
         {
-            $daten[$i]['build'] = sec2time($row_land['endbuildtime'] - time());
-        }
-        else
-        {
-            $daten[$i]['build'] = "";
-        }
 
-        if ($row_land['endexploretime'] > 0)
-        {
-            $daten[$i]['explore'] = sec2time($row_land['endexploretime'] - time());
-        }
-        else
-        {
-            $daten[$i]['explore'] = "-";
-        }
+            $daten[$i]['name'] = $row_land['name'];
+            $daten[$i]['res1'] = $row_land['res1'];
+            $daten[$i]['res2'] = $row_land['res2'];
+            $daten[$i]['res3'] = $row_land['res3'];
+            $daten[$i]['res4'] = $row_land['res4'];
+            $daten[$i]['islandid'] = $row_land['islandid'];
 
-        $result_e = $db->query("SELECT endtime FROM cc" . $n . "_create_sol WHERE island_id='" . $row_land['islandid'] .
-            "' and sol_type='0'");
-        $row_e = $db->fetch_array($result_e);
-
-        if ($row_e['endtime'] > 0)
-        {
-            $daten[$i]['units'] = sec2time($row_e['endtime'] - time());
-        }
-        else
-        {
-            $daten[$i]['units'] = "-";
-        }
-
-        $result_d = $db->query("SELECT endtime FROM cc" . $n . "_create_sol WHERE island_id='" . $row_land['islandid'] .
-            "' and sol_type='1'");
-        $row_d = $db->fetch_array($result_d);
-
-        if ($row_d['endtime'] > 0)
-        {
-            $daten[$i]['def'] = sec2time($row_d['endtime'] - time());
-        }
-        else
-        {
-            $daten[$i]['def'] = "-";
-        }
+            $daten[$i]['build'] = ($row_land['endbuildtime'] > 0 ? sec2time($row_land['endbuildtime'] - time()) : '');
+            $daten[$i]['explore'] = ($row_land['endexploretime'] > 0 ? sec2time($row_land['endexploretime'] - time()) : '-');
 
 
-        $i++;
+            $result_e = $db->query("SELECT endtime FROM cc" . $n . "_create_sol WHERE island_id='" . $row_land['islandid'] .
+                "' and sol_type='0'");
+            $row_e = $db->fetch_array($result_e);
+
+            $daten[$i]['units'] = ($row_e['endtime'] > 0 ? sec2time($row_e['endtime'] - time()) : '-');
+
+
+            $result_d = $db->query("SELECT endtime FROM cc" . $n . "_create_sol WHERE island_id='" . $row_land['islandid'] .
+                "' and sol_type='1'");
+            $row_d = $db->fetch_array($result_d);
+
+            $daten[$i]['def'] = ($row_d['endtime'] > 0 ? sec2time($row_d['endtime'] - time()) : '-');
+
+            $i++;
+        }
     }
 
     //pr�fen auf allianznews
@@ -113,7 +89,6 @@ if ($action == "main")
     $ali_news_text = "";
     if ($ali_id > 0)
     {
-
         $result_e = $db->query("SELECT * FROM cc" . $n . "_allianznews WHERE allianz_id  ='$ali_id' ");
         while ($row_e = $db->fetch_array($result_e))
         {
@@ -121,12 +96,9 @@ if ($action == "main")
             $c_date = $row_e['change_date'];
             $change_date = date("d.m.Y (H:i:s)", $c_date);
         }
-        $ali_news_text = trim($news_t);
 
-
-        $tpl->assign('ali_news_show', $ali_news_text);
+        $tpl->assign('ali_news_show', trim($news_t));
         $tpl->assign('ali_news_date', $change_date);
-
     }
 
     $userrace = get_race($userdata['rassenid']);

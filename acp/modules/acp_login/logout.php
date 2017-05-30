@@ -39,4 +39,4 @@ if (!isset($_SESSION['userid']))
 $db->update("UPDATE cc" . $n . "_users SET lastactive=lastactive-'3600' WHERE userid='" . $_SESSION['userid'] . "'");
 
 unset($_SESSION['userid']);
-header("LOCATION: " . $_SESSION['litotex_start_url'] . 'acp/index.php');
+header("LOCATION: " . getBaseUrl(true) . 'acp/index.php');

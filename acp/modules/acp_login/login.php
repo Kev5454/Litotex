@@ -22,20 +22,17 @@ Released under the GNU General Public License
 
 */
 
-session_start();
-
 require ('../../includes/global.php');
 
 $modul_name = "acp_login";
-
-if (isset($_REQUEST['action'])) $action = $_REQUEST['action'];
-else  $action = "main";
+$action = (isset($_REQUEST['action']) ? $_REQUEST['action'] : 'main');
 
 
 function login_error($error_msg)
 {
     global $tpl;
     $modul_name = "acp_login";
+
     $tpl->assign('if_disable_menu', 1);
     $tpl->assign('LITO_ERROR_MSG', $error_msg);
     $tpl->assign('if_login_error', 1);
@@ -55,57 +52,74 @@ if ($action == "main")
 
 if ($action == "submit")
 {
-    $tpl->configLoad(LITO_LANG_PATH . 'acp_login/lang_' . $lang_suffix . '.php');
-    if (!isset($_POST['username']) || !isset($_POST['password']))
+    if (isset($_SESSION['userid']) && is_int($_SESSION['userid']) && $_SESSION['userid'] >= 0)
     {
-        header("LOCATION: " . LITO_MODUL_PATH_URL . 'acp_login/login.php?action=main');
-        exit();
-    }
-
-    $username = strtolower(trim($_POST['username']));
-    $password = c_trim($_POST['password']);
-
-
-    $result = $db->query("SELECT * FROM cc" . $n . "_users WHERE username='$username'");
-    $row = $db->fetch_array($result);
-
-    if (strtolower($row['username']) != $username)
-    {
-        trace_msg("login ERROR '$username' wrong username", 2);
-        login_error($tpl->getConfigVars('LOGIN_ERROR_2'));
-        exit();
-    }
-
-    if (!password_verify($password, $row['password']))
-    {
-        trace_msg("login ERROR '$username' wrong password", 2);
-        login_error($tpl->getConfigVars('LOGIN_ERROR_2'));
-        exit();
-    }
-
-    if (!$row['serveradmin'])
-    {
-        $grp_q = $db->query("SELECT `perm_lvl`, `id` FROM `cc" . $n . "_user_groups` WHERE `id` = '" . $row['group'] . "'");
-        $grp = $db->fetch_array($grp_q);
-        if (!$grp)
+        $row = $db->select("SELECT * FROM cc" . $n . "_users WHERE userid='" . $_SESSION['userid'] . "'");
+        if (!$row['serveradmin'])
         {
-            login_error('Schwerer Fehler! Die Usergruppe konnte nicht gefunden werden! Sie haben keine Berechtigungen f&uuml;r diesen Bereich!');
-            exit;
+            $grp = $db->select("SELECT `perm_lvl`, `id` FROM `cc" . $n . "_user_groups` WHERE `id` = '" . $row['group'] . "'");
+            if (!$grp)
+            {
+                login_error('Schwerer Fehler! Die Usergruppe konnte nicht gefunden werden! Sie haben keine Berechtigungen f&uuml;r diesen Bereich!');
+                exit;
+            }
+            if ($grp['perm_lvl'] <= 0)
+            {
+                login_error('Sie haben keine Berechtigungen f&uuml;r diesen Bereich!');
+                exit();
+            }
         }
-        if ($grp['perm_lvl'] <= 0)
+    }
+    else
+    {
+
+        $tpl->configLoad(LITO_LANG_PATH . 'acp_login/lang_' . $lang_suffix . '.php');
+        if (!isset($_POST['username']) || !isset($_POST['password']))
         {
-            login_error('Sie haben keine Berechtigungen f&uuml;r diesen Bereich!');
+            header("LOCATION: " . getSiteUrl('acp_login', 'login.php', '?action=main'));
             exit();
         }
+
+        $username = strtolower(trim($_POST['username']));
+        $password = $_POST['password'];
+
+        $row = $db->select("SELECT * FROM cc" . $n . "_users WHERE username='$username'");
+        if (strtolower($row['username']) != $username)
+        {
+            trace_msg("login ERROR '$username' wrong username", 2);
+            login_error($tpl->getConfigVars('LOGIN_ERROR_2'));
+            exit();
+        }
+
+        if (password_verify($password, $row['password']) !== true)
+        {
+            trace_msg("login ERROR '$username' wrong password", 2);
+            login_error($tpl->getConfigVars('LOGIN_ERROR_2'));
+            exit();
+        }
+
+        if (!$row['serveradmin'])
+        {
+            $grp = $db->select("SELECT `perm_lvl`, `id` FROM `cc" . $n . "_user_groups` WHERE `id` = '" . $row['group'] . "'");
+            if (!$grp)
+            {
+                login_error('Schwerer Fehler! Die Usergruppe konnte nicht gefunden werden! Sie haben keine Berechtigungen f&uuml;r diesen Bereich!');
+                exit;
+            }
+            if ($grp['perm_lvl'] <= 0)
+            {
+                login_error('Sie haben keine Berechtigungen f&uuml;r diesen Bereich!');
+                exit();
+            }
+        }
+
+        $_SESSION['userid'] = (int)$row['userid'];
+
+        trace_msg("login OK '$username' ", 2);
+        $db->update("UPDATE cc" . $n . "_users SET lastlogin='" . time() . "', ip='" . getenv("REMOTE_ADDR") .
+            "' WHERE username='$username'");
     }
 
-    $userid = intval($row['userid']);
-    $_SESSION['userid'] = $userid;
-    trace_msg("login OK '$username' ", 2);
-    $db->unbuffered_query("UPDATE cc" . $n . "_users SET lastlogin='" . time() . "', ip='" . getenv("REMOTE_ADDR") .
-        "' WHERE username='$username'");
-
-    header("LOCATION: " . LITO_MODUL_PATH_URL . 'acp_core/admin.php');
-
+    header("LOCATION: " . getSiteUrl('acp_core', 'admin.php'));
     exit();
 }
