@@ -58,7 +58,7 @@ NACH DER INSTALLATION
 	 Dieses kann ganz nach den persönlichen Ansprüchen geändert werden.
 		 
 4. Für die automatische Punkteberechnung ist es norwendig einen Cronjob anzulegen.
-	 Der Cronjob muss die Datei http://ihrewebseite.tld/cronjobs.php?key=#DEIN_UPDATE_KEY#&sid=#SERVERID# aufrufen.	 
+	 Der Cronjob muss die Datei http://ihrewebseite.tld/cronjobs.php?key=#DEIN_UPDATE_KEY#&sid=#SERVERID#&type=points aufrufen.	 
 	 
 	 
 INFORMATIONEN
