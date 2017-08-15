@@ -10528,52 +10528,54 @@ CREATE TABLE IF NOT EXISTS `cc1_menu_admin_opt` (
   PRIMARY KEY  (`op_id`)
 ) ;
 
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_set_offline', '0', 'Wartungsmodus', '', 'truefalse', 0, 9, 1, 1);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_set_offline_message', '<p>das Game ist Offline</p>', 'Wartungsmodustext', '', 'textarea', 0, 9, 1, 3);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_impressum', '<p><strong><br /><br /><span style="color: #ff6600;">Die Litotex OpenSource Browsergame wurde entwickelt vom Litotex Team.</span><br /><br /></strong>F&uuml;r Fragen, Anregungen lohnt sich ein Besuch des <a title="Litotex Forum" href="http://www.litotex.de" target="_blank">Litotex Forums.</a></p>\r\n<p>Diese Software ist nicht als fertiges Browsergame gedacht, sondern vielmehr als Vorlage f&uuml;r die eigenen Ideen und W&uuml;nsche.<br /><br /><strong>Besonderen Dank gilt allen Mitwirkenden:<br /></strong></p>\r\n<ul>\r\n<li><strong>gh1234</strong></li>\r\n<li><strong>KiraYamato</strong></li>\r\n<li><strong>ofliii</strong></li>\r\n<li><strong>SnooP</strong></li>\r\n<li><strong>Sonorc</strong></li>\r\n<li><strong>Tungdal<br /><br /></strong></li>\r\n</ul>\r\n<p>Ein gro&szlig;er Dank geht auch an die Foren-Community, welche uns mit Ideen, Fehlerfindung und jede menge guter Laune immer wieder dazu Motivierte noch einen Schritt weiter zu gehen.<strong><br /><br />Und nicht zu vergessen, die Freunde/in, Eltern, oder Familienangeh&ouml;rigen, die viele Stunden auf uns verzichten mussten ;)<br /></strong></p>', 'Impressum', '', 'textarea', 0, 5, 1, 4);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_set_gamename', 'LITOTEX OpenSource Browsergame', 'Spielname', '', 'text', 0, 5, 1, 5);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_set_game_url', 'http://www.freebg.de', 'Webseite', '', 'text', 0, 5, 1, 6);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_admin_email', 'info@freebg.de', 'Administrations eMail', '', 'text', 0, 5, 1, 7);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_support_email', 'info@freebg.de', 'Support eMail', '', 'text', 0, 5, 1, 8);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_max_players', '11', 'Maximale Spieleranzahl', '', 'text', 0, 6, 1, 9);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_set_store_max', '1200', 'Standardlager gr&ouml;&szlig;e', '', 'text', 0, 6, 1, 10);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_store_mulit', '12', 'Lagermultiplikator', '', 'text', 0, 7, 1, 40);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_enhance_country', '60', 'Landerweiterung um wieviel ?', '', 'text', 0, 6, 1, 41);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_min_c_size', '500', 'Minimale Landgröße', '', 'text', 0, 6, 1, 13);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_max_c_size', '1000', 'Maximale Landgröße', '', 'text', 0, 6, 1, 14);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_res_reload_time', '3600', 'Ressourcen vergabe alle x Sekunden', '', 'text', 0, 7, 1, 15);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_set_n_res1', 'Getreide', 'Ressourcenname 1', '', 'text', 0, 7, 1, 16);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_set_n_res2', 'Ziegel', 'Ressourcenname 2', '', 'text', 0, 7, 1, 17);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_set_n_res3', 'Münzen', 'Ressourcenname 3', '', 'text', 0, 7, 1, 18);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_set_n_res4', 'Waffen', 'Ressourcenname 4', '', 'text', 0, 7, 1, 19);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_mup_res1', '100', 'Ressourcen Multiplikator #1', '', 'text', 0, 7, 1, 20);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_mup_res2', '100', 'Ressourcen Multiplikator #2', '', 'text', 0, 7, 1, 21);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_mup_res3', '100', 'Ressourcen Multiplikator #3', '', 'text', 0, 7, 1, 22);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_mup_res4', '100', 'Ressourcen Multiplikator #4', '', 'text', 0, 7, 1, 23);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_reg_res1', '1000', 'Ressourcenvergabe bei Anmeldung #1', '', 'text', 0, 7, 1, 24);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_reg_res2', '1000', 'Ressourcenvergabe bei Anmeldung #2', '', 'text', 0, 7, 1, 25);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_reg_res3', '1000', 'Ressourcenvergabe bei Anmeldung #3', '', 'text', 0, 7, 1, 26);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_reg_res4', '1000', 'Ressourcenvergabe bei Anmeldung #4', '', 'text', 0, 7, 1, 27);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_set_res1', '1000', 'Standard Ressourcenwert #1', '', 'text', 0, 7, 1, 28);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_set_res2', '100', 'Standard Ressourcenwert #2', '', 'text', 0, 7, 1, 29);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_set_res3', '100', 'Standard Ressourcenwert #3', '', 'text', 0, 7, 1, 30);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_set_res4', '100', 'Standard Ressourcenwert #4', '', 'text', 0, 7, 1, 31);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_battle_countdown_time', '6000', 'Wartezeit der Einheiten in Sekunden', '', 'text', 0, 6, 1, 32);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_battle_countdown_time2', '60', 'Wieviel Sekunden vorher ist der Angreifer zu sehen...', '', 'text', 0, 6, 1, 33);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_land_duration', '1', 'Laufzeit in Sekunden pro Feld', '', 'text', 0, 6, 1, 34);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_max_lands', '5', 'maximale Länderanzahl', '', 'text', 0, 6, 1, 35);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_max_ali_members', '10', 'Größe der Allianz', '', 'text', 0, 6, 1, 43);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_credit_demolition', '25', 'Wieviel % soll beim Abriss gutgeschrieben werden.', '', 'text', 0, 6, 1, 37);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_set_game_author', 'FreeBG TEAM', 'Betreibername', '', 'text', 0, 5, 1, 39);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_credit_cancel', '50', 'Wieviel % soll beim Abbruch gutgeschrieben werden.', '', 'text', 0, 6, 1, 38);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_use_badwords', '1', 'Badword-Filter in Nachrichten verwenden', '', 'truefalse', 0, 6, 1, 42);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_res_reload_type', '0', 'Ressourcen werden über CronJob berechnet', '', 'truefalse', 0, 7, 1, 44);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_noob_points', '100', 'Anfängerschutz > Punkte', '', 'text', 0, 6, 1, 45);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_noob_time', '3', 'Anfängerschutz > Tage', '', 'text', 0, 6, 1, 46);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_battle_trace', '1', 'Kampfscript Traces', '', 'truefalse', 0, 6, 1, 48);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_res_steal', '50', 'Wieviel % Ressourcen sollen gestohlen werden', '', 'text', 0, 6, 1, 47);
-INSERT INTO `cc1_menu_admin_opt` VALUES('op_send_html_mail', '0', 'HTML Mail senden', '', 'truefalse', 0, 6, 1, 49);
-INSERT INTO `cc1_menu_admin_opt` (varname ,value ,title ,type ,invisable ,admin_sub_id ,save )VALUES ('op_use_ftp_mode', '0', 'FTP für Dateioperationen verwenden', 'truefalse', '0', '6', '1');
+INSERT INTO `cc1_menu_admin_opt` (`varname`, `value`, `title`, `description`, `type`, `invisable`, `admin_sub_id`, `save`, `op_id`) VALUES
+('op_set_offline', '0', 'Wartungsmodus', '', 'truefalse', 0, 9, 1, 1),
+('op_set_offline_message', '<p>das Game ist Offline</p>', 'Wartungsmodustext', '', 'textarea', 0, 9, 1, 3),
+('op_impressum', '<p><strong><br /><br /><span style=\"color: #ff6600;\">Die Litotex OpenSource Browsergame wurde entwickelt vom Litotex Team.</span><br /><br /></strong>F&uuml;r Fragen, Anregungen lohnt sich ein Besuch des <a title=\"Litotex Forum\" href=\"http://www.litotex.de\" target=\"_blank\">Litotex Forums.</a></p>\r\n<p>Diese Software ist nicht als fertiges Browsergame gedacht, sondern vielmehr als Vorlage f&uuml;r die eigenen Ideen und W&uuml;nsche.<br /><br /><strong>Besonderen Dank gilt allen Mitwirkenden:<br /></strong></p>\r\n<ul>\r\n<li><strong>gh1234</strong></li>\r\n<li><strong>KiraYamato</strong></li>\r\n<li><strong>ofliii</strong></li>\r\n<li><strong>SnooP</strong></li>\r\n<li><strong>Sonorc</strong></li>\r\n<li><strong>Tungdal<br /><br /></strong></li>\r\n</ul>\r\n<p>Ein gro&szlig;er Dank geht auch an die Foren-Community, welche uns mit Ideen, Fehlerfindung und jede menge guter Laune immer wieder dazu Motivierte noch einen Schritt weiter zu gehen.<strong><br /><br />Und nicht zu vergessen, die Freunde/in, Eltern, oder Familienangeh&ouml;rigen, die viele Stunden auf uns verzichten mussten ;)<br /></strong></p>', 'Impressum', '', 'textarea', 0, 5, 1, 4),
+('op_set_gamename', 'LITOTEX OpenSource Browsergame', 'Spielname', '', 'text', 0, 5, 1, 5),
+('op_set_game_url', 'http://www.freebg.de', 'Webseite', '', 'text', 0, 5, 1, 6),
+('op_admin_email', 'info@litotex.info', 'Administrations eMail', '', 'text', 0, 5, 1, 7),
+('op_support_email', 'info@litotex.info', 'Support eMail', '', 'text', 0, 5, 1, 8),
+('op_max_players', '11', 'Maximale Spieleranzahl', '', 'text', 0, 6, 1, 9),
+('op_set_store_max', '1200', 'Standardlager gr&ouml;&szlig;e', '', 'text', 0, 6, 1, 10),
+('op_min_c_size', '500', 'Minimale Landgröße', '', 'text', 0, 6, 1, 13),
+('op_max_c_size', '1000', 'Maximale Landgröße', '', 'text', 0, 6, 1, 14),
+('op_res_reload_time', '3600', 'Ressourcen vergabe alle x Sekunden', '', 'text', 0, 7, 1, 15),
+('op_set_n_res1', 'Getreide', 'Ressourcenname 1', '', 'text', 0, 7, 1, 16),
+('op_set_n_res2', 'Ziegel', 'Ressourcenname 2', '', 'text', 0, 7, 1, 17),
+('op_set_n_res3', 'Mï¿½nzen', 'Ressourcenname 3', '', 'text', 0, 7, 1, 18),
+('op_set_n_res4', 'Waffen', 'Ressourcenname 4', '', 'text', 0, 7, 1, 19),
+('op_mup_res1', '100', 'Ressourcen Multiplikator #1', '', 'text', 0, 7, 1, 20),
+('op_mup_res2', '100', 'Ressourcen Multiplikator #2', '', 'text', 0, 7, 1, 21),
+('op_mup_res3', '100', 'Ressourcen Multiplikator #3', '', 'text', 0, 7, 1, 22),
+('op_mup_res4', '100', 'Ressourcen Multiplikator #4', '', 'text', 0, 7, 1, 23),
+('op_reg_res1', '1000', 'Ressourcenvergabe bei Anmeldung #1', '', 'text', 0, 7, 1, 24),
+('op_reg_res2', '1000', 'Ressourcenvergabe bei Anmeldung #2', '', 'text', 0, 7, 1, 25),
+('op_reg_res3', '1000', 'Ressourcenvergabe bei Anmeldung #3', '', 'text', 0, 7, 1, 26),
+('op_reg_res4', '1000', 'Ressourcenvergabe bei Anmeldung #4', '', 'text', 0, 7, 1, 27),
+('op_set_res1', '1000', 'Standard Ressourcenwert #1', '', 'text', 0, 7, 1, 28),
+('op_set_res2', '100', 'Standard Ressourcenwert #2', '', 'text', 0, 7, 1, 29),
+('op_set_res3', '100', 'Standard Ressourcenwert #3', '', 'text', 0, 7, 1, 30),
+('op_set_res4', '100', 'Standard Ressourcenwert #4', '', 'text', 0, 7, 1, 31),
+('op_battle_countdown_time', '6000', 'Wartezeit der Einheiten in Sekunden', '', 'text', 0, 6, 1, 32),
+('op_battle_countdown_time2', '60', 'Wieviel Sekunden vorher ist der Angreifer zu sehen...', '', 'text', 0, 6, 1, 33),
+('op_land_duration', '1', 'Laufzeit in Sekunden pro Feld', '', 'text', 0, 6, 1, 34),
+('op_max_lands', '5', 'maximale Länderanzahl', '', 'text', 0, 6, 1, 35),
+('op_credit_demolition', '25', 'Wieviel % soll beim Abriss gutgeschrieben werden.', '', 'text', 0, 6, 1, 37),
+('op_credit_cancel', '50', 'Wieviel % soll beim Abbruch gutgeschrieben werden.', '', 'text', 0, 6, 1, 38),
+('op_set_game_author', 'FreeBG TEAM', 'Betreibername', '', 'text', 0, 5, 1, 39),
+('op_store_mulit', '12', 'Lagermultiplikator', '', 'text', 0, 7, 1, 40),
+('op_enhance_country', '60', 'Landerweiterung um wieviel ?', '', 'text', 0, 6, 1, 41),
+('op_use_badwords', '1', 'Badword-Filter in Nachrichten verwenden', '', 'truefalse', 0, 6, 1, 42),
+('op_max_ali_members', '10', 'Größe der Allianz', '', 'text', 0, 6, 1, 43),
+('op_res_reload_type', '0', 'Ressourcen werden über CronJob berechnet', '', 'truefalse', 0, 7, 1, 44),
+('op_noob_points', '100', 'Anfängerschutz > Punkte', '', 'text', 0, 6, 1, 45),
+('op_noob_time', '3', 'Anfängerschutz > Tage', '', 'text', 0, 6, 1, 46),
+('op_res_steal', '50', 'Wieviel % Ressourcen sollen gestohlen werden', '', 'text', 0, 6, 1, 47),
+('op_battle_trace', '1', 'Kampfscript Traces', '', 'truefalse', 0, 6, 1, 48),
+('op_send_html_mail', '1', 'HTML Mail senden', '', 'truefalse', 0, 6, 1, 49),
+('op_use_ftp_mode', '0', 'FTP für Dateioperationen verwenden', '', 'truefalse', 0, 6, 1, 50),
+('op_update_key', '0', 'Update Key', 'Mit diesen Update Key können sie Cronjobs per ./includes/cronjobs.php?key=API_KEY aufrufen.', 'text', 0, 6, 1, 51);
 DROP TABLE IF EXISTS `cc1_menu_admin_sub`;
 CREATE TABLE IF NOT EXISTS `cc1_menu_admin_sub` (
   `admin_sub_id` int(15) NOT NULL auto_increment,
@@ -10703,7 +10705,7 @@ INSERT INTO `cc1_modul_admin` VALUES(16, 'acp_perm', 'Berechtigungseditor', 1, 1
 INSERT INTO `cc1_modul_admin` VALUES(17, 'acp_usermgr', 'Usermanagement', 1, 1, 'usermgr.php', '0.7.0', 1, 1, 0, 0, 100);
 INSERT INTO `cc1_modul_admin` VALUES(18, 'acp_themes', 'Templatemanager', 1, 1, 'themes.php', '0.7.2', 1, 1, 0, 0, 100);
 INSERT INTO `cc1_modul_admin` VALUES(19, 'alliance', 'InGame Allianzmodul', 1, 1, 'alliance.php', '0.7.1', 0, 1, 4, 0, 0);
-INSERT INTO `cc1_modul_admin` VALUES(20, 'message', 'InGame Nachrichtenmodul', 1, 0, 'message.php', '0.7.1', 0, 1, 6, 0, 0);
+INSERT INTO `cc1_modul_admin` VALUES(20, 'message', 'InGame Nachrichtenmodul', 1, 1, 'message.php', '0.7.1', 0, 1, 6, 0, 0);
 INSERT INTO `cc1_modul_admin` VALUES(21, 'forum', 'Behebt einen Fehler in der Sprachdatei.', 1, 1, 'forum.php', '0.7.0', 0, 1, 18, 1, 0);
 INSERT INTO `cc1_modul_admin` VALUES(22, 'acp_badwords', 'Usernamen verbieten', 1, 1, 'badwords.php', '0.7.0', 1, 1, 0, 0, 100);
 INSERT INTO `cc1_modul_admin` VALUES(23, 'members', 'Erweitert die Übersicht mit einer Anzeige was gebaut/geforscht etc. wird.', 1, 1, 'members.php', '0.7.1', 0, 1, 2, 1, 0);
@@ -10729,6 +10731,7 @@ INSERT INTO `cc1_modul_admin` VALUES(42, 'usr_signature', 'InGame Signaturgenera
 INSERT INTO `cc1_modul_admin` VALUES(43, 'acp_debug', 'Admin Debuger', 1, 1, 'acp_debug.php', '0.7.0', 11, 1, 0, 0, 0);
 INSERT INTO `cc1_modul_admin` VALUES(44, 'acp_bannermgr', 'bannermanager', 1, 1, 'banner.php', '0.7.0', 1, 1, 0, 0, 0);
 INSERT INTO `cc1_modul_admin` VALUES(45, 'acp_reset', 'Spiel zurücksetzen', 1, 1, 'reset.php', '0.7.1', 1, 1, 0, 0, 1000);
+INSERT INTO `cc1_modul_admin` (`modul_admin_id`, `modul_name`, `modul_description`, `disable_allowed`, `activated`, `startfile`, `current_version`, `acp_modul`, `show_error_msg`, `modul_type`, `new_upd_available`, `perm_lvl`) VALUES (NULL, 'lang', 'Wechselt die Sprache', '1', '1', 'lang.php', '0.7.1', '0', '1', '27', '0', '0');
 
 DROP TABLE IF EXISTS `cc1_news`;
 CREATE TABLE IF NOT EXISTS `cc1_news` (
@@ -10926,7 +10929,8 @@ CREATE TABLE IF NOT EXISTS `cc1_users` (
   PRIMARY KEY  (`userid`),
   KEY `isadmin` (`is_ali_admin`),
   KEY `blocked` (`blocked`)
-) ;
+);
+ALTER TABLE `cc1_users` ADD `lang` VARCHAR(3) NOT NULL AFTER `design_id`; 
 
 DROP TABLE IF EXISTS `cc1_user_groups`;
 CREATE TABLE IF NOT EXISTS `cc1_user_groups` (
@@ -10940,3 +10944,6 @@ CREATE TABLE IF NOT EXISTS `cc1_user_groups` (
 INSERT INTO `cc1_user_groups` VALUES(1, 'User', 0);
 INSERT INTO `cc1_user_groups` VALUES(2, 'Administrator', 1000);
 INSERT INTO `cc1_user_groups` VALUES(3, 'GameAdmin', 200);
+
+UPDATE `cc1_menu_game` SET `menu_game_name` = '&Uuml;bersicht' WHERE `cc1_menu_game`.`menu_game_id` = 24; 
+UPDATE `cc1_menu_game` SET `menu_game_name` = 'Land gr&uuml;nden' WHERE `cc1_menu_game`.`menu_game_id` = 29; 

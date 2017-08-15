@@ -1,4 +1,4 @@
-
+<?PHP
 SERACH_TEXT="Suchen nach Spieler"
 SERACH_TEXT_0="Bitte mindestens 2 Buchstaben eingeben."
 SEARCH_TEXT_1="Suche nach User"
@@ -9,3 +9,4 @@ SEARCH_IMG="Bild"
 SEARCH_POINTS="Punkte"
 SEARCH_ALI="Allianz"
 SEARCH_LAST="letztes Login"
+?>

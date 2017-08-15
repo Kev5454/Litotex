@@ -3,18 +3,18 @@
 class tpl
 {
 
-    var $templatefolder = ""; //The default templatefolder is emtpy
-    var $expression = "";
-    var $packid = 1;
+    public $templatefolder = ""; //The default templatefolder is emtpy
+    public $expression = "";
+    public $packid = 1;
 
 
-    function tpl($packid)
+    public function __construct($packid)
     {
-        $this->packid = $packid;
+        $this->packid = $packid;  
     }
 
 
-    function get($templatefile)
+    public function get($templatefile)
     {
 
         $t_name = "./setup_tmp/setup/template/" . $this->packid . "_" . $templatefile . ".php";
@@ -33,13 +33,13 @@ class tpl
     }
 
 
-    function output($template)
+    public function output($template)
     {
         print ($template);
     }
 
 
-    function template2error($templatefile)
+    public function template2error($templatefile)
     {
         echo "Template '$templatefile' not found!\n<br>";
     }

@@ -1,4 +1,4 @@
-{include file="header.html"}
+{include file="file:header.html"}
  {literal}
 <script language="javascript">
 	tinyMCE.init({
@@ -30,8 +30,8 @@
 		          <div class="stat">
 		          {#NEW_NEWS_TITLE_TEXT#}<br><br>
 										<form action="news.php?action={$ACTION_SAVE}" method="post">
-						 						{#NEW_NEWS_OVER_TEXT#}: <input class="textinput" name="heading" type="text" id="heading" size="70"  value="{if isset($NEWS_OVER)}{$NEWS_OVER}{/if}" ><br><br>
-							      		<textarea rows="15" id="new_news"  class="textarea" cols="70" name="new_news">{if isset($NEWS_TEXT_LANG)}{$NEWS_TEXT_LANG}{/if}</textarea>
+						 						{#NEW_NEWS_OVER_TEXT#}: <input class="textinput" name="heading" type="text" id="heading" size="70"  value="{$NEWS_OVER}" ><br><br>
+							      		<textarea rows="15" id="new_news"  class="textarea" cols="70" name="new_news">{$NEWS_TEXT_LANG}</textarea>
 							      		<br><br>
 							      		<center><input type="submit" class="button" value="{#NEWS_SAVE_BUTTON#}"></center>
 					      		</form>         
@@ -41,4 +41,4 @@
 		</div>
 	</div>
 </div>
-{include file="footer.html"}
+{include file="file:footer.html"}

@@ -1,11 +1,13 @@
-<?PHP
+<?php
 
 /*
 ************************************************************
 Litotex BrowsergameEngine
+https://litotex.info
 http://www.Litotex.de
 http://www.freebg.de
 
+Copyright (c) 2017 K. Wehmeyer
 Copyright (c) 2008 FreeBG Team
 ************************************************************
 Hinweis:
@@ -24,15 +26,13 @@ Released under the GNU General Public License
 session_start();
 if (!isset($_SESSION['litotex_start_acp']) || !isset($_SESSION['userid']))
 {
-    unset($_SESSION);
-    header("LOCATION: ../acp_login/login.php");
+    header('LOCATION: ./../../index.php');
     exit();
 }
 
 require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 
-
-$action = (isset($_REQUEST['action']) ? $_REQUEST['action'] : 'main');
+$action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 
 $modul_name = "acp_debug";
 $menu_name = "Debuger";
@@ -50,32 +50,26 @@ if ($action == "main")
     template_out('debug.html', $modul_name);
 
 }
-
-if ($action == "debug_show")
+elseif ($action == "debug_show")
 {
     $debugs_del = (isset($_POST['deletes']) ? 1 : 0);
-    $debugs_uid = (int)($_POST['debug_uid']);
-    $debugs_level = (int)($_POST['level']);
     $debug_all_user = (isset($_POST['alluser']) ? 1 : 0);
+    $debugs_uid = filter_var($_POST['debug_uid'], FILTER_SANITIZE_NUMBER_INT);
+    $debugs_level = filter_var($_POST['level'], FILTER_SANITIZE_NUMBER_INT);
 
     //prüfen ob gelöscht werden soll
     if ($debugs_del == 1)
     {
-        $result = $db->delete("delete from cc" . $n . "_debug");
-        header("LOCATION: debug.php");
-        exit();
+        $result = $db->query("delete from cc" . $n . "_debug");
+        redirect($modul_name, 'debug', 'main');
     }
 
     //zusammensetzen der Where klausel
     $debug_where = "";
     $debug_sql = "SELECT * FROM cc" . $n . "_debug ";
-    if (!$debug_all_user)
+    if (!$debug_all_user && $debugs_uid)
     {
-        if ($debugs_uid)
-        {
-            $debug_where = "WHERE  fromuserid  ='$debugs_uid'";
-        }
-
+        $debug_where = "WHERE  fromuserid  ='$debugs_uid'";
     }
 
     if ($debugs_level)
@@ -115,8 +109,8 @@ if ($action == "debug_show")
     {
         $optionbit .= "<option value=\"" . $row['userid'] . "\">" . $row['username'] . "</option>";
     }
+    
     $tpl->assign('optionbit', $optionbit);
     $tpl->assign('debug_output', $inhalt);
     template_out('debug.html', $modul_name);
-    exit();
 }

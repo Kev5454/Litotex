@@ -1,28 +1,17 @@
-Version 0.7.1
-- Litotex 0.7.0 Inlcuded 
-- Wurde für PHP 7.1 lauffähig gemacht
-- Setup wurde angepasst jedoch funktioniert noch nicht
-- Smarty wurde auf die Version '3.1.30' geupdated
-- Die Sprachdateien wurden angepasst
-- Die Templates wurden angepasst
-- FTP unterstützung wurde entfernt ...
-- class_db_mysql wurde angepasst da mysql_connect ab PHP 7 enfällt.
+Version 0.7.1 von K. Wehmeyer(litotex.info)
 
-- GLOBAL GeneralFunctions wurde hinzugefügt:
-Diese Datei stellt Grundlegen Funktionen bereit die keine Datenbank oder ähnliches benötigt.
+Setup
+- Umstellung des Installers & Anpassung an PHP 7
+- Template wurde angepasst.
+- FTP class wurde entfernt
 
-- GAME Account passwörter werden nicht mehr durch md5 verschlüsselt sondern mit password_hash
-- GAME Impressum BUGFIX
+Allgemeines
+- Diverse Klassen wurde angepasst an PHP 7
+- Global wurde bearbeitet
+- Adminlogin sperre im Spiel wurde entfernt!
+- Smarty wurde auf 2.6.30 geupdatet
+- Diverse andere Änderungen
 
-- ACP usermgr wurde angepasst und verbessert
-- ACP bannermgr wurde angepasst
-- ACP Login wurde angepasst
-- ACP Themes wurde umgebaut und angepasst
-- ACP DEBUG wurde angepasst
-
-NOCH OFFENE BAUSTELLEN
-- Im  GAME & ACP kann es noch zu fehlern kommen
-- Der Update-Server funktioniert noch nicht! Ein ersatz wird noch programmiert.
 
 Version 0.7.0
 

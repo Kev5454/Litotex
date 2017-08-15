@@ -1,4 +1,4 @@
-{include file="header.html"}
+{include file="file:header.html"}
 
 <table id="rubric" width="263" border="0">
     <tr>
@@ -57,7 +57,6 @@
   </table>
   </form>
 
-{if isset($debug_output)}
 			<table   width="700" align="center">
   <tr> 
     <th width="5%" height="21"  ><span class="normalfont"><b>{#ELELM_DESC9#}</b></span></th>
@@ -66,17 +65,17 @@
     <th  width="60%"><span class="normalfont"><b>{#ELELM_DESC12#}</b></span></th>
     <th  width="20%"><span class="normalfont"><b>{#ELELM_DESC13#}<b></span></th>
   </tr>
-    {foreach item=con from=$debug_output}
-        <tr style="background-color:{cycle values="#ffffff,#eeeeee"}">
-            <td width="5%"><span class="normalfont">{$con.debug_id} </span></td>
-            <td width="5%"><span class="normalfont">{$con.db_type}</span></td>
-            <td width="10%"><span class="normalfont">{$con.fromuserid}</span></td>  
-            <td width="60%"><span class="normalfont">{$con.db_text}</span></td>
-            <td width="20%"><span class="normalfont">{$con.debug_date}</span></td>
-        </tr>
-    {/foreach} 
-</table>	 
-{/if} 	
+{foreach item=con from=$debug_output}
+ <tr style="background-color:{cycle values="#ffffff,#eeeeee"}">
+  <td width="5%"><span class="normalfont">{$con.debug_id} </span></td>
+  <td width="5%"><span class="normalfont">{$con.db_type}</span></td>
+  <td width="10%"><span class="normalfont">{$con.fromuserid}</span></td>  
+  <td width="60%"><span class="normalfont">{$con.db_text}</span></td>
+  <td width="20%"><span class="normalfont">{$con.debug_date}</span></td>
+ </tr>
+  {/foreach} 
+
+</table>	  	
 				  		
 				  	
 						</table>
@@ -88,4 +87,4 @@
 	</div>
 </div>
 
-    {include file="footer.html"}
+    {include file="file:footer.html"}

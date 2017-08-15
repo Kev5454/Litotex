@@ -1,11 +1,11 @@
-
+<?PHP
 LN_battle_1="Gruppen in den Kampf schicken"
 LN_battle_2="Hier kannst du deine Gruppen in den Kampf auf ein feindliches Land schicken."
 LN_battle_3="Los schicken"
-LM_system_e="ungültige Koordinaten"
+LM_system_e="ung&uuml;ltige Koordinaten"
 LN_spion_e_2="Land nicht gefunden."
 LN_battle_error_1="Selbstangriffe sind nicht erlaubt"
-LN_battle_4="Rückzug"
+LN_battle_4="R&uuml;ckzug"
 LN_battle_5="Gruppen unterwegs"
 LN_battle_6="Gruppenname"
 LN_battle_7="Ziel"
@@ -25,4 +25,5 @@ LN_battle_n_5="Anzahl"
 LN_battle_n_6="Daten"
 LN_battle_n_7="Kampfreport Nr.:"
 
-LN_battle_noob="Dieser Spieler steht noch unter Anfängerschutz"
+LN_battle_noob="Dieser Spieler steht noch unter Anf&auml;ngerschutz"
+?>

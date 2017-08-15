@@ -1,4 +1,4 @@
-
+<?PHP
 BANNER_T_1 = "Bannercode"
 BANNER_T_2 = "Aktion"
 BANNER_T_3 = "speichern"
@@ -13,3 +13,4 @@ BANNER_T_11 = "Anzeigencount"
 NEWS_DEACTIVATE_TEXT="deaktivieren"
 NEWS_ACTIVATE_TEXT="aktivieren"
 NEWS_DELETE_TEXT="löschen"
+?>

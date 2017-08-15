@@ -23,331 +23,119 @@ Released under the GNU General Public License
 class db
 {
 
-    var $sql_host = "";
-    var $sql_user = "";
-    var $sql_pass = "";
-    var $sql_base = "";
-    var $link_id = 0;
-    var $sql_count = 0;
+    private $sql_host = "";
+    private $sql_user = "";
+    private $sql_pass = "";
+    private $sql_base = "";
+    private $sql_port = "";
+    private $link_id = 0;
+    private $sql_count = 0;
 
-    public function __construct($host, $user, $pass, $base)
+    public function __construct($host, $user, $pass, $base, $port = 3306)
     {
         $this->sql_host = $host;
         $this->sql_user = $user;
         $this->sql_pass = $pass;
         $this->sql_base = $base;
+        $this->sql_port = $port;
         $this->connect();
     }
 
     public function connect()
     {
-        try
+        $this->link_id = new mysqli($this->sql_host, $this->sql_user, $this->sql_pass, $this->sql_base, $this->sql_port);
+        if ($this->link_id->connect_error)
         {
-            $this->link_id = new PDO('mysql:host=' . $this->sql_host . ';dbname=' . $this->sql_base, $this->sql_user, $this->
-                sql_pass, array(
-                PDO::ATTR_EMULATE_PREPARES => false,
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                ));
-        }
-        catch (PDOException $e)
-        {
-            $this->link_id = null;
-            $this->error("Es konnte keine Verbindung zum SQL Server hergestellt werden.<br>Error:" . $e->getMessage());
+            $this->error("Es konnte keine Verbindung zum SQL Server hergestellt werden.<br>Error:" . $this->link_id->connect_error);
         }
     }
 
-    public function select($sqlCode)
+    public function query($query_string)
     {
-        if ($this->link_id == null)
+        $selecting_query = $this->link_id->query($query_string);
+        if (!$selecting_query)
         {
-            $this->warning("select >> Database is not Connected!");
-            return null;
+            $this->error("Datenbank abfrage konnte nicht durchgeführt werden: " . $query_string . '<br />Error:' . $this->link_id->
+                error);
         }
-        try
-        {
-            $result = $this->link_id->query($sqlCode);
-            $this->sql_count++;
-        }
-        catch (PDOException $e)
-        {
-            $this->error("update >> PDOException >> " . $sqlCode . ' >> ' . $e->getMessage());
-        }
-        return $this->fetchArray($result);
+        $this->sql_count++;
+        return $selecting_query;
     }
 
-    public function selectAll($sqlCode)
+    public function multi_query($query_string)
     {
-        if ($this->link_id == null)
+        $results = array();
+        if ($this->link_id->multi_query($query_string))
         {
-            $this->warning("selectAll >> Database is not Connected!");
-            return null;
-        }
-        try
-        {
-            $result = $this->link_id->query($sqlCode);
-            $this->sql_count++;
-        }
-        catch (PDOException $e)
-        {
-            $this->error("update >> PDOException >> " . $sqlCode . ' >> ' . $e->getMessage());
-        }
-        return $this->fetchArrayAll($result);
-    }
-
-    public function update($sqlCode)
-    {
-        if ($this->link_id == null)
-        {
-            $this->warning("update >> Database is not Connected!");
-            return null;
-        }
-        try
-        {
-            $count = $this->link_id->exec($sqlCode);
-            $this->sql_count++;
-        }
-        catch (PDOException $e)
-        {
-            $this->error("update >> PDOException >> " . $sqlCode . ' >> ' . $e->getMessage());
-        }
-        return $count;
-    }
-
-    public function insert($sqlCode)
-    {
-        if ($this->link_id == null)
-        {
-            $this->warning("insert >> Database is not Connected!");
-            return null;
-        }
-        try
-        {
-            $count = $this->link_id->exec($sqlCode);
-            $this->sql_count++;
-        }
-        catch (PDOException $e)
-        {
-            $this->error("insert >> PDOException >> " . $sqlCode . ' >> ' . $e->getMessage());
-        }
-        return $count;
-    }
-
-    public function replace($sqlCode)
-    {
-        if ($this->link_id == null)
-        {
-            $this->warning("replace >> Database is not Connected!");
-            return null;
-        }
-        try
-        {
-            $count = $this->link_id->exec($sqlCode);
-            $this->sql_count++;
-        }
-        catch (PDOException $e)
-        {
-            $this->error("replace >> PDOException >> " . $sqlCode . ' >> ' . $e->getMessage());
-        }
-        return $count;
-    }
-
-    public function delete($sqlCode)
-    {
-        if ($this->link_id == null)
-        {
-            $this->warning("delete >> Database is not Connected!");
-            return null;
-        }
-        try
-        {
-            $count = $this->link_id->exec($sqlCode);
-            $this->sql_count++;
-        }
-        catch (PDOException $e)
-        {
-            $this->error("delete >> PDOException >> " . $sqlCode . ' >> ' . $e->getMessage());
-        }
-        return $count;
-    }
-
-    public function multi_query($sqlCode)
-    {
-        if ($this->link_id == null)
-        {
-            $this->warning("multi_query >> Database is not Connected!");
-            return null;
-        }
-        try
-        {
-            $count = $this->link_id->exec($sqlCode);
-            $this->sql_count++;
-        }
-        catch (PDOException $e)
-        {
-            $this->error("multi_query >> PDOException >> " . $sqlCode . ' >> ' . $e->getMessage());
-        }
-        return $count;
-    }
-
-    public function query($sqlCode)
-    {
-        if ($this->link_id == null)
-        {
-            $this->warning("query >> Database is not Connected!");
-            return null;
-        }
-        if (!startsWith($sqlCode, 'SELECT'))
-        {
-            $return = startsWithArray($sqlCode, array(
-                'UPDATE',
-                'INSERT',
-                'REPLACE',
-                'DELETE'));
-            if ($return['UPDATE'] === true)
+            do
             {
-                return $this->update($sqlCode);
+                if ($query_result = $this->link_id->store_result())
+                {
+                    $result = array();
+                    while ($row = $this->fetch_array($query_result))
+                    {
+                        $result[] = $row;
+                    }
+                    $results[] = $result;
+                    $query_result->free();
+                    $this->sql_count++;
+                }
+                else
+                {
+                    $results[] = false;
+                }
+            } while ($this->link_id->more_results() && $this->link_id->next_result());
+        }
+        else
+        {
+            $this->error("Datenbank abfrage konnte nicht durchgeführt werden: " . $query_string . '<br />Error:' . $this->link_id->
+                error);
+
+            return false;
+        }
+        if (count($results) > 0)
+        {
+            $_all_false = true;
+            foreach($results as $data)
+            {
+                if($data != false)
+                {
+                    $_all_false = false;
+                    break;
+                }
             }
-            elseif ($return['INSERT'] === true)
+            
+            if($_all_false === true)
             {
-                return $this->insert($sqlCode);
-            }
-            elseif ($return['REPLACE'] === true)
-            {
-                return $this->replace($sqlCode);
-            }
-            elseif ($return['DELETE'] === true)
-            {
-                return $this->delete($sqlCode);
+                return false;
             }
         }
-
-        try
-        {
-            $result = $this->link_id->query($sqlCode);
-            $this->sql_count++;
-        }
-        catch (PDOException $e)
-        {
-            $this->error("query >> PDOException >> " . $sqlCode . ' >> ' . $e->getMessage());
-        }
-        return $result;
+        return $results;
     }
 
-    public function fetchQuery($sqlCode)
+    public function fetch_array($result_string)
     {
-        $result = $this->query($sqlCode);
-        if ($result === false)
-        {
-            $this->warning("fetchQuery >> Result is null!");
-            return null;
-        }
-        return $result->fetch(PDO::FETCH_ASSOC);
+        return $result_string->fetch_array();
     }
 
-    public function fetchArray($result)
+    public function num_rows($result_string)
     {
-        if ($result === false)
-        {
-            $this->warning("fetchArray >> Result is null!");
-            return null;
-        }
-        return $result->fetch(PDO::FETCH_ASSOC);
+        return $result_string->num_rows;
     }
 
-    public function fetchArrayAll($result)
+    public function unbuffered_query($query_string)
     {
-        if ($result === false)
-        {
-            $this->warning("fetchArrayAll >> Result is null!");
-            return null;
-        }
-        return $result->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function fetchNum($result)
-    {
-        if ($result === false)
-        {
-            $this->warning("fetchNum >> Result is null!");
-            return null;
-        }
-        return $result->fetch(PDO::FETCH_NUM);
-    }
-
-    public function fetchNumAll($result)
-    {
-        if ($result === false)
-        {
-            $this->warning("fetchNumAll >> Result is null!");
-            return null;
-        }
-        return $result->fetchAll(PDO::FETCH_NUM);
-    }
-
-    public function quote($string)
-    {
-        if ($this->link_id == null)
-        {
-            $this->warning("insert_id >> Database is not Connected!");
-            return null;
-        }
-        return $this->link_id->quote($string);
-    }
-
-    //Alias old Litotex
-
-    public function fetch_array($result)
-    {
-        if ($result === false)
-        {
-            $this->warning("fetch_array >> Result is null!");
-            return null;
-        }
-        return $result->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function num_rows($result)
-    {
-        if ($result === false)
-        {
-            $this->warning("num_rows >> Result is null!");
-            return null;
-        }
-        return $result->fetch(PDO::FETCH_NUM);
-    }
-
-    public function unbuffered_query($sqlCode)
-    {
-        if ($this->link_id == null)
-        {
-            $this->warning("insert_id >> Database is not Connected!");
-            return null;
-        }
-        try
-        {
-            $count = $this->link_id->exec($sqlCode);
-            $this->sql_count++;
-        }
-        catch (PDOException $e)
-        {
-            $this->error("unbuffered_query >> PDOException >> " . $sqlCode . ' >> ' . $e->getMessage());
-        }
-        return $count;
+        return $this->query($query_string);
     }
 
     public function insert_id()
     {
-        if ($this->link_id == null)
-        {
-            $this->warning("insert_id >> Database is not Connected!");
-            return null;
-        }
-        return $this->link_id->lastInsertId();
+        return $this->link_id->insert_id;
     }
 
     public function escape_string($string)
     {
-        return $this->quote($string);
+        return $this->link_id->escape_string($string);
     }
 
     public function number_of_querys()
@@ -358,18 +146,11 @@ class db
 
     public function error($error)
     {
-        echo ("<title>Error by Base - Litotex</title>");
+        echo ("<title>Error by Base - $this->appname</title>");
         echo ("Error: <b>$error</b><br>\n");
+        echo ("SQL-Error: " . $this->link_id->error . "<br>\n");
         echo ("Derzeit gibt es Datenbank Probleme, bitte haben Sie etwas gedult.");
         exit();
-    }
-
-
-    public function warning($error)
-    {
-        echo ("<title>Warning by Base - Litotex</title>");
-        echo ("Warning: <b>$error</b><br>\n");
-        echo ("Derzeit gibt es Datenbank Probleme, bitte haben Sie etwas gedult.");
     }
 
 }

@@ -1,59 +1,71 @@
 <?PHP
 
-@session_start();
+session_start();
 
-define("LITO_ROOT_PATH", dirname(dirname(dirname(__file__))) . '/');
-define("LITO_SETUP_TEMP", LITO_ROOT_PATH . 'setup_tmp/');
-
-$cur_pos = (int)$_REQUEST['id'];
+define("LITO_ROOT_PATH", dirname(dirname(dirname(__file__))) . DIRECTORY_SEPARATOR);
+$cur_pos = (isset($_REQUEST['id']) ? filter_var($_REQUEST['id'], FILTER_SANITIZE_NUMBER_INT, array('options' => array('default' =>
+            0))) : 0);
 
 if ($cur_pos == 0)
 {
-
-    $cacheDirs = array(
-        'cache',
-        'alli_flag',
-        'backup',
-        'battle_kr',
-        'image_user',
-        'images_sig',
-        'images_tmp',
-        'templates_c',
-        'templates_c/standard',
-        'acp/cache',
-        'acp/templates_c',
-        'acp/templates_c/standard',
-        'acp/tmp',
-        );
-
-    foreach ($cacheDirs as $dirName)
+    function _mkdir($directory, $public_access = true)
     {
-        $dirName = LITO_ROOT_PATH . $dirName . '/';
-        if (!is_dir($dirName))
-        {
-            mkdir($dirName, 0777, true);
-        }
+        $dirName = LITO_ROOT_PATH . $directory . DIRECTORY_SEPARATOR;
+        mkdir($dirName);
         chmod($dirName, 0777);
+
+        if ($public_access == false)
+        {
+            copy(LITO_ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . '.htaccess', $dirName . '.htaccess');
+        }
     }
 
-    $dirs = file(LITO_ROOT_PATH . 'dirlist.txt');
-    foreach ($dirs as $dirName)
+    _mkdir('alli_flag');
+    _mkdir('backup', false);
+    _mkdir('battle_kr');
+    _mkdir('cache', false);
+    _mkdir('image_user');
+    _mkdir('images_sig');
+    _mkdir('images_tmp');
+    _mkdir('templates_c', false);
+    _mkdir('templates_c/standard');
+    _mkdir('acp/cache', false);
+    _mkdir('acp/templates_c', false);
+    _mkdir('acp/templates_c/standard');
+    _mkdir('acp/tmp');
+
+    $inhalt = file_get_contents(LITO_ROOT_PATH . 'dirliste.json');
+    $inhalt = json_decode($inhalt);
+    foreach ($inhalt as $directory)
     {
-        $dirname = str_replace("\n", "", LITO_ROOT_PATH . $dirName);
-        if (!is_dir($dirname))
+        $directory = str_replace(DIRECTORY_SEPARATOR . 'setup_tmp', '', $directory);
+        if (is_dir($directory))
         {
-            mkdir($dirname, 0775, true);
+            continue;
         }
+
+        mkdir($directory);
     }
 }
 
-$inhalt = file(LITO_ROOT_PATH . 'filelist.txt');
-$oldFileName = LITO_SETUP_TEMP . str_replace("\n", '', $inhalt[$cur_pos]);
-$newFileName = LITO_ROOT_PATH . str_replace("\n", '', $inhalt[$cur_pos]);
+$inhalt = file_get_contents(LITO_ROOT_PATH . 'fileliste.json');
+$inhalt = json_decode($inhalt);
 
-echo ("installiere: " . str_replace(LITO_ROOT_PATH, '', $newFileName));
+
+$oldFileName = $inhalt[$cur_pos];
+$newFileName = str_replace(DIRECTORY_SEPARATOR . 'setup_tmp', '', $oldFileName);
+
+echo ("installiere: " . str_replace(LITO_ROOT_PATH, '.' . DIRECTORY_SEPARATOR, $newFileName));
+
+if (!file_exists($oldFileName))
+{
+    echo ("Source-Datei konnte nicht gefunden werden!");
+    exit();
+}
 
 if (!copy($oldFileName, $newFileName))
 {
-    echo ("Error: " . str_replace(LITO_ROOT_PATH, '', $newFileName));
+    echo ("Datei konnte nicht kopiert werden!");
 }
+
+exit();

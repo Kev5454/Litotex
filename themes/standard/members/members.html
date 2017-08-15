@@ -1,5 +1,5 @@
-{include file="header.html"}
-
+{include file="file:header.html"}
+{$TIME_BANNER_INIT}
 <div id="content">
 
 <!-- Informationen -->
@@ -66,7 +66,7 @@
 				  </tr> 
 				  <tr bgcolor="{cycle values="#eeeeee,#dddddd"}"> 
 				    <td  width="58%"><span class="normalfont"><b>{#MEMBERS_NEXT_CREDITS#}</b></span></td>
-				    <td width="42%"><div id="ress_time" >{$next4ressources} sec.</div></td>
+				    <td width="42%"><div id="ress_time">{$next4ressourcesTimeBanner}</div></td>
 				  </tr> 
 				</table><br></div>
         
@@ -89,14 +89,14 @@
           <div class="inhalt_box1"><table  width="95%" align="center">
 				 <tr bgcolor="{cycle values="#eeeeee,#dddddd"}">
 				  <td width="20%"><span class="normalfont"><b>{#M_LANDNAME#}</b></span></td>
-				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH_URL}res1_ico.png"  alt="{$GLOBAL_RES1_NAME}" title="{$GLOBAL_RES1_NAME}" ></span></td>
-				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH_URL}res2_ico.png"  alt="{$GLOBAL_RES2_NAME}" title="{$GLOBAL_RES2_NAME}" ></span></td>
-				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH_URL}res3_ico.png"  alt="{$GLOBAL_RES3_NAME}" title="{$GLOBAL_RES3_NAME}" ></span></td>
-				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH_URL}res4_ico.png"  alt="{$GLOBAL_RES4_NAME}" title="{$GLOBAL_RES4_NAME}" ></span></td>
-				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH}build.png"  alt="Gebäude" title="Gebäude" ></span></td>
-				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH}explore.png"  alt="Forschung" title="Forschung" ></span></td>
-				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH}build_units.png"  alt="Ausbildung" title="Ausbildung" ></span></td>
-				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH}build_def.png"  alt="Verteidigung" title="Verteidigung" ></span></td>
+				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH_URL}res1_ico.png"  alt="{$GLOBAL_RES1_NAME}" title="{$GLOBAL_RES1_NAME}" /></span></td>
+				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH_URL}res2_ico.png"  alt="{$GLOBAL_RES2_NAME}" title="{$GLOBAL_RES2_NAME}" /></span></td>
+				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH_URL}res3_ico.png"  alt="{$GLOBAL_RES3_NAME}" title="{$GLOBAL_RES3_NAME}" /></span></td>
+				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH_URL}res4_ico.png"  alt="{$GLOBAL_RES4_NAME}" title="{$GLOBAL_RES4_NAME}" /></span></td>
+				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH}build.png"  alt="Gebäude" title="Gebäude" /></span></td>
+				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH}explore.png"  alt="Forschung" title="Forschung" /></span></td>
+				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH}build_units.png"  alt="Ausbildung" title="Ausbildung" /></span></td>
+				  <td width="10%"><span class="normalfont"><img src="{$LITO_IMG_PATH}build_def.png"  alt="Verteidigung" title="Verteidigung" /></span></td>
 				 </tr>
 				 {section name=mysec loop=$daten}
 	
@@ -123,4 +123,4 @@
 </div> 
 
 </div>
-{include file="footer.html"}
+{include file="file:footer.html"}

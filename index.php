@@ -20,11 +20,15 @@ dürfen NICHT entfernt und NICHT verändert werden.
 Released under the GNU General Public License 
 ************************************************************  
 */
+session_start();
 
 require ('./includes/global.php');
 
 $modul_name = "index";
-$action = (isset($_REQUEST['action']) ? $_REQUEST['action'] : 'main');
+
+if (isset($_REQUEST['action'])) $action = $_REQUEST['action'];
+else  $action = "main";
+
 
 if ($action == "main")
 {
@@ -32,5 +36,5 @@ if ($action == "main")
     $tpl->assign('if_disable_menu', 1);
 
     template_out('index.html', $modul_name);
-    exit();
 }
+echo "geht";

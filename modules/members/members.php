@@ -1,86 +1,109 @@
-<?PHP
+<?php
 
 /*
 ************************************************************
-Litotex Browsergame - Engine
+Litotex BrowsergameEngine
+https://litotex.info
 http://www.Litotex.de
 http://www.freebg.de
 
+Copyright (c) 2017 K. Wehmeyer
 Copyright (c) 2008 FreeBG Team
 ************************************************************
 Hinweis:
-Diese Software ist urheberrechtlich gesch�tzt.
+Diese Software ist urheberechtlich geschützt.
 
-F�r jegliche Fehler oder Sch�den, die durch diese Software
-auftreten k�nnten, �bernimmt der Autor keine Haftung.
+Für jegliche Fehler oder Schäden, die durch diese Software
+auftreten könnten, übernimmt der Autor keine Haftung.
 
-Alle Copyright - Hinweise innerhalb dieser Datei
-d�rfen WEDER entfernt, NOCH ver�ndert werden.
+Alle Copyright - Hinweise Innerhalb dieser Datei
+dürfen NICHT entfernt und NICHT verändert werden.
 ************************************************************
 Released under the GNU General Public License
 ************************************************************
-
 */
 
-$modul_name = "members";
-require ("./../../includes/global.php");
-
-$action = (isset($_REQUEST['action']) ? $_REQUEST['action'] : 'main');
-
-
-if (!isset($_SESSION['userid']))
+session_start();
+if (!isset($_SESSION['litotex_start_g']) || !isset($_SESSION['userid']))
 {
-    show_error('LOGIN_ERROR', 'core');
+    require ('../../includes/global.php');
+    show_error("LOGIN_ERROR", 'core');
 }
 
+require ($_SESSION['litotex_start_g'] . 'includes/global.php');
 
-if ((int)$userdata['rassenid'] == 0 && $action != "save_race")
+$action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
+$modul_name = "members";
+
+if (intval($userdata['rassenid']) == 0 && $action != "save_race")
 {
     $action = "race_choose";
 }
-
 
 $module = get_modulname(2);
 $msg_modul_org = "./../" . $module[0] . "/" . $module[1];
 
 if ($action == "main")
 {
-    $daten = array();
     $i = 0;
     $result_land = $db->query("SELECT * FROM cc" . $n . "_countries WHERE userid='" . $userdata['userid'] .
         "' ORDER BY islandid");
 
-    if ($result_land != false)
+    $daten = array();
+    while ($row_land = $db->fetch_array($result_land))
     {
-        while ($row_land = $db->fetch_array($result_land))
+        $daten[$i]['name'] = $row_land['name'];
+        $daten[$i]['res1'] = prettyNumber($row_land['res1']);
+        $daten[$i]['res2'] = prettyNumber($row_land['res2']);
+        $daten[$i]['res3'] = prettyNumber($row_land['res3']);
+        $daten[$i]['res4'] = prettyNumber($row_land['res4']);
+        $daten[$i]['islandid'] = $row_land['islandid'];
+
+        if ($row_land['endbuildtime'] > 0)
         {
-
-            $daten[$i]['name'] = $row_land['name'];
-            $daten[$i]['res1'] = $row_land['res1'];
-            $daten[$i]['res2'] = $row_land['res2'];
-            $daten[$i]['res3'] = $row_land['res3'];
-            $daten[$i]['res4'] = $row_land['res4'];
-            $daten[$i]['islandid'] = $row_land['islandid'];
-
-            $daten[$i]['build'] = ($row_land['endbuildtime'] > 0 ? sec2time($row_land['endbuildtime'] - time()) : '');
-            $daten[$i]['explore'] = ($row_land['endexploretime'] > 0 ? sec2time($row_land['endexploretime'] - time()) : '-');
-
-
-            $result_e = $db->query("SELECT endtime FROM cc" . $n . "_create_sol WHERE island_id='" . $row_land['islandid'] .
-                "' and sol_type='0'");
-            $row_e = $db->fetch_array($result_e);
-
-            $daten[$i]['units'] = ($row_e['endtime'] > 0 ? sec2time($row_e['endtime'] - time()) : '-');
-
-
-            $result_d = $db->query("SELECT endtime FROM cc" . $n . "_create_sol WHERE island_id='" . $row_land['islandid'] .
-                "' and sol_type='1'");
-            $row_d = $db->fetch_array($result_d);
-
-            $daten[$i]['def'] = ($row_d['endtime'] > 0 ? sec2time($row_d['endtime'] - time()) : '-');
-
-            $i++;
+            $daten[$i]['build'] = sec2time($row_land['endbuildtime'] - time());
         }
+        else
+        {
+            $daten[$i]['build'] = "-";
+        }
+
+        if ($row_land['endexploretime'] > 0)
+        {
+            $daten[$i]['explore'] = sec2time($row_land['endexploretime'] - time());
+        }
+        else
+        {
+            $daten[$i]['explore'] = "-";
+        }
+
+        $result_e = $db->query("SELECT endtime FROM cc" . $n . "_create_sol WHERE island_id='" . $row_land['islandid'] .
+            "' and sol_type='0'");
+        $row_e = $db->fetch_array($result_e);
+
+        if ($row_e['endtime'] > 0)
+        {
+            $daten[$i]['units'] = sec2time($row_e['endtime'] - time());
+        }
+        else
+        {
+            $daten[$i]['units'] = "-";
+        }
+
+        $result_d = $db->query("SELECT endtime FROM cc" . $n . "_create_sol WHERE island_id='" . $row_land['islandid'] .
+            "' and sol_type='1'");
+        $row_d = $db->fetch_array($result_d);
+
+        if ($row_d['endtime'] > 0)
+        {
+            $daten[$i]['def'] = sec2time($row_d['endtime'] - time());
+        }
+        else
+        {
+            $daten[$i]['def'] = "-";
+        }
+
+        $i++;
     }
 
     //pr�fen auf allianznews
@@ -89,16 +112,18 @@ if ($action == "main")
     $ali_news_text = "";
     if ($ali_id > 0)
     {
-        $result_e = $db->query("SELECT * FROM cc" . $n . "_allianznews WHERE allianz_id  ='$ali_id' ");
-        while ($row_e = $db->fetch_array($result_e))
-        {
-            $news_t = bb2html($row_e['a_news_text']);
-            $c_date = $row_e['change_date'];
-            $change_date = date("d.m.Y (H:i:s)", $c_date);
-        }
 
-        $tpl->assign('ali_news_show', trim($news_t));
+        $result_e = $db->query("SELECT * FROM cc" . $n . "_allianznews WHERE allianz_id  ='$ali_id' ");
+        $row_e = $db->fetch_array($result_e);
+
+        $c_date = $row_e['change_date'];
+        $change_date = date("d.m.Y (H:i:s)", $c_date);
+        $ali_news_text = bb2html($row_e['a_news_text']);
+
+
+        $tpl->assign('ali_news_show', $ali_news_text);
         $tpl->assign('ali_news_date', $change_date);
+
     }
 
     $userrace = get_race($userdata['rassenid']);
@@ -119,26 +144,27 @@ if ($action == "main")
     {
         $is_allianz = 1;
     }
-
-
+    timebanner_init(400, 100);
+    $tpl->assign('next4ressourcesTimeBanner', make_timebanner(time() - $op_res_reload_time, time() + $next4ressources, 100,
+        "members.php", 'progressBar', 300));
     $tpl->assign('next4ressources', sec2time($next4ressources));
     $tpl->assign('daten', $daten);
 
     $tpl->assign('cur_res_reload_time', $cur_res_reload_time);
 
-    $tpl->assign('production_res1', $production_res1);
-    $tpl->assign('production_res2', $production_res2);
-    $tpl->assign('production_res3', $production_res3);
-    $tpl->assign('production_res4', $production_res4);
+    $tpl->assign('production_res1', prettyNumber($production_res1,2));
+    $tpl->assign('production_res2', prettyNumber($production_res3,2));
+    $tpl->assign('production_res3', prettyNumber($production_res3,2));
+    $tpl->assign('production_res4', prettyNumber($production_res4,2));
 
     $tpl->assign('is_allianz', $is_allianz);
     $tpl->assign('M_USER_RACE', $userrace);
-    $tpl->assign('M_LANDSIZE_MAX', $op_max_c_size);
-    $tpl->assign('M_LANDSIZE', $userdata['size']);
+    $tpl->assign('M_LANDSIZE_MAX', prettyNumber($op_max_c_size));
+    $tpl->assign('M_LANDSIZE', prettyNumber($userdata['size']));
     $tpl->assign('M_A_NAME', $allianzname);
     $tpl->assign('M_KOORDS', $userdata['x'] . ":" . $userdata['y']);
     $tpl->assign('M_C_NAME', $userdata['name']);
-    $tpl->assign('M_POINTS', $userdata['points']);
+    $tpl->assign('M_POINTS', prettyNumber($userdata['points']));
     template_out('members.html', $modul_name);
     exit();
 }
@@ -253,7 +279,7 @@ if ($action == "edituserdata")
     $sig_modul_org = "./../" . $module[0] . "/" . $module[1];
 
     include ($sig_modul_org);
-    make_signature($userdata[userid]);
+    make_signature($userdata['userid']);
 
 
     $signature_image = "";
@@ -264,6 +290,11 @@ if ($action == "edituserdata")
         $signature_image = "<img src=\"" . $img_path_url . "\" border=\"0\" >";
         $signature_html = "<a href='" . $op_set_game_url . "'><img src='" . $img_path_url . "' border='0' ></a> ";
         $signature_bb = "[img]" . $img_path_url . "[/img]";
+    }
+    else
+    {
+        $signature_html = '';
+        $signature_bb = '';
     }
 
 
@@ -308,12 +339,12 @@ if ($action == "saveuserdata")
     {
         $result = $db->query("SELECT password FROM cc" . $n . "_users WHERE userid='$userdata[userid]'");
         $row = $db->fetch_array($result);
-        if (password_verify($password_old, $row['password']))
+        if ($row['password'] == md5($password_old))
         {
             if ($password_new_first == $password_new_second)
             {
-                $password = password_hash($password_new_first, PASSWORD_DEFAULT);
-                $db->query("UPDATE cc" . $n . "_users SET password='" . $password . "' WHERE userid='" . $userdata['userid'] . "'");
+                $md5_pw = md5($password_new_first);
+                $db->query("UPDATE cc" . $n . "_users SET password='" . $md5_pw . "' WHERE userid='" . $userdata['userid'] . "'");
             }
             else
             {
@@ -348,8 +379,6 @@ if ($action == "save_race")
 
     if (intval($userdata['rassenid']) > 0)
     {
-
-
         show_error("L_RACE_OK", $modul_name);
     }
 
@@ -464,3 +493,5 @@ if ($action == "race_choose")
     exit();
 
 }
+
+?>

@@ -1,4 +1,4 @@
-
+<?PHP
 
 BUILDING_ABORT = Abbrechen
 BUILDING_ERROR_1 = Configuration ERROR
@@ -22,3 +22,4 @@ BUILD_UNITS_15 = Auf diesm Land befindet sich nichts in Bau
 BUILD_UNITS_16 = AP
 BUILD_UNITS_17 = VP
 BUILD_UNITS_18 = "Ausbildung"
+?>

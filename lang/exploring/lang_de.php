@@ -1,4 +1,4 @@
-
+<?PHP
 
 EXPLORE = Forschen
 EXPLORE_ABORT = Abbrechen
@@ -16,3 +16,4 @@ EXPLORING_ERROR_3 = Nicht gen&uuml;gend Rohstoffe
 EXPLORING_ERROR_4 = Auf diesm Land wird nichts geforscht
 EXPLORING_ERROR_5 = Forschung kann nicht abgebrochen werden
 EXPLORING_ERROR_6 = Es wird bereits geforscht
+?>

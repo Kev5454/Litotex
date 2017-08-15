@@ -1,4 +1,4 @@
-
+<?PHP
 
 BUILDING_ABORT = Abbrechen
 BUILDING_ERROR_1 = Configuration ERROR
@@ -20,3 +20,4 @@ BUILDING_8 = Bebaute Baufl&auml;che
 BUILDING_9 = Bau
 BUILDING_10 = Abriss
 BUILDING_11 = es fehlen:
+?>

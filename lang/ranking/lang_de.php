@@ -1,4 +1,4 @@
-
+<?PHP
 ELELM_DESC1="Top 10"
 ELELM_DESC2="User"
 ELELM_DESC3="Allianz"
@@ -7,7 +7,7 @@ ELELM_DESC5="Platz"
 ELELM_DESC6="Status"
 ELELM_DESC7="Rasse"
 ELELM_DESC8="Punkte"
-ELELM_DESC9="Anzahl Länder"
+ELELM_DESC9="Anzahl L&auml;nder"
 ELELM_DESC10="Nachricht"
 ELELM_DESC11="Nachricht senden"
 ELELM_DESC12="Name"
@@ -23,3 +23,4 @@ ELEMENT4="Kartengr&ouml;&szlig;e"
 ELEMENT5="Anzahl L&auml;nder"
 ELEMENT6="Anzahl freie L&auml;nder"
 
+?>

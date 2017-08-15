@@ -1,135 +1,153 @@
-<?PHP
+<?php
+
 /*
 ************************************************************
-Litotex Browsergame - Engine
+Litotex BrowsergameEngine
+https://litotex.info
 http://www.Litotex.de
 http://www.freebg.de
 
+Copyright (c) 2017 K. Wehmeyer
 Copyright (c) 2008 FreeBG Team
 ************************************************************
 Hinweis:
-Diese Software ist urheberrechtlich geschützt.
+Diese Software ist urheberechtlich geschützt.
 
 Für jegliche Fehler oder Schäden, die durch diese Software
 auftreten könnten, übernimmt der Autor keine Haftung.
 
-Alle Copyright - Hinweise innerhalb dieser Datei
-dürfen WEDER entfernt, NOCH verändert werden.
+Alle Copyright - Hinweise Innerhalb dieser Datei
+dürfen NICHT entfernt und NICHT verändert werden.
 ************************************************************
 Released under the GNU General Public License
 ************************************************************
-
 */
 
-@session_start();
-require($_SESSION['litotex_start_acp'].'acp/includes/global.php');
-
-if(!isset($_SESSION['userid'])){
-	header("LOCATION: ".$_SESSION['litotex_start_url'].'acp/index.php');
-	exit();
+session_start();
+if (!isset($_SESSION['litotex_start_acp']) || !isset($_SESSION['userid']))
+{
+    header('LOCATION: ./../../index.php');
+    exit();
 }
 
+require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 
-if(isset($_REQUEST['action'])) $action=$_REQUEST['action'];
-else $action="main";
-
-$modul_name="acp_news";
-
+$action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
+$modul_name = "acp_news";
 
 
-if($action=="main") {
-	$menu_name="News";
-	$tpl->assign( 'menu_name',$menu_name);
-	$new_found_inhalt=array();
-	$new_found=array();
-	$result_news=$db->query("SELECT * FROM cc".$n."_news order by news_id ");
+if ($action == "main")
+{
+    $menu_name = "News";
+    $new_found = array();
+    $result_news = $db->query("SELECT * FROM cc" . $n . "_news order by news_id ");
 
-	while($row_g=$db->fetch_array($result_news)) {
-		$tt_text=$row_g['text'];
-		$tt_text=str_replace("\"","\'",$tt_text);
-		$new_found_inhalt=array($row_g['news_id'],$row_g['date'],$tt_text,$row_g['heading'],$row_g['activated']);
-		array_push($new_found,$new_found_inhalt);
-	}
-	$tpl->assign('daten', $new_found);
-	template_out('news.html',$modul_name);
-	exit();
+    while ($row_g = $db->fetch_array($result_news))
+    {
+        $tt_text = $row_g['text'];
+        $tt_text = str_replace("\"", "\'", $tt_text);
+        $new_found[] = array(
+            $row_g['news_id'],
+            $row_g['date'],
+            $tt_text,
+            $row_g['heading'],
+            $row_g['activated'],
+            );
+    }
+    $tpl->assign('menu_name', $menu_name);
+    $tpl->assign('daten', $new_found);
+    template_out('news.html', $modul_name);
 }
+elseif ($action == "new")
+{
+    $menu_name = "News eintragen";
 
-if($action=="new") {
-	$menu_name="News eintragen";
-	$tpl->assign( 'menu_name',$menu_name);
-	$tpl->assign('ACTION_SAVE','save');
-	template_out('news_new.html',$modul_name);
-	exit();
+    $tpl->assign('menu_name', $menu_name);
+    $tpl->assign('ACTION_SAVE', 'save');
+    template_out('news_new.html', $modul_name);
 }
+elseif ($action == "save")
+{
+    if (empty($_POST['new_news']) || empty($_POST['new_news']))
+    {
+        error_msg($l_emptyfield_error);
+    }
+    else
+    {
+        $text = filter_var($_POST['new_news'], FILTER_SANITIZE_STRING);
+        $heading = filter_var($_POST['heading'], FILTER_SANITIZE_STRING);
 
-if($action=="save") {
-	if(empty($_POST['new_news'])||empty($_POST['new_news'])) {
-		error_msg($l_emptyfield_error);
-	} else {
-		$text = mysql_real_escape_string(trim($_POST['new_news']));
-		$heading = mysql_real_escape_string(trim($_POST['heading']));
-		if ($heading==""){
-			$heading="no input";
-		}
-		$date = date("d.m.Y, H:i");
-		$order = array("\r\n", "</p>");
-		$replace = '<p>';
-		$text= str_replace($order, $replace, $text);
-		$text=nl2br($text);
-		$sql="INSERT into cc".$n."_news (user_id,heading,date,text) VALUES('$_SESSION[userid]','$heading','$date','".$text."')";
-		$update=$db->query($sql);
-	}
-	header("LOCATION: ".LITO_MODUL_PATH_URL."acp_news/news.php");
-	exit();
-}
+        $text = $db->escape_string(trim($text));
+        $heading = (empty($heading) ? 'Kein Inhalt' : $db->escape_string(trim($heading)));
 
-if($action=="edit") {
-	$news_id=intval($_GET['id']);
-	$result_news=$db->query("SELECT * FROM cc".$n."_news where news_id ='$news_id'");
-	$row=$db->fetch_array($result_news);
-	$tpl->assign('NEWS_OVER',$row['heading']);
-	$tpl->assign('ACTION_SAVE','update&id='.$news_id);
-	$tpl->assign('NEWS_TEXT_LANG', $row['text']);
-	template_out('news_new.html',$modul_name);
+        $date = date("d.m.Y, H:i");
+        $order = array("\r\n", "</p>");
+        $replace = '<p>';
+        $text = str_replace($order, $replace, $text);
+        $text = nl2br($text);
+        $db->query("INSERT into cc" . $n . "_news (user_id,heading,date,text) VALUES('$_SESSION[userid]','$heading','$date','" .
+            $text . "')");
+    }
+    redirect($modul_name, 'news', 'main');
 }
+elseif ($action == "edit")
+{
+    $news_id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
 
-if($action=="update") {
-	$news_id=intval($_GET['id']);
-	if(empty($_POST['new_news'])||empty($_POST['new_news'])) {
-		error_msg($l_emptyfield_error);
-	} else {
-		$text = mysql_real_escape_string(trim($_POST['new_news']));
-		$heading = mysql_real_escape_string(trim($_POST['heading']));
-		if ($heading==""){
-			$heading="no input";
-		}
-		$date = date("d.m.Y, H:i");
-		$sql="update cc".$n."_news set user_id='$_SESSION[userid]' ,heading= '$heading' ,date='$date',text='".nl2br($text)."' where news_id ='$news_id'";
-		$update=$db->query($sql);
-	}
-	header("LOCATION: ".LITO_MODUL_PATH_URL."acp_news/news.php");
-	exit();
-}
+    $result_news = $db->query("SELECT * FROM cc" . $n . "_news where news_id ='$news_id'");
+    $row = $db->fetch_array($result_news);
 
-if($action=="activate") {
-	$news_id=intval($_GET['id']);
-	$result_news=$db->query("SELECT activated FROM cc".$n."_news where news_id ='$news_id'");
-	$row=$db->fetch_array($result_news);
-	$active=$row['activated'];
-	if ($active==0){
-		$sql="update cc".$n."_news set activated='1' where news_id ='$news_id'";
-	}else{
-	$sql="update cc".$n."_news set activated='0' where news_id ='$news_id'";
+    $tpl->assign('NEWS_OVER', $row['heading']);
+    $tpl->assign('ACTION_SAVE', 'update&id=' . $news_id);
+    $tpl->assign('NEWS_TEXT_LANG', $row['text']);
+    template_out('news_new.html', $modul_name);
 }
-$update=$db->query($sql);
-header("LOCATION: ".LITO_MODUL_PATH_URL."acp_news/news.php");
-}
+elseif ($action == "update")
+{
+    $news_id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
 
-if($action=="delete") {
-	$news_id=intval($_GET['id']);
-	$sql="delete from cc".$n."_news where news_id ='$news_id'";
-	$update=$db->query($sql);
-	header("LOCATION: ".LITO_MODUL_PATH_URL."acp_news/news.php");
+    if (empty($_POST['new_news']) || empty($_POST['new_news']))
+    {
+        error_msg($l_emptyfield_error);
+    }
+    else
+    {
+        $text = filter_var($_POST['new_news'], FILTER_SANITIZE_STRING);
+        $heading = filter_var($_POST['heading'], FILTER_SANITIZE_STRING);
+
+        $text = $db->escape_string(trim($text));
+        $heading = (empty($heading) ? 'Kein Inhalt' : $db->escape_string(trim($heading)));
+
+        $date = date("d.m.Y, H:i");
+        $db->query("update cc" . $n . "_news set user_id='$_SESSION[userid]' ,heading= '$heading' ,date='$date',text='" . nl2br
+            ($text) . "' where news_id ='$news_id'");
+    }
+    redirect($modul_name, 'news', 'main');
 }
-?>
+elseif ($action == "activate")
+{
+    $news_id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
+    
+    $result_news = $db->query("SELECT activated FROM cc" . $n . "_news where news_id ='$news_id'");
+    $row = $db->fetch_array($result_news);
+    
+    if ($row['activated'] == 0)
+    {
+        $sql = "update cc" . $n . "_news set activated='1' where news_id ='$news_id'";
+    }
+    else
+    {
+        $sql = "update cc" . $n . "_news set activated='0' where news_id ='$news_id'";
+    }
+    
+    $db->query($sql);
+    redirect($modul_name, 'news', 'main');
+}
+elseif ($action == "delete")
+{
+    $news_id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
+    
+    $db->query("delete from cc" . $n . "_news where news_id ='$news_id'");
+    
+    redirect($modul_name, 'news', 'main');
+}

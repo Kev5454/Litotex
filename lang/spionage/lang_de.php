@@ -1,4 +1,4 @@
-
+<?PHP
 LN_SPION_3 = "Spionage auf Land"
 LN_SPION_1 = "Spionage auf"
 LN_SPION_2 = Leider nicht erfolgreich!
@@ -17,3 +17,4 @@ LN_SPION_KOORD_ERROR= "Fehlerhafte Eingabe"
 LN_SPION_SPIO_ERROR="fehlerhafte Eingabe der Anzahl"
 LN_SPION_SPIO_L="Das Land konnte leider nicht gefunden werden."
 
+?>

@@ -1,39 +1,38 @@
-<?PHP
+<?php
+
 /*
 ************************************************************
-Litotex Browsergame - Engine
+Litotex BrowsergameEngine
+https://litotex.info
 http://www.Litotex.de
 http://www.freebg.de
 
+Copyright (c) 2017 K. Wehmeyer
 Copyright (c) 2008 FreeBG Team
 ************************************************************
 Hinweis:
-Diese Software ist urheberrechtlich geschützt.
+Diese Software ist urheberechtlich geschützt.
 
 Für jegliche Fehler oder Schäden, die durch diese Software
 auftreten könnten, übernimmt der Autor keine Haftung.
 
-Alle Copyright - Hinweise innerhalb dieser Datei
-dürfen WEDER entfernt, NOCH verändert werden.
+Alle Copyright - Hinweise Innerhalb dieser Datei
+dürfen NICHT entfernt und NICHT verändert werden.
 ************************************************************
 Released under the GNU General Public License
 ************************************************************
-
 */
 
-@session_start();
-$modul_name="new_land";
-require_once("./../../includes/global.php");
-
-if(isset($_REQUEST['action'])) $action=$_REQUEST['action'];
-else $action="main";
-
-
-
-if(!isset($_SESSION['userid'])) {
-	show_error('LOGIN_ERROR','core');
-	exit();
+session_start();
+if (!isset($_SESSION['litotex_start_g']) || !isset($_SESSION['userid']))
+{
+    require ('../../includes/global.php');
+    show_error("LOGIN_ERROR", 'core');
 }
+
+require ($_SESSION['litotex_start_g'] . 'includes/global.php');
+$action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
+$modul_name="new_land";
 
 if (is_modul_name_aktive($modul_name)==0){
 	show_error('MODUL_LOAD_ERROR','core');

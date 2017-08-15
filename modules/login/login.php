@@ -1,29 +1,33 @@
-<?PHP
+<?php
 
 /*
 ************************************************************
-Litotex Browsergame - Engine
+Litotex BrowsergameEngine
+https://litotex.info
 http://www.Litotex.de
 http://www.freebg.de
 
+Copyright (c) 2017 K. Wehmeyer
 Copyright (c) 2008 FreeBG Team
 ************************************************************
 Hinweis:
-Diese Software ist urheberrechtlich geschützt.
+Diese Software ist urheberechtlich geschützt.
 
 Für jegliche Fehler oder Schäden, die durch diese Software
 auftreten könnten, übernimmt der Autor keine Haftung.
 
-Alle Copyright - Hinweise innerhalb dieser Datei
-dürfen WEDER entfernt, NOCH verändert werden.
+Alle Copyright - Hinweise Innerhalb dieser Datei
+dürfen NICHT entfernt und NICHT verändert werden.
 ************************************************************
 Released under the GNU General Public License
 ************************************************************
-
 */
 
+session_start();
+
+require ('../../includes/global.php');
+$action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 $modul_name = "login";
-require ("./../../includes/global.php");
 
 
 if (is_modul_name_aktive($modul_name) == 0)
@@ -32,7 +36,6 @@ if (is_modul_name_aktive($modul_name) == 0)
     exit();
 }
 
-$action = (isset($_REQUEST['action']) ? $_REQUEST['action'] : 'main');
 
 if ($action == "main")
 {
@@ -41,39 +44,36 @@ if ($action == "main")
     exit();
 }
 
-
 if ($action == "submit")
 {
     $username = strtolower($_POST['username']);
     $password = c_trim($_POST['password']);
 
-    if (!$username || !$password)
+    if (!$username || !$password )
     {
         show_error("LOGIN_ERROR_1", 'login');
-        exit();
     }
 
-    $row = $db->select("SELECT * FROM cc" . $n . "_users WHERE username='$username'");
+    $result = $db->query("SELECT * FROM cc" . $n . "_users WHERE username='$username'");
+    $row = $db->fetch_array($result);
 
     if (strtolower($row['username']) != $username)
     {
         trace_msg("login ERROR '$username' wrong username", 2);
         show_error("LOGIN_ERROR_2", 'login');
-        exit();
     }
 
-    if (!password_verify($password, $row['password']))
+    if ($row['password'] != md5($password))
     {
         trace_msg("login ERROR '$username' wrong password", 2);
         show_error("LOGIN_ERROR_2", 'login');
-        exit();
     }
-    $userid = intval($row['userid']);
-
-    $_SESSION['userid'] = $userid;
-    trace_msg("login OK '$username' ", 2);
-    $db->unbuffered_query("UPDATE cc" . $n . "_users SET lastlogin='" . time() . "', ip='" . getenv("REMOTE_ADDR") .
-        "' WHERE username='$username'");
+    
+    $_SESSION['userid'] = intval($row['userid']);
+    $_SESSION['lang'] = $row['lang'];
+    trace_msg("login OK '" . $username . "' with lang '" . $row['lang'] . "'", 2);
+    $db->unbuffered_query("UPDATE cc" . $n . "_users SET lastlogin='" . time() . "', ip='" . $_SERVER["REMOTE_ADDR"] .
+        "' WHERE username='" . $username . "'");
     header("LOCATION: " . LITO_MODUL_PATH_URL . 'members/members.php');
     exit();
 }

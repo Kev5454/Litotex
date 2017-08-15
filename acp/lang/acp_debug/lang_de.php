@@ -1,4 +1,4 @@
-
+<?PHP
 ELELM_DESC1="Beschreibung"
 ELELM_DESC2="Aktion"
 ELELM_DESC3 = "Alle löschen : "
@@ -16,3 +16,4 @@ ELELM_DESC14  = "Zu dieser Funktion nicht berechtigt!"
 
 
 
+?>

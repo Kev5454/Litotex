@@ -21,9 +21,15 @@ Released under the GNU General Public License
 ************************************************************
 */
 
-@session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
 session_name("litoid");
+if (session_id() == "")
+{
+    session_start();
+}
 
 $sid = session_id();
 //$Database index
@@ -36,11 +42,8 @@ if (isset($_SESSION['litotex_start_acp']))
 }
 else
 {
-    if (is_file('../../includes/config.php'))
-    {
-        require ('../../includes/config.php');
-    }
-    elseif (is_file('../includes/config.php'))
+
+    if (is_file('../includes/config.php'))
     {
         require ('../includes/config.php');
     }
@@ -104,14 +107,18 @@ require (LITO_ROOT_PATH . 'options/options.php');
 
 require (LITO_INCLUDES_PATH . 'config.php');
 
-require (LITO_INCLUDES_PATH . 'GeneralFunctions.php');
 /** get db class **/
 require (LITO_INCLUDES_PATH . 'class_db_mysql.php');
 
 /** get functions list **/
 require ('functions.php');
 
-require (LITO_INCLUDES_PATH . 'smarty/SmartyBC.class.php'); // Smarty class laden und pr�fen
+require (LITO_INCLUDES_PATH . 'smarty/Smarty.class.php'); // Smarty class laden und pr�fen
+
+if (intval($op_use_ftp_mode == 1))
+{
+    define("C_FTP_METHOD", '1');
+}
 
 
 $db = new db($dbhost, $dbuser, $dbpassword, $dbbase);
@@ -119,7 +126,7 @@ $db = new db($dbhost, $dbuser, $dbpassword, $dbbase);
 $time_start = explode(' ', substr(microtime(), 1));
 $time_start = $time_start[1] + $time_start[0];
 
-$tpl = new SmartyBC;
+$tpl = new smarty;
 
 $tpl->template_dir = LITO_THEMES_PATH;
 $tpl->compile_dir = LITO_ROOT_PATH . 'acp/templates_c';
@@ -133,7 +140,9 @@ setlocale(LC_ALL, array(
 
 if (isset($_SESSION['userid']))
 {
-    $userdata = $db->select("SELECT * FROM cc" . $n . "_users WHERE userid='" . $_SESSION['userid'] . "'");
+    $result = $db->query("SELECT * FROM cc" . $n . "_users WHERE userid='" . $_SESSION['userid'] . "'");
+    $userdata = $db->fetch_array($result);
+
 
     $tpl->assign('if_user_login', 1);
     $tpl->assign('LOGIN_USERNAME', $userdata['username']);

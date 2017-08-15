@@ -1,10 +1,13 @@
 <?php
+
 /*
 ************************************************************
 Litotex BrowsergameEngine
+https://litotex.info
 http://www.Litotex.de
 http://www.freebg.de
 
+Copyright (c) 2017 K. Wehmeyer
 Copyright (c) 2008 FreeBG Team
 ************************************************************
 Hinweis:
@@ -20,87 +23,98 @@ Released under the GNU General Public License
 ************************************************************
 */
 
-
-
-@session_start();
-require($_SESSION['litotex_start_acp'].'acp/includes/global.php');
-
-if(!isset($_SESSION['userid'])){
-	header("LOCATION: ".$_SESSION['litotex_start_url'].'acp/index.php');
-	exit();
+session_start();
+if (!isset($_SESSION['litotex_start_acp']) || !isset($_SESSION['userid']))
+{
+    header('LOCATION: ./../../index.php');
+    exit();
 }
 
-if(isset($_REQUEST['action'])) $action=$_REQUEST['action'];
-else $action="main";
+require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 
-$modul_name="acp_badwords";
-$menu_name="Badwordmanager";
-$tpl->assign( 'menu_name',$menu_name);
+$action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 
-require($_SESSION['litotex_start_acp'].'acp/includes/perm.php');
+$modul_name = "acp_badwords";
+$menu_name = "Badwordmanager";
+$tpl->assign('menu_name', $menu_name);
 
-if($action == 'delete'){
-	if(!isset($_GET['id'])){
-		error_msg('Keine ID &uuml;bergeben!');
-		exit;
-	}
-	$id = $_GET['id'] * 1;
-	$db->query("DELETE FROM `cc".$n."_badwords` WHERE `badword_id` = '".$id."'");
-	$action = 'main';
+require ($_SESSION['litotex_start_acp'] . 'acp/includes/perm.php');
+
+if ($action == 'delete')
+{
+    if (!isset($_GET['id']) || $_GET['id'] < 0)
+    {
+        error_msg('Keine ID &uuml;bergeben!');
+        exit;
+    }
+    
+    $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
+    $db->query("DELETE FROM `cc" . $n . "_badwords` WHERE `badword_id` = '" . $id . "'");
+    
+    redirect($modul_name, 'badwords', 'main');
 }
-
-if($action == 'change'){
-	if(!isset($_GET['id'])){
-		error_msg('Keine ID &uuml;bergeben!');
-		exit;
-	}
-	$id = $_GET['id'] * 1;
-	$tpl->assign('change', $id);
-	$action = 'main';
+elseif ($action == 'change')
+{
+    if (!isset($_GET['id']))
+    {
+        error_msg('Keine ID &uuml;bergeben!');
+        exit;
+    }
+    
+    $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
+    redirect($modul_name, 'badwords', 'main', array('changeID' => $id));
 }
+elseif ($action == 'save')
+{
+    if (!isset($_GET['id']))
+    {
+        error_msg('Keine ID &uuml;bergeben!');
+        exit;
+    }
+    if (!isset($_POST['title']))
+    {
+        error_msg('Kein Titel &uuml;bergeben!');
+        exit;
+    }
+    $_POST['in_mail'] = (!isset($_POST['in_mail']) ? 0 : 1);
 
-if($action == 'save'){
-	if(!isset($_GET['id'])){
-		error_msg('Keine ID &uuml;bergeben!');
-		exit;
-	}
-	if(!isset($_POST['title'])){
-		error_msg('Kein Titel &uuml;bergeben!');
-		exit;
-	}
-	if(!isset($_POST['in_mail']))
-	$_POST['in_mail'] = 0;
-	else
-	$_POST['in_mail'] = 1;
-	$id = $_GET['id'] * 1;
-	$db->query("UPDATE `cc".$n."_badwords` SET `badword` = '".$db->escape_string($_POST['title'])."', `in_mail` = '".$db->escape_string($_POST['in_mail'])."' WHERE `badword_id` = '".$id."'");
-	$action = 'main';
-}
+    $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
+    $db->query("UPDATE `cc" . $n . "_badwords` SET `badword` = '" . $db->escape_string($_POST['title']) . "', `in_mail` = '" .
+        $db->escape_string($_POST['in_mail']) . "' WHERE `badword_id` = '" . $id . "'");
 
-if($action == 'new'){
-	if(!isset($_POST['title'])){
-		error_msg('Kein Titel &uuml;bergeben!');
-		exit;
-	}
-	if(!isset($_POST['in_mail']))
-	$_POST['in_mail'] = 0;
-	else
-	$_POST['in_mail'] = 1;
-	$db->query("INSERT INTO `cc".$n."_badwords` (`badword`, `in_mail`) VALUES ('".$db->escape_string($_POST['title'])."', '".$db->escape_string($_POST['in_mail'])."')");
-	$action ='main';
-}
 
-if($action == 'main'){
-	$badwords = array();
-	$words = $db->query("SELECT `badword_id`, `badword`, `in_mail` FROM `cc".$n."_badwords`");
-	$i = 0;
-	while($badword = $db->fetch_array($words)){
-		$badwords[$i]['id'] = $badword['badword_id'];
-		$badwords[$i]['title'] = $badword['badword'];
-		$badwords[$i]['in_mail'] = $badword['in_mail'];
-		$i++;
-	}
-	$tpl->assign('badwords', $badwords);
-	template_out('list.html', $modul_name);
+    redirect($modul_name, 'badwords', 'main');
 }
-?>
+elseif ($action == 'new')
+{
+    if (!isset($_POST['title']))
+    {
+        error_msg('Kein Titel &uuml;bergeben!');
+        exit;
+    }
+    $_POST['in_mail'] = (!isset($_POST['in_mail']) ? 0 : 1);
+
+    $db->query("INSERT INTO `cc" . $n . "_badwords` (`badword`, `in_mail`) VALUES ('" . $db->escape_string($_POST['title']) .
+        "', '" . $db->escape_string($_POST['in_mail']) . "')");
+
+    redirect($modul_name, 'badwords', 'main');
+}
+elseif ($action == 'main')
+{
+    $badwords = array();
+    $words = $db->query("SELECT `badword_id`, `badword`, `in_mail` FROM `cc" . $n . "_badwords`");
+    $i = 0;
+    while ($badword = $db->fetch_array($words))
+    {
+        $badwords[$i]['id'] = $badword['badword_id'];
+        $badwords[$i]['title'] = $badword['badword'];
+        $badwords[$i]['in_mail'] = $badword['in_mail'];
+        $i++;
+    }
+    if (isset($_GET['changeID']))
+    {
+        $tpl->assign('change', (int)$_GET['changeID']);
+    }
+    $tpl->assign('badwords', $badwords);
+    template_out('list.html', $modul_name);
+}

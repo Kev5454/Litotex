@@ -20,8 +20,7 @@ dürfen NICHT entfernt und NICHT verändert werden.
 Released under the GNU General Public License 
 ************************************************************  
 */
+session_start();
+require ('includes/global.php');
 
-require ('./includes/global.php');
-
-//template_out('file:'.LITO_ROOT_PATH.'/modules/login/themes/standard/login.html');
-header("LOCATION: " . LITO_MODUL_PATH_URL . 'acp_login/login.php');
+redirect('acp_login', 'login', 'main');

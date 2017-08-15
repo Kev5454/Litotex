@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <title>{$GAME_TITLE_TEXT}</title>
 <link href="{$LITO_MAIN_CSS}/litotex.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="{$LITO_ROOT_PATH_URL}js/scriptaculous/prototype.js"></script>
@@ -18,7 +18,7 @@
 <div id="wrapper">
 
 <div id="header">
-   	<div id="date"> {$smarty.now|date_format:"%A, %e %B, %Y"} {$smarty.now|date_format:"%H:%M:%S"} | <a href="{$LITO_MODUL_PATH_URL}impressum/impressum.php">Impressum</a> | <a href="{$con[3]}"><img src="{$LITO_GLOBAL_IMAGE_URL}logout.png" alt="" border="0" /></a> <a href="{$LITO_MODUL_PATH_URL}login/logout.php">Logout</a> | <a href="{$LITO_MODUL_PATH_URL}login/logout.php$action=eng"> <img src="{$LITO_GLOBAL_IMAGE_URL}flag_en.png" width="25" height="14" border="0" /></a></div>
+   	<div id="date"> {$smarty.now|date_format:"%A, %e %B, %Y"} {$smarty.now|date_format:"%H:%M:%S"} | <a href="{$LITO_MODUL_PATH_URL}impressum/impressum.php">Impressum</a>{if $IS_LOGED_IN =='1' } | <a href="{$con[3]}"><img src="{$LITO_GLOBAL_IMAGE_URL}logout.png" alt="" border="0" /></a> <a href="{$LITO_MODUL_PATH_URL}login/logout.php">Logout</a>{/if} | <a href="{$LITO_MODUL_PATH_URL}lang/lang.php?lang=en"> <img src="{$LITO_GLOBAL_IMAGE_URL}flag_en.png" width="25" height="14" border="0" /></a></div>
 <div id="logo">
 <table border="0">
   <tr>
@@ -45,6 +45,7 @@
   <div id="ress2" ><img src="{$LITO_IMG_PATH_URL}res2_ico.png"> {$GLOBAL_RES2_NAME} {$CURRENT_LAND_RES2}</div>
   <div id="ress3" ><img src="{$LITO_IMG_PATH_URL}res3_ico.png"> {$GLOBAL_RES3_NAME} {$CURRENT_LAND_RES3}</div>
   <div id="ress4" ><img src="{$LITO_IMG_PATH_URL}res4_ico.png"> {$GLOBAL_RES4_NAME} {$CURRENT_LAND_RES4}</div>
+  <div id="ress4" >{#GLOBAL_STORE_SIZE#} {$GLOBAL_STORE_SIZE}</div>
   <!--<div id="logout" ><a href="{$LITO_MODUL_PATH_URL}login/logout.php">Logout</a></div>-->
 </div>
 {/if}

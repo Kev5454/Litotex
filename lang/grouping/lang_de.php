@@ -1,4 +1,4 @@
-
+<?PHP
 
 GROUPING_ERROR_1 = Soviele Einheiten stehen nicht zur Verf&uuml;gung
 GROUPING_ERROR_2 = Es wurde eine fehlerhafte Gruppe ausgew&auml;hlt
@@ -15,3 +15,4 @@ GROUPING_7 = "erstellen"
 GROUPING_8 = "entladen"
 GROUPING_9 = "Meine Gruppen"
 GROUPING_10 = "Gruppen bilden"
+?>

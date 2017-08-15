@@ -1,4 +1,4 @@
-{include file="header.html"}
+{include file="file:header.html"}
 <table id="rubric" width="263" border="0">
     <tr>
       <td width="48"><img src="{$LITO_IMG_PATH}user.png" alt="" width="35" height="35" /></td>
@@ -13,7 +13,7 @@
 			<div class="box_down">
 				<div class="box_right">
 		          <div class="stat">
-<form action="?action=save&id={$smarty.get.id}" method="post"><table width="100%" border="0">
+<form action="?action=save&id={$user.id}" method="post"><table width="100%" border="0">
 		              <tr>
 		                <td><h1>Berechtigungseditor</h1></td>
 		                <td align="right" colspan="2"><table border="0">
@@ -62,7 +62,7 @@
 	                      </tr>
 		                  <tr>
 		                    <td>{if $user.alliadmin == 1}Aus Allianzadmin-Status l&ouml;schen:</td>
-		                    <td><input type="checkbox" name="alliadmin" value="1" />{/if}{/if}</td>
+		                    <td><input type="checkbox" name="alliadmin" value="1">{/if}{/if}</td>
 	                      </tr>
                           <tr>
 		                    <td>&nbsp;</td>
@@ -137,4 +137,4 @@
 	</div>
 </div>    
 
-    {include file="footer.html"}
+    {include file="file:footer.html"}

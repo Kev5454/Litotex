@@ -1,29 +1,42 @@
 <?php
 
 /*
-* Created on 21.05.2009
-* By: Joans Schwabe (GH1234)
-* j.s@cascaded-web.com
-*/
-error_reporting(E_ALL);
-@session_start();
+************************************************************
+Litotex BrowsergameEngine
+https://litotex.info
+http://www.Litotex.de
+http://www.freebg.de
 
+Copyright (c) 2017 K. Wehmeyer
+Copyright (c) 2008 FreeBG Team
+************************************************************
+Hinweis:
+Diese Software ist urheberechtlich geschützt.
+
+Für jegliche Fehler oder Schäden, die durch diese Software
+auftreten könnten, übernimmt der Autor keine Haftung.
+
+Alle Copyright - Hinweise Innerhalb dieser Datei
+dürfen NICHT entfernt und NICHT verändert werden.
+************************************************************
+Released under the GNU General Public License
+************************************************************
+*/
+
+session_start();
 if (!isset($_SESSION['litotex_start_acp']) || !isset($_SESSION['userid']))
 {
-    unset($_SESSION);
-    header("LOCATION: ../acp_login/login.php");
+    header('LOCATION: ./../../index.php');
     exit();
 }
 
 require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 
-
-$action = (isset($_REQUEST['action']) ? $_REQUEST['action'] : 'main');
-
+$action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 $modul_name = "acp_themes";
 $menu_name = "Templatemanager";
-$tpl->assign('menu_name', $menu_name);
 require ($_SESSION['litotex_start_acp'] . 'acp/includes/perm.php');
+$tpl->assign('menu_name', $menu_name);
 
 if ($action == 'zip')
 {
@@ -32,83 +45,58 @@ if ($action == 'zip')
         error_msg('Es wurde keine ID &uuml;bergeben!');
         exit;
     }
-    $id = $_GET['id'] * 1;
+    $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
     $nstd_q = $db->query("SELECT `design_id`, `aktive`, `design_name` FROM `cc" . $n . "_desigs` WHERE `design_id` = '" . $id .
         "'");
-    $nstd = $db->fetch_array($nstd_q);
-    if (empty($nstd))
+    if (!$db->num_rows($nstd_q))
     {
         error_msg('Das Template wurde nicht in der Datenbank gefunden!');
         exit;
     }
-    $name = trim($nstd['design_name']);
+    $nstd = $db->fetch_array($nstd_q);
 
-    $zipFile = LITO_ROOT_PATH . 'cache/' . $name . '.zip';
-    if (is_file($zipFile))
-    {
-        unlink($zipFile);
-    }
+    $root = $_SESSION['litotex_start_acp'];
+    $name = DIRECTORY_SEPARATOR . $nstd['design_name'] . DIRECTORY_SEPARATOR;
 
-    $dirNameT = LITO_ROOT_PATH . 'themes/' . $name;
-    $dirNameI = LITO_ROOT_PATH . 'images/' . $name;
-    $dirNameC = LITO_ROOT_PATH . 'css/' . $name;
+    $fileName = $root . 'acp' . DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR . 'themes.zip';
 
-    if (!is_dir($dirNameT) || !is_dir($dirNameI) || !is_dir($dirNameC))
-    {
-        error_msg('Es ist ein Fehler aufgetreten, Es existsieren nicht alle Ordner des zu speichernen Designes!');
-        exit;
-    }
+    $zip = new ZipArchive($fileName);
+    $zip = addDirectoryToZip($zip, $root . 'themes' . $name, 'themes' . DIRECTORY_SEPARATOR);
+    $zip = addDirectoryToZip($zip, $root . 'images' . $name, 'images' . DIRECTORY_SEPARATOR);
+    $zip = addDirectoryToZip($zip, $root . 'css' . $name, 'css' . DIRECTORY_SEPARATOR);
+    $zip->close();
 
-    $zip = new ZipArchive();
-    $zip->open($zipFile, ZipArchive::CREATE);
-
-    $allFiles = _scandir($dirNameT);
-    $allFiles = array_merge($allFiles, _scandir($dirNameI));
-    $allFiles = array_merge($allFiles, _scandir($dirNameC));
-
-    foreach ($allFiles as $FileName)
-    {
-        $zip->addFile($FileName, str_replace(LITO_ROOT_PATH, '', $FileName));
-    }
-
-    if (!$zip->close())
-    {
-        error_msg('Es ist ein Fehler aufgetreten, dieser konnte nicht n&auml;her bestimmt werden!');
-        exit;
-    }
-
-    header('Location:../../../cache/' . $name . '.zip');
-    $action = 'main';
+    setDownloadFile($fileName, $nstd['design_name'] . 'zip');
+    unlink($fileName);
 }
-
-if ($action == 'changestd')
+elseif ($action == 'changestd')
 {
     if (!isset($_GET['id']))
     {
         error_msg('Es wurde keine ID &uuml;bergeben!');
         exit;
     }
-    $id = $_GET['id'] * 1;
+    $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
     $nstd_q = $db->query("SELECT `design_id` FROM `cc" . $n . "_desigs` WHERE `design_id` = '" . $id . "'");
     if (!$db->num_rows($nstd_q))
     {
         error_msg('Das Template wurde nicht in der Datenbank gefunden!');
         exit;
     }
-    $db->update("UPDATE `cc" . $n . "_desigs` SET `aktive` = 0; 
-                 UPDATE `cc" . $n . "_desigs` SET `aktive` = 1 WHERE `design_id` = '" . $id . "';
-                 UPDATE `cc" . $n . "_users` SET `design_id` = '" . $id . "';");
-    $action = 'main';
+    $sql = "UPDATE `cc" . $n . "_desigs` SET `aktive` = 0;";
+    $sql .= "UPDATE `cc" . $n . "_desigs` SET `aktive` = 1 WHERE `design_id` = '" . $id . "';";
+    $sql .= "UPDATE `cc" . $n . "_users` SET `design_id` = '" . $id . "';";
+    $db->multi_query($sql);
+    redirect($modul_name, 'themes', 'main');
 }
-
-if ($action == 'changealt')
+elseif ($action == 'changealt')
 {
     if (!isset($_GET['id']))
     {
         error_msg('Es wurde keine ID &uuml;bergeben!');
         exit;
     }
-    $id = $_GET['id'] * 1;
+    $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
     $nstd_q = $db->query("SELECT `design_id`, `alternate_permit` FROM `cc" . $n . "_desigs` WHERE `design_id` = '" . $id .
         "'");
     if (!$db->num_rows($nstd_q))
@@ -120,17 +108,17 @@ if ($action == 'changealt')
     $alt = ($nstd['alternate_permit'] == 0 ? 1 : 0);
 
     $db->query("UPDATE `cc" . $n . "_desigs` SET `alternate_permit` = " . $alt . " WHERE `design_id` = '" . $id . "'");
-    $action = 'main';
-}
 
-if ($action == 'remove')
+    redirect($modul_name, 'themes', 'main');
+}
+elseif ($action == 'remove')
 {
     if (!isset($_GET['id']))
     {
         error_msg('Es wurde keine ID &uuml;bergeben!');
         exit;
     }
-    $id = $_GET['id'] * 1;
+    $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
     $nstd_q = $db->query("SELECT `design_id`, `aktive`, `design_name` FROM `cc" . $n . "_desigs` WHERE `design_id` = '" . $id .
         "'");
     if (!$db->num_rows($nstd_q))
@@ -145,38 +133,23 @@ if ($action == 'remove')
         exit;
     }
 
-    $dirNameT = LITO_ROOT_PATH . 'themes/' . $nstd['design_name'] . '/';
-    $dirNameI = LITO_ROOT_PATH . 'images/' . $nstd['design_name'] . '/';
-    $dirNameC = LITO_ROOT_PATH . 'css/' . $nstd['design_name'] . '/';
-    if (!_rmdir($dirNameT))
-    {
-        error_msg('Litotex konnte den Ordner "' . $dirNameT . '" nicht löschen!');
-        exit;
-    }
+    $root = $_SESSION['litotex_start_acp'];
+    removeDirectory($root . 'themes' . DIRECTORY_SEPARATOR . $nstd['design_name'] . DIRECTORY_SEPARATOR);
+    removeDirectory($root . 'images' . DIRECTORY_SEPARATOR . $nstd['design_name'] . DIRECTORY_SEPARATOR);
+    removeDirectory($root . 'css' . DIRECTORY_SEPARATOR . $nstd['design_name'] . DIRECTORY_SEPARATOR);
+    removeDirectory($root . 'templates_c' . DIRECTORY_SEPARATOR . $nstd['design_name'] . DIRECTORY_SEPARATOR);
 
-    if (!_rmdir($dirNameI))
-    {
-        error_msg('Litotex konnte den Ordner "' . $dirNameI . '" nicht löschen!');
-        exit;
-    }
 
-    if (!_rmdir($dirNameC))
-    {
-        error_msg('Litotex konnte den Ordner "' . $dirNameC . '" nicht löschen!');
-        exit;
-    }
-
-    $db->delete("DELETE FROM `cc" . $n . "_desigs` WHERE `design_id` = '" . $id . "'");
+    $db->query("DELETE FROM `cc" . $n . "_desigs` WHERE `design_id` = '" . $id . "'");
 
     $aktive_q = $db->query("SELECT `design_id` FROM `cc" . $n . "_desigs` WHERE `aktive` = 1");
     $aktive = $db->fetch_array($aktive_q);
 
-    $db->update("UPDATE `cc" . $n . "_users` SET `design_id` = '" . $aktive['design_id'] . "' WHERE `design_id` = '" . $id .
+    $db->query("UPDATE `cc" . $n . "_users` SET `design_id` = '" . $aktive['design_id'] . "' WHERE `design_id` = '" . $id .
         "'");
-    $action = 'main';
+    redirect($modul_name, 'themes', 'main');
 }
-
-if ($action == 'new')
+elseif ($action == 'new')
 {
     if (!(isset($_POST['name']) && isset($_POST['mail']) && isset($_POST['description']) && isset($_POST['author']) && isset
         ($_POST['copy']) && isset($_POST['web'])))
@@ -196,164 +169,147 @@ if ($action == 'new')
         exit;
     }
 
-    mkdir(LITO_ROOT_PATH . 'themes/' . $_POST['name']);
-    chmod(LITO_ROOT_PATH . 'themes/' . $_POST['name'], 0755);
 
-    mkdir(LITO_ROOT_PATH . 'images/' . $_POST['name']);
-    chmod(LITO_ROOT_PATH . 'images/' . $_POST['name'], 0755);
+    $root = $_SESSION['litotex_start_acp'];
+    $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
 
-    mkdir(LITO_ROOT_PATH . 'css/' . $_POST['name']);
-    chmod(LITO_ROOT_PATH . 'css/' . $_POST['name'], 0755);
-
-    mkdir(LITO_ROOT_PATH . 'templates_c/' . $_POST['name']);
-    chmod(LITO_ROOT_PATH . 'templates_c/' . $_POST['name'], 0777);
+    _mkdir($root . 'themes' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR, 0755);
+    _mkdir($root . 'images' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR, 0755);
+    _mkdir($root . 'css' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR, 0755);
+    _mkdir($root . 'templates_c' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR);
 
 
-    $db->insert("INSERT INTO `cc" . $n .
+    $db->query("INSERT INTO `cc" . $n .
         "_desigs` (`design_name`, `design_author`, `design_copyright`, `design_author_web`, `design_author_mail`, `design_description`, `aktive`, `alternate_permit`) VALUES ('" .
         $_POST['name'] . "', '" . $db->escape_string($_POST['author']) . "', '" . $db->escape_string($_POST['copy']) . "', '" .
         $db->escape_string($_POST['web']) . "', '" . $db->escape_string($_POST['mail']) . "', '" . $db->escape_string($_POST['description']) .
         "', 0, 0)");
     $newid = $db->insert_id();
-
     //Standartdesign
     $std = $db->query("SELECT `design_id` FROM `cc" . $n . "_desigs` WHERE `aktive` = 1");
     $std = $db->fetch_array($std);
-
     $navi_db = $db->query("SELECT * FROM `cc" . $n . "_menu_game` WHERE `design_id` = " . $std['design_id'] .
         " ORDER BY `sort_order` ASC");
 
     while ($element = $db->fetch_array($navi_db))
     {
-        $db->insert("INSERT INTO `cc" . $n .
+        $db->query("INSERT INTO `cc" . $n .
             "_menu_game` (`menu_game_name`, `menu_game_link`, `modul_id`, `sort_order`, `menu_art_id`, `ingame`, `optional_parameter`, `design_id`) VALUES ('" .
             $element['menu_game_name'] . "', '" . $element['menu_game_link'] . "', '" . $element['modul_id'] . "', '" . $element['sort_order'] .
             "', '" . $element['menu_art_id'] . "', '" . $element['ingame'] . "', '" . $element['optional_parameter'] . "', '" . $newid .
             "')");
     }
-    $action = 'main';
+    redirect($modul_name, 'themes', 'main');
 }
-
-if ($action == 'dub')
+elseif ($action == 'dub')
 {
     if (!isset($_GET['id']) || !isset($_GET['new']))
     {
         error_msg('Es wurde keine ID &uuml;bergeben!');
         exit;
     }
-    $id = $_GET['id'] * 1;
+    $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
     if (!preg_match('!^[a-z_\-]*$!', $_GET['new']))
     {
         error_msg('Der neue Name darf nur Buchstaben (a-z), Unterstriche (_) und Minus (-) enthalten!');
         exit;
     }
     $nstd_q = $db->query("SELECT * FROM `cc" . $n . "_desigs` WHERE `design_id` = '" . $id . "'");
-    $nstd = $db->fetch_array($nstd_q);
-
-    if ($nstd == false || $nstd == null)
+    if (!$db->num_rows($nstd_q))
     {
         error_msg('Das Template wurde nicht in der Datenbank gefunden!');
         exit;
     }
-
     $cp_q = $db->query("SELECT * FROM `cc" . $n . "_desigs` WHERE `design_name` = '" . $_GET['new'] . "'");
     if ($db->num_rows($cp_q))
     {
         error_msg('Das Zieltemplate ist bereits in der Datenbank!');
         exit;
     }
-    $sourcet = LITO_ROOT_PATH . 'themes/' . $nstd['design_name'];
-    $sourcei = LITO_ROOT_PATH . 'images/' . $nstd['design_name'];
-    $sourcec = LITO_ROOT_PATH . 'css/' . $nstd['design_name'];
+    $nstd = $db->fetch_array($nstd_q);
 
-    $destt = LITO_ROOT_PATH . 'themes/' . $_GET['new'];
-    $desti = LITO_ROOT_PATH . 'images/' . $_GET['new'];
-    $destc = LITO_ROOT_PATH . 'css/' . $_GET['new'];
+    $root = $_SESSION['litotex_start_acp'];
+    $name = $nstd['design_name'];
+    $newName = filter_var($_GET['new'], FILTER_SANITIZE_STRING);
 
-    $tpl_c = LITO_ROOT_PATH . 'templates_c/' . $_GET['new'];
+    $sourcet = $root . 'themes' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR;
+    $sourcei = $root . 'images' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR;
+    $sourcec = $root . 'css' . DIRECTORY_SEPARATOR . $name . DIRECTORY_SEPARATOR;
 
-    if (!is_dir($sourcet))
+    $destt = $root . 'themes' . DIRECTORY_SEPARATOR . $newName . DIRECTORY_SEPARATOR;
+    $desti = $root . 'images' . DIRECTORY_SEPARATOR . $newName . DIRECTORY_SEPARATOR;
+    $destc = $root . 'css' . DIRECTORY_SEPARATOR . $newName . DIRECTORY_SEPARATOR;
+    $desttc = $root . 'template_c' . DIRECTORY_SEPARATOR . $newName . DIRECTORY_SEPARATOR;
+    if (!file_exists($sourcet))
     {
-        error_msg('Die Daten des Quell Templates konnten nicht auf dem Server gefunden werden!');
+        error_msg('Die Daten des Quell Templates(Themes) konnten nicht auf dem Server gefunden werden!');
         exit;
     }
-    if (!is_dir($sourcei))
+    if (!file_exists($sourcei))
     {
-        error_msg('Die Daten des Quell Templates konnten nicht auf dem Server gefunden werden!');
+        error_msg('Die Daten des Quell Templates(Images) konnten nicht auf dem Server gefunden werden!');
         exit;
     }
-    if (!is_dir($sourcec))
+    if (!file_exists($sourcec))
     {
-        error_msg('Die Daten des Quell Templates konnten nicht auf dem Server gefunden werden!');
-        exit;
-    }
-    //$ftp->mkdir($ftproot . 'templates_c/' . $_POST['name'] . '/', true);
-    //$ftp->chmod('0777', $ftproot . 'templates_c/' . $_POST['name'] . '/');
-
-    if (is_dir($destt))
-    {
-        error_msg('Das Zeil Template existiert bereits!');
-        exit;
-    }
-    if (is_dir($desti))
-    {
-        error_msg('Das Zeil Template existiert bereits!');
-        exit;
-    }
-    if (is_dir($destc))
-    {
-        error_msg('Das Zeil Template existiert bereits!');
+        error_msg('Die Daten des Quell Templates(Css) konnten nicht auf dem Server gefunden werden!');
         exit;
     }
 
-    if (is_dir($tpl_c))
+    if (file_exists($destt))
     {
-        _rmdir($tpl_c, true);
+        error_msg('Das Zeil Template(Themes) existiert bereits!');
+        exit;
     }
-    mkdir($tpl_c);
-    chmod($tpl_c, 0777);
+    if (file_exists($desti))
+    {
+        error_msg('Das Zeil Template(Images) existiert bereits!');
+        exit;
+    }
+    if (file_exists($destc))
+    {
+        error_msg('Das Zeil Template(Css) existiert bereits!');
+        exit;
+    }
 
-    copyr($sourcet, $destt);
-    copyr($sourcei, $desti);
-    copyr($sourcec, $destc);
+    _mkdir($desttc, 0777, false);
 
-    //$ftp->close();
+    _copy($sourcet, $destt);
+    _copy($sourcei, $desti);
+    _copy($sourcec, $destc);
 
-    $db->insert("INSERT INTO `cc" . $n .
+    $db->query("INSERT INTO `cc" . $n .
         "_desigs` (`design_name`, `design_author`, `design_copyright`, `design_author_web`, `design_author_mail`, `design_description`, `aktive`, `alternate_permit`) VALUES ('" .
         $_GET['new'] . "', '" . $nstd['design_author'] . "', '" . $nstd['design_copyright'] . "', '" . $nstd['design_author_web'] .
         "', '" . $nstd['design_author_mail'] . "', '" . $nstd['design_description'] . "', 0, 0)");
     $newid = $db->insert_id();
 
-
+    $sql = '';
     $navi_db = $db->query("SELECT * FROM `cc" . $n . "_menu_game` WHERE `design_id` = " . $nstd['design_id'] .
         " ORDER BY `sort_order` ASC");
-
     while ($element = $db->fetch_array($navi_db))
     {
-        $db->insert("INSERT INTO `cc" . $n .
+        $sql .= "INSERT INTO `cc" . $n .
             "_menu_game` (`menu_game_name`, `menu_game_link`, `modul_id`, `sort_order`, `menu_art_id`, `ingame`, `optional_parameter`, `design_id`) VALUES ('" .
             $element['menu_game_name'] . "', '" . $element['menu_game_link'] . "', '" . $element['modul_id'] . "', '" . $element['sort_order'] .
             "', '" . $element['menu_art_id'] . "', '" . $element['ingame'] . "', '" . $element['optional_parameter'] . "', '" . $newid .
-            "')");
+            "');";
     }
-    $action = 'main';
+    $db->multi_query($sql);
+    redirect($modul_name, 'themes', 'main');
 }
-
-if ($action == 'test')
+elseif ($action == 'test')
 {
     if (!isset($_GET['id']))
     {
         error_msg('Es wurde keine ID &uuml;bergeben!');
         exit;
     }
-    $_GET['id'] = $_GET['id'] * 1;
-    $db->update("UPDATE `cc" . $n . "_users` SET `design_id` = '" . $_GET['id'] . "' WHERE `userid` = '" . $_SESSION['userid'] .
-        "'");
+    $id = filter_var($_GET['id'], FILTER_SANITIZE_NUMBER_INT);
+    $db->query("UPDATE `cc" . $n . "_users` SET `design_id` = '" . $id . "' WHERE `userid` = '" . $_SESSION['userid'] . "'");
     header("Location:" . LITO_ROOT_PATH_URL);
 }
-
-if ($action == "main")
+elseif ($action == "main")
 {
     $themes_q = $db->query("SELECT `design_id`, `design_name`, `design_author`, `design_copyright`, `design_author_mail`, `design_author_web`, `design_description`, `aktive`, `alternate_permit` FROM `cc" .
         $n . "_desigs`");

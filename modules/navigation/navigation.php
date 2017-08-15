@@ -24,7 +24,7 @@ Released under the GNU General Public License
 class navigation
 {
 
-    var $version = "0.7.1";
+    var $version = "0.7.0";
     var $modul_name = "navigation";
     var $modul_type = "nav";
 
@@ -36,6 +36,9 @@ class navigation
         $new_found_inhalt_navi = array();
         $new_found_navi = array();
 
+        $IMG_PATH = LITO_IMG_PATH_URL . $this->modul_name . '/';
+
+        $navi = "";
         $theme = 0;
         if (!defined('LITO_THEMES'))
         {
@@ -43,15 +46,17 @@ class navigation
         }
         else
         {
-            $themeq = $db->select("SELECT `design_id` FROM `cc" . $n . "_desigs` WHERE `design_name` = '" . LITO_THEMES . "'");
+            $themeq = $db->query("SELECT `design_id` FROM `cc" . $n . "_desigs` WHERE `design_name` = '" . LITO_THEMES . "'");
+            $themeq = $db->fetch_array($themeq);
+
             $theme = (!isset($themeq['design_id']) ? 1 : $themeq['design_id']);
         }
-        
-        var_dump("SELECT * FROM cc" . $n . "_menu_game where ingame='$ingame' and  modul_id ='$modul_id' and menu_art_id ='$menue_art' and design_id = $theme order by sort_order ASC");
+        $result = $db->query("SELECT * FROM cc" . $n . "_menu_game where ingame='" . $ingame . "' and  modul_id ='$modul_id' and menu_art_id ='" .
+            $menue_art . "' and design_id = $theme order by sort_order ASC");
 
-        $result = $db->query("SELECT * FROM cc" . $n . "_menu_game where ingame='$ingame' and  modul_id ='$modul_id' and menu_art_id ='$menue_art' and design_id = $theme order by sort_order ASC");
         while ($row_g = $db->fetch_array($result))
         {
+
             $new_found_navi[] = array(
                 $row_g['sort_order'],
                 $row_g['menu_game_name'],
@@ -59,19 +64,31 @@ class navigation
                 $row_g['optional_parameter']);
         }
         $tpl->assign('daten_navi', $new_found_navi);
-
         $navi = $tpl->fetch(LITO_THEMES_PATH . $this->modul_name . '/navigation_' . $menue_art . '.html');
+
         $search = array(
             "[LITO_ROOT_PATH_URL]",
             "[LITO_IMG_PATH]",
             "[LITO_BASE_MODUL_URL]",
+            'ä',
+            'ö',
+            'ü',
+            'Ä',
+            'Ö',
+            'Ü',
+            'ß',
             );
         $replace = array(
             LITO_ROOT_PATH_URL,
-            LITO_IMG_PATH_URL . $this->modul_name . '/',
+            $IMG_PATH,
             LITO_MODUL_PATH_URL,
+            '&auml;',
+            '&ouml;',
+            '&uuml;',
+            '&Auml;',
+            '&Ouml;',
+            '&szlig;',
             );
-
         return str_replace($search, $replace, $navi);
     }
 }

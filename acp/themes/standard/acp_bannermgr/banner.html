@@ -1,4 +1,4 @@
-{include file="header.html"}
+{include file="file:header.html"}
 
 <table id="rubric" width="263" border="0">
     <tr>
@@ -25,12 +25,12 @@
                 </tr>
                 <tr> 
                   <td  width="20%">{#BANNER_T_10#}</td>
-                  <td  width="80%"><input name="banner_label" type="text" class="textinput" value="{if isset($banner_label)}{$banner_label}{/if}" size="50"> 
+                  <td  width="80%"><input name="banner_label" type="text" class="textinput" value="{$banner_label}" size="50"> 
                   </td>
                 </tr>
                 <tr> 
                   <td  width="20%">{#BANNER_T_1#}</td>
-                  <td  width="80%"><textarea  name="banner_code" cols="50" >{if isset($banner_code)}{$banner_code}{/if}</textarea> 
+                  <td  width="80%"><textarea  name="banner_code" cols="50" >{$banner_code}</textarea> 
                   </td>
                 </tr>
                 <tr> 
@@ -42,7 +42,6 @@
               </table>
   </form>
 
-{if isset($banner_output)}
 			<table   width="700" align="center">
   <tr> 
                 <th width="10%" height="21"  ><div align="left"><span class="normalfont"><b>{#BANNER_T_9#}</b></span></div></th>
@@ -70,7 +69,7 @@
   {/foreach} 
 
 </table>	  	
-			{/if}	  		
+				  		
 				  	
 						
 					
@@ -81,4 +80,4 @@
 	</div>
 </div>
 
-    {include file="footer.html"}
+    {include file="file:footer.html"}
