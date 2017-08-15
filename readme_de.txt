@@ -1,23 +1,24 @@
-#######################################################
-#						                                          #
-# Litotex Browsergame Engine (http://www.litotex.de)  #
-# VERSION: 0.7.0				                              #  
-# ENTWICKELT: FreeBG Team (http://www.freebg.de)      #
-# COPYRIGHT 2008 FreeBG (http://www.freebg.de)	      #
-#						                                          #
-#	Hinweis:				                                    #
-# Diese Software ist urheberechtlich geschützt.	      #
-#					       	                                    #
-# Für jegliche Fehler oder Schäden, 		              #
-# die durch diese Software auftreten könnten,         #
-# übernimmt der Autor keine Haftung.		              #
-#                                                     #
-#  Alle Copyright - Hinweise innerhalb dieser Datei   #
-#  dürfen NICHT entfernt und NICHT verändert werden.  #
-#						                                          #
-#  Released under the GNU General Public License      #
-#                                                     #
-#######################################################
+
+Litotex Browsergame Engine (http://www.litotex.info)
+	VERSION: 0.7.1	
+	
+	ENTWICKELT: litotex.info (http://www.litotex.info)  
+	COPYRIGHT 2017 K. Wehmeyer (http://www.litotex.info)
+	
+	ENTWICKELT(Alt): FreeBG Team (http://www.freebg.de) 
+	COPYRIGHT 2008 FreeBG (http://www.freebg.de)	      
+
+Hinweis:				                                    
+	Diese Software ist urheberechtlich geschützt.	      
+
+	Für jegliche Fehler oder Schäden, 		              
+	die durch diese Software auftreten könnten,         
+	übernimmt der Autor keine Haftung.		              
+                                                   
+Alle Copyright - Hinweise innerhalb dieser Datei   
+dürfen NICHT entfernt und NICHT verändert werden.  
+
+Released under the GNU General Public License
 
 
 ALLGEMEIN
@@ -57,17 +58,14 @@ NACH DER INSTALLATION
 	 Dieses kann ganz nach den persönlichen Ansprüchen geändert werden.
 		 
 4. Für die automatische Punkteberechnung ist es norwendig einen Cronjob anzulegen.
-	 Der Cronjob muss die Datei http://ihrewebseite.tld/includes/update.php aufrufen.	 
-	 Wir empfehlen die Datei update.php umzubenennen.
+	 Der Cronjob muss die Datei http://ihrewebseite.tld/cronjobs.php?key=#DEIN_UPDATE_KEY#&sid=#SERVERID# aufrufen.	 
 	 
 	 
 INFORMATIONEN
 
-1. Im offiziellen Supportforum, erreichbar unter http://litotex.de, erhalten Sie natürlich auf Wunsch
+1. Im offiziellen Supportforum, erreichbar unter http://litotex.info, erhalten Sie natürlich auf Wunsch
 Hilfe. Desweiteren können Sie uns gerne Verbesserungsideen vorschlagen oder bei Interesse am Projekt mitwirken.
 
 
-Ihr FreeBG-Team,
-http://www.freebg.de
-http://www.litotex.de
-
+Ihr Litotex.Info-Team,
+https://litotex.info
