@@ -144,10 +144,9 @@ if ($action == "main")
     {
         $is_allianz = 1;
     }
-    timebanner_init(400, 100);
-    $tpl->assign('next4ressourcesTimeBanner', make_timebanner(time() - $op_res_reload_time, time() + $next4ressources, 100,
-        "members.php", 'progressBar', 300));
+    
     $tpl->assign('next4ressources', sec2time($next4ressources));
+    $tpl->assign('next4ressourcesTime', date('H:i:s',$userdata['lastressources'] + $op_res_reload_time));
     $tpl->assign('daten', $daten);
 
     $tpl->assign('cur_res_reload_time', $cur_res_reload_time);

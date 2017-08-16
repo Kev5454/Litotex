@@ -1,0 +1,52 @@
+{include file="file:header.html"}
+ {literal}
+<script language="javascript">
+	tinyMCE.init({
+		mode : "textareas",
+		theme : "advanced",
+  forced_root_block : false,
+   force_br_newlines : true,
+   force_p_newlines : false,
+
+		theme_advanced_toolbar_location:'top',
+		theme_advanced_buttons1 : "bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
+		theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor"
+	});
+</script>
+ {/literal}
+ 
+<table id="rubric" width="263" border="0">
+    <tr>
+      <td width="48"><img src="{$LITO_IMG_PATH}news_new.png" alt="" width="35" height="35" /></td>
+      <td width="205"><h1><i>{$menu_name}</i></h1></td>
+    </tr>
+</table>
+
+<div id="content">
+	<div class="box_header">
+		<div class="box_left">
+			<div class="box_down">  
+				<div class="box_right"> 
+		          <div class="stat">
+		          {#NEW_PAGE_TITLE_TEXT#}<br><br>
+					<form action="page.php?action={$ACTION_SAVE}" method="post">
+ 						{#NEW_PAGE_OVER_TEXT#}: <input class="textinput" name="heading" type="text" id="heading" size="70" value="{$TITLE}" /><br><br>
+ 						{#PAGE_LINK_TEXT#}: {$LITO_ROOT_PATH_URL}modules/pagemanager/page.php?name=<input class="textinput" name="getName" type="text" id="getName" size="70" value="{$GETNAME}" /><br><br>
+ 						{#NEW_PAGE_ACCESS_TEXT#}: 
+                         <select name="access" >
+                         <option value="public" {if $ACCESS == "public"}selected="selected"{/if}>&Ouml;ffentlich</option>
+                         <option value="member" {if $ACCESS == "member"}selected="selected"{/if}>Mitglieder</option>
+                         <option value="support" {if $ACCESS == "support"}selected="selected"{/if}>Support</option>
+                         <option value="admin" {if $ACCESS == "admin"}selected="selected"{/if}>Nur Admins</option>
+                         </select><br><br>
+    		      		<textarea rows="20" id="new_news"  class="textarea" cols="120" name="content">{$CONTENT}</textarea>
+    		      		<br><br>
+    		      		<center><input type="submit" class="button" value="{#PAGE_SAVE_BUTTON#}"></center>
+		      		</form>         
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{include file="file:footer.html"}

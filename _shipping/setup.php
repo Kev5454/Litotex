@@ -106,7 +106,7 @@ else
     }
 }
 
-$lito_version = "0.7.0";
+$lito_version = "0.7.2";
 $max_step = 7;
 $filecounter = 0;
 

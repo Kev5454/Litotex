@@ -131,10 +131,7 @@ $lang_suffix = (isset($_SESSION['lang']) && strlen($_SESSION['lang']) == 2 ? $_S
 
 /** get options **/
 require (LITO_ROOT_PATH . 'options' . DIRECTORY_SEPARATOR . 'options.php');
-
-/** get functions list **/
 require ('functions.php');
-
 require (LITO_INCLUDES_PATH . 'smarty' . DIRECTORY_SEPARATOR . 'Smarty.class.php'); // Smarty class laden und pr�fen
 
 
@@ -158,6 +155,7 @@ setlocale(LC_ALL, array(
     'de_DE@euro',
     'de',
     'ger'));
+date_default_timezone_set('Europe/Berlin');
 
 $lang_file = LITO_LANG_PATH . 'core' . DIRECTORY_SEPARATOR . 'lang_' . $lang_suffix . '.php';
 $tpl->config_load($lang_file);
@@ -180,7 +178,6 @@ if (isset($_SESSION['userid']))
     $result = $db->query("SELECT u.*,c.* FROM cc" . $n . "_users AS u, cc" . $n . "_countries AS c WHERE u.userid='" . $_SESSION['userid'] .
         "' AND u.activeid=c.islandid");
     $userdata = $db->fetch_array($result);
-
 
     if ($userdata['activeid'] == 0)
     {

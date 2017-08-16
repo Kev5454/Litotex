@@ -196,6 +196,7 @@ function error_msg($message)
     global $tpl;
     $tpl->assign('LITO_ERROR', $message);
     template_out("error.html", "acp_core");
+    exit();
 }
 
 

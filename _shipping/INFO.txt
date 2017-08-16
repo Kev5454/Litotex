@@ -2,6 +2,14 @@
 ###################################################################################
 
   Litotex BrowsergameEngine 
+  Copyright(C)2017 by K. Wehmeyer(litotex.info)
+  
+  Download des Originals auf http://www.litotex.info
+  Kommentare und Fragen bitte ins Forum auf http://litotex.info
+  
+  ------------------------------------------------------------------------
+
+  Litotex BrowsergameEngine 
   Copyright(C)2008 by FreeBG Team
   
   Download des Originals auf http://www.freebg.de

@@ -1,0 +1,52 @@
+{include file="file:header.html"}
+<table id="rubric" width="263" border="0">
+    <tr>
+      <td width="48"><img src="{$LITO_IMG_PATH}news.png" alt="" width="35" height="35" /></td>
+      <td width="205"><h1><i>{$menu_name}</i></h1></td>
+    </tr>
+</table>
+
+<div id="content">
+	<div class="box_header">
+		<div class="box_left">
+			<div class="box_down">  
+				<div class="box_right"> 
+		          <div class="stat">
+
+								{#PAGE_LIST_TEXT#}<br><br>
+
+								<table class ="lito_table" width="700" border="0" >
+								    <tr bgcolor="{cycle values="#eeeeee,#dddddd"}">
+								            <td>{#PAGE_ID_TEXT#}</td>
+											<td>{#NEW_PAGE_OVER_TEXT#}</td>
+											<td>{#PAGE_LINK_TEXT#}</td>
+											<td>{#PAGE_EDIT_TEXT#}</td>
+											<td>{#PAGE_DUB_TEXT#}</td>
+											<td>{#PAGE_IS_ACTIV_TEXT#}</td>
+											<td>{#PAGE_DELETE_TEXT#}</td>
+								   </tr>
+
+										{foreach item=con from=$daten}
+										   <tr bgcolor="{cycle values="#eeeeee,#dddddd"}">
+										      <td>{$con[0]}</td>
+										      <td>{$con[2]}</td>
+										      <td width="20%"><a href="{$LITO_ROOT_PATH_URL}modules/pagemanager/page.php?name={$con[1]}" target="_blank">Seite aufrufen</a></td>
+										      <td width="10%"><a href="page.php?action=edit&id={$con[0]}"><img src="{$LITO_IMG_PATH}news_new.png" alt="{#PAGE_EDIT_TEXT#}" title="{#PAGE_EDIT_TEXT#}" width="20" height="20" border="0"></a></td>
+										      <td width="10%"><a href="page.php?action=dub&id={$con[0]}"><img src="{$LITO_IMG_PATH}dublizieren.png" alt="{#PAGE_DUB_TEXT#}" title="{#PAGE_DUB_TEXT#}" width="20" height="20" border="0"></a></td>
+											{if $con[3] =='1' }
+												<td width="10%"><a href="page.php?action=activate&id={$con[0]}"><img src="{$LITO_IMG_PATH}deactive.png" alt="{#PAGE_DEACTIVATE_TEXT#}" title="{#PAGE_DEACTIVATE_TEXT#}" width="20" height="20" border="0"></a></td>
+											{else}
+												<td width="10%"><a href="page.php?action=activate&id={$con[0]}"><img src="{$LITO_IMG_PATH}active.png" alt="{#PAGE_ACTIVATE_TEXT#}" title="{#PAGE_ACTIVATE_TEXT#}" width="20" height="20" border="0"></a></td>
+											{/if}
+												<td width="10%"><a href="page.php?action=delete&id={$con[0]}"><img src="{$LITO_IMG_PATH}delete.png" alt="{#PAGE_DELETE_TEXT#}" title="{#PAGE_DELETE_TEXT#}" width="20" height="20" border="0"></a></td>
+										   </tr>
+									   {/foreach}
+							</table>
+					
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{include file="file:footer.html"}

@@ -67,7 +67,7 @@ elseif ($action == "submit")
         login_error($ln_login_e_1);
         exit();
     }
-    
+
     $username = filter_var($_POST['username'], FILTER_SANITIZE_STRING);
     $username = strtolower($username);
     $password = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
@@ -101,6 +101,7 @@ elseif ($action == "submit")
     }
 
     $_SESSION['userid'] = (int)($row['userid']);
+    $_SESSION['lang'] = $row['lang'];
     trace_msg("login OK '$username' ", 2);
     $db->unbuffered_query("UPDATE cc" . $n . "_users SET lastlogin='" . time() . "', ip='" . getenv("REMOTE_ADDR") .
         "' WHERE username='$username'");

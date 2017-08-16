@@ -456,7 +456,11 @@ function username($userid)
 
 function sec2time($sek)
 {
-    return date('H:i:s', $sek);
+    if ($sek < 0)
+    {
+        $sek = 0;
+    }
+    return gmdate("H:i:s", $sek);
 }
 
 function bb2html($text)

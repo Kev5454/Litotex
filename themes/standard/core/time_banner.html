@@ -30,7 +30,10 @@ function countdown_{/literal}{$banner_id}{literal}()
     } 
     else 
     {
+        {/literal}{if $NAVIGATE2SITE != null}{literal}
         window.location='{/literal}{$NAVIGATE2SITE}{literal}';
+        {/literal}{/if}{literal}
+        
     }
 }
 
