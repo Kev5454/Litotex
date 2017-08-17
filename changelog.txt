@@ -14,7 +14,7 @@ Module
 ACP Module
 - acp_pagemanager wurde hinzugefügt
 
-Version 0.7.01 von K. Wehmeyer(litotex.info)
+Version 0.7.1 von K. Wehmeyer(litotex.info)
 
 All
 - Diverse änderungen in Modulen

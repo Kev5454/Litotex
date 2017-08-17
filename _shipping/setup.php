@@ -1,5 +1,34 @@
 <?php
 
+/**
+ * Litotex - Browsergame Engine
+ * Copyright 2017 Das litotex.info Team, All Rights Reserved
+ *
+ * Website: http://www.litotex.info
+ * License: GNU GENERAL PUBLIC LICENSE v3 (https://litotex.info/showthread.php?tid=3)
+ *
+ */
+/*
+************************************************************
+Litotex BrowsergameEngine
+http://www.Litotex.de
+http://www.freebg.de
+
+Copyright (c) 2008 FreeBG Team
+************************************************************
+Hinweis:
+Diese Software ist urheberechtlich geschützt.
+
+Für jegliche Fehler oder Schäden, die durch diese Software
+auftreten könnten, übernimmt der Autor keine Haftung.
+
+Alle Copyright - Hinweise Innerhalb dieser Datei 
+dürfen NICHT entfernt und NICHT verändert werden. 
+************************************************************
+Released under the GNU General Public License 
+************************************************************  
+*/
+
 if (version_compare(phpversion(), '5.2.0') <= 0)
 {
     echo 'Sie benötigen mindestens PHP 5.2.0\n um diese Engine nutzen zu können!';
@@ -106,7 +135,7 @@ else
     }
 }
 
-$lito_version = "0.7.2";
+$lito_version = "0.7.0";
 $max_step = 7;
 $filecounter = 0;
 

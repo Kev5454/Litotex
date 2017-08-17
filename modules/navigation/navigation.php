@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Litotex - Browsergame Engine
+ * Copyright 2017 Das litotex.info Team, All Rights Reserved
+ *
+ * Website: http://www.litotex.info
+ * License: GNU GENERAL PUBLIC LICENSE v3 (https://litotex.info/showthread.php?tid=3)
+ *
+ */
 /*
 ************************************************************
 Litotex BrowsergameEngine
@@ -9,27 +17,27 @@ http://www.freebg.de
 Copyright (c) 2008 FreeBG Team
 ************************************************************
 Hinweis:
-Diese Software ist urheberechtlich gesch�tzt.
+Diese Software ist urheberechtlich geschützt.
 
-F�r jegliche Fehler oder Sch�den, die durch diese Software
-auftreten k�nnten, �bernimmt der Autor keine Haftung.
+Für jegliche Fehler oder Schäden, die durch diese Software
+auftreten könnten, übernimmt der Autor keine Haftung.
 
-Alle Copyright - Hinweise Innerhalb dieser Datei
-d�rfen NICHT entfernt und NICHT ver�ndert werden.
+Alle Copyright - Hinweise Innerhalb dieser Datei 
+dürfen NICHT entfernt und NICHT verändert werden. 
 ************************************************************
-Released under the GNU General Public License
-************************************************************
+Released under the GNU General Public License 
+************************************************************  
 */
 
 class navigation
 {
 
-    var $version = "0.7.0";
-    var $modul_name = "navigation";
-    var $modul_type = "nav";
+    private $version = "0.7.2";
+    private $modul_name = "navigation";
+    private $modul_type = "nav";
 
 
-    function make_navigation($modulename, $modul_id, $ingame, $menue_art)
+    public function make_navigation($modulename, $modul_id, $ingame, $menue_art)
     {
         global $tpl, $db, $n;
 
