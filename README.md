@@ -49,16 +49,16 @@ VORBEREITUNG
 
 NACH DER INSTALLATION
 
+1. Schützen Sie ihr ACP Verzeichnis mittels htaccess o.ä. um einen unbefugten Zutritt nicht zu ermöglichen.
 
-1. Nach der Beendigung der Installation löschen Sie die Datei "setup.php" 
-
-2. Schützen Sie ihr ACP Verzeichnis mittels htaccess o.ä. um einen unbefugten Zutritt nicht zu ermöglichen.
-
-3. Das Design von Litotex befindet sich im Ordner "themes\standard".
+2. Das Design von Litotex befindet sich im Ordner "themes\standard".
 	 Dieses kann ganz nach den persönlichen Ansprüchen geändert werden.
 		 
-4. Für die automatische Punkteberechnung ist es norwendig einen Cronjob anzulegen.
-	 Der Cronjob muss die Datei http://ihrewebseite.tld/cronjobs.php?key=#DEIN_UPDATE_KEY#&sid=#SERVERID#&type=points aufrufen.	 
+3. Für die automatische Punkteberechnung ist es norwendig einen Cronjob anzulegen.
+	 Der Cronjob muss die Datei http://ihrewebseite.tld/cronjobs.php?key=#DEIN_UPDATE_KEY#&sid=#SERVERID#&type=points 		 aufrufen.	
+	 
+4. Für die automatische Rohstoffberechnung per Cronjob muss ein Cronjob mit dem folgenden link aufrufen:
+	 http://ihrewebseite.tld/cronjobs.php?key=#DEIN_UPDATE_KEY#&sid=#SERVERID#&type=res 
 	 
 	 
 INFORMATIONEN
