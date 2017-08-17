@@ -1,11 +1,11 @@
 
 Litotex Browsergame Engine (http://www.litotex.info)
-	VERSION: 0.7.1	
+	VERSION: 0.7.2	
 	
-	ENTWICKELT: litotex.info (http://www.litotex.info)  
-	COPYRIGHT 2017 Das litotex.info Team (http://www.litotex.info)
+	ENTWICKELT ab 0.7.0: litotex.info (http://www.litotex.info)  
+	COPYRIGHT 2017 litotex.info (http://www.litotex.info)
 	
-	ENTWICKELT(Alt): FreeBG Team (http://www.freebg.de) 
+	ENTWICKELT bis 0.7.0: FreeBG Team (http://www.freebg.de) 
 	COPYRIGHT 2008 FreeBG (http://www.freebg.de)	      
 
 Hinweis:				                                    
