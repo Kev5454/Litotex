@@ -1,3 +1,8 @@
+Version 0.7.2 von litotex.info
+
+Setup
+- Bugfixes
+
 Version 0.7.2 von K. Wehmeyer(litotex.info)
 
 Setup

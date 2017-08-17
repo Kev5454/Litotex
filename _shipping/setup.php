@@ -135,7 +135,7 @@ else
     }
 }
 
-$lito_version = "0.7.0";
+$lito_version = "0.7.2";
 $max_step = 7;
 $filecounter = 0;
 
@@ -452,34 +452,15 @@ elseif ($step == 4)
     }
 
     $count = 0;
-    $sqlfile = fopen(LITO_SETUP_PATH . 'setup/db_clean.sql', 'r');
-    $toexec = '';
-    while ($line = fgets($sqlfile))
-    {
-        if (!preg_match('!^--!', $line))
-        {
-            $toexec .= $line;
-        }
-        if (strpos($line, ';') !== false)
-        {
-            $count++;
-            if ($mysqli->query($toexec) !== true)
-            {
-                $_SESSION['error_msg'] = "Beim importieren ist ein Fehler aufgetreten<br>" . $mysqli->error;
-                header("LOCATION: setup.php?step=4");
-                exit();
-            }
-            $toexec = '';
-        }
-    }
-
-    fclose($sqlfile);
+    $sqlfile = file_get_contents(LITO_SETUP_PATH . 'setup/db_clean.sql');
+    $mysqli->multi_query($sqlfile);
 
     $_SESSION['error_msg'] = "";
     $content .= "<span class=\"normalfont\">Die Verbindung zum SQL Server wurde erfolgreich hergestellt.<br><br><br></span>";
     $content .= "<span class=\"normalfont_o\">Es wurden " . $count .
         " Einträge in der Datenbank vorgenommen.<br><br></span>";
     $content .= "<span class=\"normalfont\">Die Litotex Datenbank wurde erfolgreich angelegt.<br><br>";
+    $content .= "<span class=\"normalfont\">Bitte warten sie noch 60 sekunden bevor sie auf weiter drücken! Da ein Multi-Query mal ein wenig länger dauern kann!!!<br><br>";
     $content .= "Im nächsten Schritt erfolgt das Installieren der Spieldateien.<br></span>";
     $button = "<input type=\"submit\" class=\"buttons\" name=\"submit\" value=\"weiter\">";
     $action = "setup.php?step=5";
