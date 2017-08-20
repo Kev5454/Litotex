@@ -44,4 +44,3 @@ if ($action == "main")
 
     template_out('index.html', $modul_name);
 }
-echo "geht";

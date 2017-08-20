@@ -35,9 +35,9 @@ if (!isset($_SESSION['litotex_start_g']) || !isset($_SESSION['userid']))
     show_error("LOGIN_ERROR", 'core');
 }
 
-require ($_SESSION['litotex_start_g'] . 'includes/global.php');
 $action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 $modul_name = "battle";
+require ($_SESSION['litotex_start_g'] . 'includes/global.php');
 
 /*group_status
 0 =home

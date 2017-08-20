@@ -29,6 +29,14 @@ if (!isset($op_update_key) || empty($key) || empty($server) || strlen($key) != 3
 
 
 $db = new db($dbhost, $dbuser, $dbpassword, $dbbase, $dbport);
+if ($db->connect() !== true)
+{
+    echo 'Datenbank konnte keine Verbindung aufbauen!';
+    exit();
+}
+
+$db->query("SET character_set_client = 'utf8'");
+$db->query("SET character_set_connection = 'utf8'");
 $n = (int)$server;
 
 if (intval($op_res_reload_type) == 1 && ($type == 'all' || $type == 'res'))

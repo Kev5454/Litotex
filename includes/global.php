@@ -28,6 +28,16 @@ Released under the GNU General Public License
 ************************************************************  
 */
 
+if (version_compare(phpversion(), '5.2.0') <= 0)
+{
+    echo 'Sie benötigen mindestens PHP 5.2.0\n um diese Engine nutzen zu können!';
+    exit();
+}
+if (version_compare(phpversion(), '7.0.0') >= 0)
+{
+    define('PHP7', true);
+}
+
 session_name("lito");
 if (session_id() == "")
 {
@@ -83,12 +93,18 @@ require (LITO_INCLUDES_PATH . 'class_db_mysql.php');
 
 
 $db = new db($dbhost, $dbuser, $dbpassword, $dbbase, $dbport);
+if($db->connect() !== true)
+{
+    echo 'Datenbank konnte keine Verbindung aufbauen!';
+    exit();
+}
+
 $db->query("SET character_set_client = 'utf8'");
 $db->query("SET character_set_connection = 'utf8'");
+
 // get design
 if (isset($_SESSION['userid']))
 {
-    $db = new db($dbhost, $dbuser, $dbpassword, $dbbase);
     $result_id = $db->query("SELECT design_id FROM cc" . $n . "_users where userid ='" . $_SESSION['userid'] . "'");
     $row_id = $db->fetch_array($result_id);
     if (intval($row_id['design_id']) > 0)
@@ -147,13 +163,13 @@ $tpl->template_dir = LITO_THEMES_PATH;
 $tpl->compile_dir = LITO_ROOT_PATH . 'templates_c' . DIRECTORY_SEPARATOR . LITO_THEMES;
 $tpl->cache_dir = LITO_ROOT_PATH . 'cache' . DIRECTORY_SEPARATOR . LITO_THEMES;
 
-if (!file_exists($tpl->compile_dir))
+if (!is_dir($tpl->compile_dir))
 {
-    _mkdir($tpl->compile_dir, 0777, false);
+    _mkdir('templates_c' . DIRECTORY_SEPARATOR . LITO_THEMES, false);
 }
-if (!file_exists($tpl->cache_dir))
+if (!is_dir($tpl->cache_dir))
 {
-    _mkdir($tpl->cache_dir, 0777, false);
+    _mkdir('cache' . DIRECTORY_SEPARATOR . LITO_THEMES, false);
 }
 //$tpl->debugging = true;
 

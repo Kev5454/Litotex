@@ -36,9 +36,9 @@ if (!isset($_SESSION['litotex_start_g']) || !isset($_SESSION['userid']))
     exit();
 }
 
-require ('../../includes/global.php');
 $action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
-
+$modul_name = 'core';
+require ($_SESSION['litotex_start_g'] . 'includes/global.php');
 
 if (!isset($_SESSION['userid']))
 {

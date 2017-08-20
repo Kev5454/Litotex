@@ -37,11 +37,19 @@ if (!function_exists('session_unregister'))
     }
 }
 
-function _mkdir($directory, $_mode = 0777, $setroot = true)
+function _mkdir($directory, $public_access = true, $mode = 0777)
 {
-    $dir = ($setroot ? LITO_ROOT_PATH . DIRECTORY_SEPARATOR : '');
-    mkdir($dir . $directory);
-    chmod($dir . $directory, $_mode);
+    $dirName = LITO_ROOT_PATH . $directory . (substr($directory, -1) == DIRECTORY_SEPARATOR ? '' : DIRECTORY_SEPARATOR);
+    if (!is_dir($dirName))
+    {
+        mkdir($dirName);
+    }
+    chmod($dirName, $mode);
+
+    if ($public_access == false)
+    {
+        copy(LITO_ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . '.htaccess', $dirName . '.htaccess');
+    }
 }
 
 

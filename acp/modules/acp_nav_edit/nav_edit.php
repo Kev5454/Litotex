@@ -36,12 +36,11 @@ if (!isset($_SESSION['litotex_start_acp']) || !isset($_SESSION['userid']))
     exit();
 }
 
-require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 
 $action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 $modul_name = "acp_nav_edit";
 $menu_name = "Navigationmanager";
-
+require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 require ($_SESSION['litotex_start_acp'] . 'acp/includes/perm.php');
 $tpl->assign('menu_name', $menu_name);
 
@@ -97,7 +96,7 @@ elseif ($action == 'change_select')
 elseif ($action == "main")
 {
     $design_id = (!isset($_GET['design_id']) ? 1 : $_GET['design_id']);
-    $design_id = filter_var($id, FILTER_SANITIZE_NUMBER_INT);
+    $design_id = filter_var($design_id, FILTER_SANITIZE_NUMBER_INT);
 
     $change = (isset($_GET['changeID']) ? filter_var($_GET['changeID'], FILTER_SANITIZE_NUMBER_INT) : -1);
 

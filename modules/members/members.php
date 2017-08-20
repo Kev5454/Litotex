@@ -35,10 +35,10 @@ if (!isset($_SESSION['litotex_start_g']) || !isset($_SESSION['userid']))
     show_error("LOGIN_ERROR", 'core');
 }
 
-require ($_SESSION['litotex_start_g'] . 'includes/global.php');
-
 $action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 $modul_name = "members";
+
+require ($_SESSION['litotex_start_g'] . 'includes/global.php');
 
 if (intval($userdata['rassenid']) == 0 && $action != "save_race")
 {
@@ -497,5 +497,3 @@ if ($action == "race_choose")
     exit();
 
 }
-
-?>

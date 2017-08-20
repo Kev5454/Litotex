@@ -32,9 +32,9 @@ Released under the GNU General Public License
 session_start();
 
 
-require ('../../includes/global.php');
 $action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 $modul_name="news";
+require ('../../includes/global.php');
 
 if (is_modul_name_aktive($modul_name)==0){
 	show_error('MODUL_LOAD_ERROR','core');

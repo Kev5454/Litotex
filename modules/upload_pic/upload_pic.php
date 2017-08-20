@@ -36,9 +36,9 @@ if (!isset($_SESSION['litotex_start_g']) || !isset($_SESSION['userid']))
     show_error("LOGIN_ERROR", 'core');
 }
 
-require ($_SESSION['litotex_start_g'] . 'includes/global.php');
 $action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 $modul_name = "upload_pic";
+require ($_SESSION['litotex_start_g'] . 'includes/global.php');
 
 if (is_modul_name_aktive($modul_name) == 0)
 {

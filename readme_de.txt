@@ -1,6 +1,6 @@
 
 Litotex Browsergame Engine (http://www.litotex.info)
-	VERSION: 0.7.2	
+	VERSION: 0.7.3
 	
 	ENTWICKELT ab 0.7.0: litotex.info (http://www.litotex.info)  
 	COPYRIGHT 2017 litotex.info (http://www.litotex.info)
@@ -9,24 +9,24 @@ Litotex Browsergame Engine (http://www.litotex.info)
 	COPYRIGHT 2008 FreeBG (http://www.freebg.de)	      
 
 Hinweis:				                                    
-	Diese Software ist urheberechtlich geschÃ¼tzt.	      
+	Diese Software ist urheberechtlich geschützt.	      
 
-	FÃ¼r jegliche Fehler oder SchÃ¤den, 		              
-	die durch diese Software auftreten kÃ¶nnten,         
-	Ã¼bernimmt der Autor keine Haftung.		              
+	Für jegliche Fehler oder Schäden, 		              
+	die durch diese Software auftreten könnten,         
+	übernimmt der Autor keine Haftung.		              
                                                    
 Alle Copyright - Hinweise innerhalb dieser Datei   
-dÃ¼rfen NICHT entfernt und NICHT verÃ¤ndert werden.  
+dürfen NICHT entfernt und NICHT verändert werden.  
 
 Released under the GNU General Public License
 
 
 ALLGEMEIN
 Mit der Installation von Litotex stimmen Sie insbesondere folgenden Punkten zu: 
-*) den Urheberrechtshinweis im Footer nicht zu entfernen, durch andere technische MÃ¶glichkeiten auszublenden oder unsichtbar zu machen.
+*) den Urheberrechtshinweis im Footer nicht zu entfernen, durch andere technische Möglichkeiten auszublenden oder unsichtbar zu machen.
 *) den Urheberrechtshinweis in allen Templates, in der Form der von Litotex ausgelieferten Layoutstrukturierung anzuzeigen.
 
-FÃ¼r die Installation und fÃ¼r den Betrieb ist es notwendig das FTP Ã¼ber PHP funktioniert.
+Für die Installation und für den Betrieb ist es notwendig das FTP über PHP funktioniert.
 Wir empfehlen weiterhin die Installation in einen Unterordner des Webspaces.
 
 
@@ -40,7 +40,7 @@ VORBEREITUNG
 
 
 2. Legen Sie eine neue Datenbank an.
-	 Die Informationen wie Username etc. werden wÃ¤hrend des Setups benÃ¶tigt.
+	 Die Informationen wie Username etc. werden während des Setups benötigt.
 
 3. Rufen Sie nun die URL Ihrer Webseite wie folgt auf: 
 	 http://ihrewebseite.tld/setup.php und folgen Sie den Anweisungen.
@@ -49,22 +49,22 @@ VORBEREITUNG
 
 NACH DER INSTALLATION
 
-1. SchÃ¼tzen Sie ihr ACP Verzeichnis mittels htaccess o.Ã¤. um einen unbefugten Zutritt nicht zu ermÃ¶glichen.
 
-2. Das Design von Litotex befindet sich im Ordner "themes\standard".
-	 Dieses kann ganz nach den persÃ¶nlichen AnsprÃ¼chen geÃ¤ndert werden.
+1. Nach der Beendigung der Installation löschen Sie die Datei "setup.php" 
+
+2. Schützen Sie ihr ACP Verzeichnis mittels htaccess o.ä. um einen unbefugten Zutritt nicht zu ermöglichen.
+
+3. Das Design von Litotex befindet sich im Ordner "themes\standard".
+	 Dieses kann ganz nach den persönlichen Ansprüchen geändert werden.
 		 
-3. FÃ¼r die automatische Punkteberechnung ist es norwendig einen Cronjob anzulegen.
-	 Der Cronjob muss die Datei http://ihrewebseite.tld/cronjobs.php?key=#DEIN_UPDATE_KEY#&sid=#SERVERID#&type=points 		 aufrufen.	
-	 
-4. FÃ¼r die automatische Rohstoffberechnung per Cronjob muss ein Cronjob mit dem folgenden link aufrufen:
-	 http://ihrewebseite.tld/cronjobs.php?key=#DEIN_UPDATE_KEY#&sid=#SERVERID#&type=res 
+4. Für die automatische Punkteberechnung ist es norwendig einen Cronjob anzulegen.
+	 Der Cronjob muss die Datei http://ihrewebseite.tld/cronjobs.php?key=#DEIN_UPDATE_KEY#&sid=#SERVERID#&type=points aufrufen.	 
 	 
 	 
 INFORMATIONEN
 
-1. Im offiziellen Supportforum, erreichbar unter http://litotex.info, erhalten Sie natÃ¼rlich auf Wunsch
-Hilfe. Desweiteren kÃ¶nnen Sie uns gerne Verbesserungsideen vorschlagen oder bei Interesse am Projekt mitwirken.
+1. Im offiziellen Supportforum, erreichbar unter http://litotex.info, erhalten Sie natürlich auf Wunsch
+Hilfe. Desweiteren können Sie uns gerne Verbesserungsideen vorschlagen oder bei Interesse am Projekt mitwirken.
 
 
 Ihr Litotex.Info-Team,

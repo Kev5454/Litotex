@@ -36,7 +36,7 @@ class db
     private $sql_pass = "";
     private $sql_base = "";
     private $sql_port = "";
-    private $link_id = 0;
+    private $link_id = null;
     private $sql_count = 0;
 
     public function __construct($host, $user, $pass, $base, $port = 3306)
@@ -46,7 +46,6 @@ class db
         $this->sql_pass = $pass;
         $this->sql_base = $base;
         $this->sql_port = $port;
-        $this->connect();
     }
 
     public function connect()
@@ -54,17 +53,35 @@ class db
         $this->link_id = new mysqli($this->sql_host, $this->sql_user, $this->sql_pass, $this->sql_base, $this->sql_port);
         if ($this->link_id->connect_error)
         {
-            $this->error("Es konnte keine Verbindung zum SQL Server hergestellt werden.<br>Error:" . $this->link_id->connect_error);
+            $error = $this->link_id->connect_error;
+            $this->link_id = null;
+            return $error;
         }
+        return true;
+    }
+
+    public function close()
+    {
+        if (is_null($this->link_id))
+        {
+            return false;
+        }
+        $this->link_id->close();
     }
 
     public function query($query_string)
     {
+        if (is_null($this->link_id))
+        {
+            return false;
+        }
+
         $selecting_query = $this->link_id->query($query_string);
         if (!$selecting_query)
         {
-            $this->error("Datenbank abfrage konnte nicht durchgeführt werden: " . $query_string . '<br />Error:' . $this->link_id->
+            $this->error("Datenbank abfrage konnte nicht durchgeführt werden:<br /> " . $query_string . '<br />Error:' . $this->link_id->
                 error);
+            return false;
         }
         $this->sql_count++;
         return $selecting_query;
@@ -72,6 +89,10 @@ class db
 
     public function multi_query($query_string)
     {
+        if (is_null($this->link_id))
+        {
+            return false;
+        }
         $results = array();
         if ($this->link_id->multi_query($query_string))
         {
@@ -104,16 +125,16 @@ class db
         if (count($results) > 0)
         {
             $_all_false = true;
-            foreach($results as $data)
+            foreach ($results as $data)
             {
-                if($data != false)
+                if ($data != false)
                 {
                     $_all_false = false;
                     break;
                 }
             }
-            
-            if($_all_false === true)
+
+            if ($_all_false === true)
             {
                 return false;
             }
@@ -123,26 +144,46 @@ class db
 
     public function fetch_array($result_string)
     {
+        if (is_null($this->link_id) || $result_string == false)
+        {
+            return false;
+        }
         return $result_string->fetch_array();
     }
 
     public function num_rows($result_string)
     {
+        if (is_null($this->link_id))
+        {
+            return false;
+        }
         return $result_string->num_rows;
     }
 
     public function unbuffered_query($query_string)
     {
+        if (is_null($this->link_id))
+        {
+            return false;
+        }
         return $this->query($query_string);
     }
 
     public function insert_id()
     {
+        if (is_null($this->link_id))
+        {
+            return false;
+        }
         return $this->link_id->insert_id;
     }
 
     public function escape_string($string)
     {
+        if (is_null($this->link_id))
+        {
+            return false;
+        }
         return $this->link_id->escape_string($string);
     }
 
@@ -154,11 +195,10 @@ class db
 
     public function error($error)
     {
-        echo ("<title>Error by Base - $this->appname</title>");
-        echo ("Error: <b>$error</b><br>\n");
+        echo ("<title>Error by Base - Litotex</title>");
+        echo ("Error: <b>" . $error . "</b><br>\n");
         echo ("SQL-Error: " . $this->link_id->error . "<br>\n");
         echo ("Derzeit gibt es Datenbank Probleme, bitte haben Sie etwas gedult.");
-        exit();
     }
 
 }
