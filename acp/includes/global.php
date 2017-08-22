@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Litotex - Browsergame Engine
  * Copyright 2017 Das litotex.info Team, All Rights Reserved
@@ -122,13 +123,21 @@ require ('functions.php');
 
 require (LITO_INCLUDES_PATH . 'smarty/Smarty.class.php'); // Smarty class laden und pr�fen
 
-if (intval($op_use_ftp_mode == 1))
+if (intval($op_use_ftp_mode) == 1)
 {
     define("C_FTP_METHOD", '1');
 }
 
 
 $db = new db($dbhost, $dbuser, $dbpassword, $dbbase);
+if ($db->connect() !== true)
+{
+    echo 'Datenbank konnte keine Verbindung aufbauen!';
+    exit();
+}
+
+$db->unbuffered_query("SET character_set_client = 'utf8'");
+$db->unbuffered_query("SET character_set_connection = 'utf8'");
 
 $time_start = explode(' ', substr(microtime(), 1));
 $time_start = $time_start[1] + $time_start[0];

@@ -279,7 +279,7 @@ function template_out($template_name, $from_modulname)
 function is_modul_name_aktive($modul_name)
 {
     global $db, $n, $userdata;
-    $result = $db->query("SELECT activated FROM cc" . $n . "_modul_admin where modul_name ='$modul_name'");
+    $result = $db->query("SELECT activated FROM cc" . $n . "_modul_admin where modul_name ='$modul_name' LIMIT 1");
     $row = $db->fetch_array($result);
     return intval($row['activated']);
 }
@@ -288,7 +288,7 @@ function is_modul_name_aktive($modul_name)
 function is_modul_id_aktive($modul_id)
 {
     global $db, $n, $userdata;
-    $result = $db->query("SELECT activated FROM cc" . $n . "_modul_admin where modul_admin_id ='$modul_id'");
+    $result = $db->query("SELECT activated FROM cc" . $n . "_modul_admin where modul_admin_id ='$modul_id' LIMIT 1");
     $row = $db->fetch_array($result);
     return intval($row['activated']);
 
@@ -298,8 +298,8 @@ function is_modul_installed($modul_name, $modul_version)
 {
 
     global $tpl, $db, $n;
-    $sql = "SELECT modul_admin_id FROM cc" . $n . "_modul_admin where modul_name='" . mysql_real_escape_string($modul_name) .
-        "' and current_version ='" . mysql_real_escape_string($modul_version) . "'";
+    $sql = "SELECT modul_admin_id FROM cc" . $n . "_modul_admin where modul_name='" . $db->escape_string($modul_name) .
+        "' and current_version ='" . $db->escape_string($modul_version) . "' LIMIT 1";
     $result = $db->query($sql);
     $row = $db->fetch_array($result);
     return $row['modul_admin_id'];

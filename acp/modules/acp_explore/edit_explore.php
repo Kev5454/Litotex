@@ -36,14 +36,15 @@ if (!isset($_SESSION['litotex_start_acp']) || !isset($_SESSION['userid']))
     exit();
 }
 
-require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 
 $action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 $modul_name = "acp_explore";
 $menu_name = "Forschungseditor";
 
+require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 require ($_SESSION['litotex_start_acp'] . 'acp/includes/perm.php');
 $tpl->assign('menu_name', $menu_name);
+
 if ($action == 'cp')
 {
     if (!isset($_POST['cpfrom']) || !isset($_POST['cpto']))

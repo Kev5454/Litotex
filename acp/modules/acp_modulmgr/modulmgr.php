@@ -36,12 +36,12 @@ if (!isset($_SESSION['litotex_start_acp']) || !isset($_SESSION['userid']))
     exit();
 }
 
-require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 
 $action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 $menu_name = "Modulmanager";
 $modul_name = "acp_modulmgr";
 
+require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 require ($_SESSION['litotex_start_acp'] . 'acp/includes/perm.php');
 $tpl->assign('menu_name', $menu_name);
 //Funktionen zum rekursiven Ordner l�schen...

@@ -36,13 +36,13 @@ if (!isset($_SESSION['litotex_start_acp']) || !isset($_SESSION['userid']))
     exit();
 }
 
-require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 
 $action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
-
 $modul_name = "acp_units";
-require ($_SESSION['litotex_start_acp'] . 'acp/includes/perm.php');
 $menu_name = "Einheiteneditor";
+
+require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
+require ($_SESSION['litotex_start_acp'] . 'acp/includes/perm.php');
 $tpl->assign('menu_name', $menu_name);
 
 if ($action == "cp")

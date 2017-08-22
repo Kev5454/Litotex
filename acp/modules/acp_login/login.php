@@ -39,10 +39,11 @@ if (!isset($_SESSION['litotex_start_acp']))
     header('LOCATION: ./../../index.php');
 }
 
-require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 
 $action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 $modul_name = "acp_login";
+
+require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 require (LITO_LANG_PATH . $modul_name . "/lang_" . $lang_suffix . ".php");
 
 

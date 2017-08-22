@@ -36,12 +36,13 @@ if (!isset($_SESSION['litotex_start_acp']) || !isset($_SESSION['userid']))
     exit();
 }
 
-require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 
 $action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 
 $modul_name = "acp_bannermgr";
 $menu_name = "Bannermanager";
+
+require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 $tpl->assign('menu_name', $menu_name);
 
 if ($action == "main")

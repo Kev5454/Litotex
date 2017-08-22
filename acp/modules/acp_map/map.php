@@ -36,12 +36,12 @@ if (!isset($_SESSION['litotex_start_acp']) || !isset($_SESSION['userid']))
     exit();
 }
 
-require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 
 $action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 $modul_name = "acp_map";
 $menu_name = "Karteneditor";
 
+require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 require ($_SESSION['litotex_start_acp'] . 'acp/includes/perm.php');
 $tpl->assign('menu_name', $menu_name);
 
@@ -69,25 +69,25 @@ elseif ($action == "make_map")
     $sql .= "DROP TABLE IF EXISTS cc" . $n . "_crand;";
     $sql .= "CREATE TABLE cc" . $n .
         "_crand (crand_id INT( 11 ) NOT NULL AUTO_INCREMENT ,x INT( 5 ) NOT NULL ,y INT( 5 ) NOT NULL ,used TINYINT( 1 ) NOT NULL DEFAULT '0',element_type INT( 2 ) NOT NULL DEFAULT '0',PRIMARY KEY ( crand_id ));";
-
+    $sql .= "insert into cc" . $n . "_crand (x,y,used) VALUES";
     for ($x = 1; $x <= $size; $x++)
     {
         for ($y = 1; $y <= $size; $y++)
         {
-            $sql .= "insert into cc" . $n . "_crand (x,y,used) VALUES('$x','$y','0');";
+            $sql .= "('$x','$y','0'),";
         }
     }
+    $sql = substr($sql,0, -1) . ';';
 
     $db->multi_query($sql);
     trace_msg("Admin map change drop table", 112);
     trace_msg("Admin map change create table", 112);
     trace_msg("Admin map change create Elemet1", 112);
-    
+
     $sql = '';
     // perzufall elemente 1 setzen( berge ?? )
     for ($x = 1; $x <= $elemt_1; $x++)
     {
-        srand(microtime() * 1000000);
         $Zufall_x = rand(1, $size);
         $zufall_y = rand(1, $size);
 
@@ -97,13 +97,12 @@ elseif ($action == "make_map")
     // perzufall elemente 2 setzen( see ?? )
     for ($x = 1; $x <= $elemt_2; $x++)
     {
-        srand(microtime() * 1000000);
         $Zufall_x = rand(1, $size);
         $zufall_y = rand(1, $size);
 
         $sql .= "update cc" . $n . "_crand set element_type ='2',used='1' where x='$Zufall_x' and y='$zufall_y';";
     }
-    
+
     $db->multi_query($sql);
 
     $sql = '';
@@ -114,7 +113,6 @@ elseif ($action == "make_map")
     {
         $countrie_id = $row_l['islandid'];
         // per zufall verschieben
-        srand(microtime() * 1000000);
         $Zufall_x = rand(1, $size);
         $zufall_y = rand(1, $size);
 

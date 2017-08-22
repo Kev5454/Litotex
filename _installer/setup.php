@@ -117,10 +117,13 @@ function scanDirectory($rootDir, $results = array())
 function _mkdir($directory, $public_access = true)
 {
     $dirName = LITO_ROOT_PATH . $directory . (substr($directory, -1) == DIRECTORY_SEPARATOR ? '' : DIRECTORY_SEPARATOR);
-    mkdir($dirName);
+    if (!is_dir($dirName))
+    {
+        mkdir($dirName);
+    }
     chmod($dirName, 0777);
 
-    if ($public_access == false)
+    if ($public_access == false && !file_exists($dirName . '.htaccess'))
     {
         $fileName = (file_exists(LITO_SETUP_PATH . 'includes' . DIRECTORY_SEPARATOR . '.htaccess') ? LITO_SETUP_PATH :
             LITO_ROOT_PATH) . 'includes' . DIRECTORY_SEPARATOR . '.htaccess';
@@ -485,8 +488,8 @@ elseif ($step == 4)
         header("LOCATION: setup.php?step=3");
         exit();
     }
-    $mysqli->query("SET character_set_client = 'utf8'");
-    $mysqli->query("SET character_set_connection = 'utf8'");
+    $mysqli->unbuffered_query("SET character_set_client = 'utf8'");
+    $mysqli->unbuffered_query("SET character_set_connection = 'utf8'");
 
     $count = 0;
     $lines = file(LITO_SETUP_PATH . 'setup/db_clean.sql');
@@ -500,7 +503,7 @@ elseif ($step == 4)
         if (substr(trim($line), -1, 1) == ';')
         {
             $toexec = str_replace('{#SERVERID#}', $serverID, $toexec);
-            if ($mysqli->query($toexec) !== true)
+            if ($mysqli->unbuffered_query($toexec) !== true)
             {
                 $_SESSION['error_msg'] = "Beim importieren ist ein Fehler aufgetreten<br>" . $toexec . "<br>" . $mysqli->error;
                 header("LOCATION: setup.php?step=3");

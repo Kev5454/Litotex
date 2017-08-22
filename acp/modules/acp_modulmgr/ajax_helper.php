@@ -31,17 +31,12 @@ Released under the GNU General Public License
 
 $filename = "ajax_helper.php";
 
+$action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 require ("./../../includes/global.php");
-
-
-if (isset($_REQUEST['action'])) $action = $_REQUEST['action'];
-else  $action = "main";
 
 if ($action == "make_new")
 {
     $the_id = intval($_GET['new_id']);
-
-
     $erlaubt = intval(ini_get('allow_url_fopen'));
     if ($erlaubt == 0)
     {

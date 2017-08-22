@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Litotex - Browsergame Engine
  * Copyright 2017 Das litotex.info Team, All Rights Reserved
@@ -93,14 +94,14 @@ require (LITO_INCLUDES_PATH . 'class_db_mysql.php');
 
 
 $db = new db($dbhost, $dbuser, $dbpassword, $dbbase, $dbport);
-if($db->connect() !== true)
+if ($db->connect() !== true)
 {
     echo 'Datenbank konnte keine Verbindung aufbauen!';
     exit();
 }
 
-$db->query("SET character_set_client = 'utf8'");
-$db->query("SET character_set_connection = 'utf8'");
+$db->unbuffered_query("SET character_set_client = 'utf8'");
+$db->unbuffered_query("SET character_set_connection = 'utf8'");
 
 // get design
 if (isset($_SESSION['userid']))
@@ -270,9 +271,9 @@ if (isset($_SESSION['userid']))
 
                 if ($row_create_sol['endtime'] <= time())
                 {
-                    $db->query("UPDATE cc" . $n . "_countries SET " . $row_soldiers['tabless'] . "=" . $row_soldiers['tabless'] . "+'" . $row_create_sol['anz'] .
-                        "' WHERE islandid='" . $row_land['islandid'] . "'");
-                    $db->query("DELETE FROM cc" . $n . "_create_sol WHERE create_sol_id = '" . $row_create_sol['create_sol_id'] . "'");
+                    $sql .= "UPDATE cc" . $n . "_countries SET " . $row_soldiers['tabless'] . "=" . $row_soldiers['tabless'] . "+'" . $row_create_sol['anz'] .
+                        "' WHERE islandid='" . $row_land['islandid'] . "';";
+                    $sql .= "DELETE FROM cc" . $n . "_create_sol WHERE create_sol_id = '" . $row_create_sol['create_sol_id'] . "';";
                 }
             }
         }

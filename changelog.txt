@@ -1,3 +1,27 @@
+Version 0.7.3 von litotex.info
+
+Allgemein
+- Database Class wurde bearbeitet
+- Bugfix in Game Module
+- Global wurde bearbeitet
+- Options Class wurde bearbeitet
+- Functions.php Bugfix
+- Impressum & Screenshorts Module wurden entfernt, da diese vom
+PageManager ersetzt wurden
+- PageManager wurde um weitere Funktionen erweitert
+- .htaccess wurde in jedem Verzeichniss angelegt wo keiner zugriff haben
+sollte
+- Einige Options wurden ausgelagert und/oder entfernt
+- Cronjobs wurde an den DB änderungen angepasst
+
+ACP
+- PageManager wurde angepasst
+- Bugfixes
+
+Setup
+- Bugfixes
+- Ein weiterer Step wurde hinzugefügt
+
 Version 0.7.2 von litotex.info
 
 Setup

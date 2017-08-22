@@ -39,7 +39,7 @@ if (!isset($_SESSION['litotex_start_acp']) || !isset($_SESSION['userid']))
 require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
 
 
-$db->query("UPDATE cc" . $n . "_users SET lastactive=lastactive-'3600' WHERE userid='" . $_SESSION['userid'] . "'");
+$db->unbuffered_query("UPDATE cc" . $n . "_users SET lastactive=lastactive-'3600' WHERE userid='" . $_SESSION['userid'] . "'");
 session_unregister('userid');
 session_unregister('lang');
 

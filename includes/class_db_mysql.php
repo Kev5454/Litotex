@@ -166,7 +166,7 @@ class db
         {
             return false;
         }
-        return $this->query($query_string);
+        return $this->link_id->real_query($query_string);
     }
 
     public function insert_id()
