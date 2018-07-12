@@ -29,89 +29,91 @@ Released under the GNU General Public License
 ************************************************************  
 */
 
-if (session_id() == "")
+if ( session_id() == "" )
 {
     session_start();
 }
 
-if (!isset($_SESSION['litotex_start_acp']))
+if ( !isset( $_SESSION['litotex_start_acp'] ) )
 {
-    header('LOCATION: ./../../index.php');
+    header( 'LOCATION: ./../../index.php' );
 }
 
 
-$action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
+$action = ( isset( $_REQUEST['action'] ) ? filter_var( $_REQUEST['action'],FILTER_SANITIZE_STRING ) : 'main' );
 $modul_name = "acp_login";
 
-require ($_SESSION['litotex_start_acp'] . 'acp/includes/global.php');
-require (LITO_LANG_PATH . $modul_name . "/lang_" . $lang_suffix . ".php");
+require ( $_SESSION['litotex_start_acp'] . 'acp/includes/global.php' );
+
+$tpl->config_load( LITO_LANG_PATH . $modul_name . '/lang_' . $lang_suffix . '.php' );
+$ln_login_e_1 = $tpl->get_config_vars( 'ln_login_e_1' );
+$ln_login_e_2 = $tpl->get_config_vars( 'ln_login_e_2' );
 
 
-function login_error($error_msg)
+function login_error( $error_msg )
 {
-    global $tpl, $modul_name;
+    global $tpl,$modul_name;
 
-    $tpl->assign('if_disable_menu', 1);
-    $tpl->assign('LITO_ERROR_MSG', $error_msg);
-    $tpl->assign('if_login_error', 1);
+    $tpl->assign( 'if_disable_menu',1 );
+    $tpl->assign( 'LITO_ERROR_MSG',$error_msg );
+    $tpl->assign( 'if_login_error',1 );
 
-    template_out('login.html', $modul_name);
+    template_out( 'login.html',$modul_name );
     exit();
 }
 
 
-if ($action == "main")
+if ( $action == "main" )
 {
     //$tpl ->display("login/login.html");
-    $tpl->assign('if_disable_menu', 1);
+    $tpl->assign( 'if_disable_menu',1 );
 
-    template_out('login.html', $modul_name);
+    template_out( 'login.html',$modul_name );
 }
-elseif ($action == "submit")
+elseif ( $action == "submit" )
 {
-    if (empty($_POST['username']) || empty($_POST['password']))
+    if ( empty( $_POST['username'] ) || empty( $_POST['password'] ) )
     {
-        login_error($ln_login_e_1);
+        login_error( $ln_login_e_1 );
         exit();
     }
 
-    $username = filter_var($_POST['username'], FILTER_SANITIZE_STRING);
-    $username = strtolower($username);
-    $password = filter_var($_POST['password'], FILTER_SANITIZE_STRING);
+    $username = filter_var( $_POST['username'],FILTER_SANITIZE_STRING );
+    $username = strtolower( $username );
+    $password = filter_var( $_POST['password'],FILTER_SANITIZE_STRING );
 
-    $result = $db->query("SELECT * FROM cc" . $n . "_users WHERE username='$username'");
-    $row = $db->fetch_array($result);
+    $result = $db->query( "SELECT * FROM cc" . $n . "_users WHERE username='$username'" );
+    $row = $db->fetch_array( $result );
 
-    if (strtolower($row['username']) != $username)
+    if ( strtolower( $row['username'] ) != $username )
     {
-        trace_msg("login ERROR '$username' wrong username", 2);
-        login_error($ln_login_e_2);
+        trace_msg( "login ERROR '$username' wrong username",2 );
+        login_error( $ln_login_e_2 );
     }
 
-    if ($row['password'] != md5($password))
+    if ( $row['password'] != md5( $password ) )
     {
-        trace_msg("login ERROR '$username' wrong password", 2);
-        login_error($ln_login_e_2);
+        trace_msg( "login ERROR '$username' wrong password",2 );
+        login_error( $ln_login_e_2 );
     }
-    if (!$row['serveradmin'])
+    if ( !$row['serveradmin'] )
     {
-        $grp_q = $db->query("SELECT `perm_lvl`, `id` FROM `cc" . $n . "_user_groups` WHERE `id` = '" . $row['group'] . "'");
-        $grp = $db->fetch_array($grp_q);
-        if (!$grp)
+        $grp_q = $db->query( "SELECT `perm_lvl`, `id` FROM `cc" . $n . "_user_groups` WHERE `id` = '" . $row['group'] . "'" );
+        $grp = $db->fetch_array( $grp_q );
+        if ( !$grp )
         {
-            login_error('Schwerer Fehler! Die Usergruppe konnte nicht gefunden werden! Sie haben keine Berechtigungen f&uuml;r diesen Bereich!');
+            login_error( 'Schwerer Fehler! Die Usergruppe konnte nicht gefunden werden! Sie haben keine Berechtigungen f&uuml;r diesen Bereich!' );
         }
-        if ($grp['perm_lvl'] <= 0)
+        if ( $grp['perm_lvl'] <= 0 )
         {
-            login_error('Sie haben keine Berechtigungen f&uuml;r diesen Bereich!');
+            login_error( 'Sie haben keine Berechtigungen f&uuml;r diesen Bereich!' );
         }
     }
 
-    $_SESSION['userid'] = (int)($row['userid']);
+    $_SESSION['userid'] = ( int )( $row['userid'] );
     $_SESSION['lang'] = $row['lang'];
-    trace_msg("login OK '$username' ", 2);
-    $db->unbuffered_query("UPDATE cc" . $n . "_users SET lastlogin='" . time() . "', ip='" . getenv("REMOTE_ADDR") .
-        "' WHERE username='$username'");
+    trace_msg( "login OK '$username' ",2 );
+    $db->unbuffered_query( "UPDATE cc" . $n . "_users SET lastlogin='" . time() . "', ip='" . getenv( "REMOTE_ADDR" ) . "' WHERE username='$username'" );
 
-    redirect('acp_core', 'admin', 'main');
+    redirect( 'acp_core','admin','main' );
 }

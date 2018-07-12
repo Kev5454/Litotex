@@ -50,6 +50,8 @@ $msg_modul_org = "./../" . $module[0] . "/" . $module[1];
 
 if ($action == "main")
 {
+    
+    timebanner_init(200, 1);
     $i = 0;
     $result_land = $db->query("SELECT * FROM cc" . $n . "_countries WHERE userid='" . $userdata['userid'] .
         "' ORDER BY islandid");
@@ -66,7 +68,8 @@ if ($action == "main")
 
         if ($row_land['endbuildtime'] > 0)
         {
-            $daten[$i]['build'] = sec2time($row_land['endbuildtime'] - time());
+            ;
+            $daten[$i]['build'] = make_timebanner($row_land['startbuildtime'], $row_land['endbuildtime'], $row_land['bid'], "members.php");
         }
         else
         {
@@ -75,7 +78,7 @@ if ($action == "main")
 
         if ($row_land['endexploretime'] > 0)
         {
-            $daten[$i]['explore'] = sec2time($row_land['endexploretime'] - time());
+            $daten[$i]['explore'] = make_timebanner($row_land['startexploretime'], $row_land['endexploretime'], $row_land['eid'], "members.php");
         }
         else
         {
@@ -88,7 +91,7 @@ if ($action == "main")
 
         if ($row_e['endtime'] > 0)
         {
-            $daten[$i]['units'] = sec2time($row_e['endtime'] - time());
+            $daten[$i]['units'] = make_timebanner($row_e['starttime'], $row_e['endtime'], $row_land['sid'], "members.php");
         }
         else
         {
@@ -101,7 +104,7 @@ if ($action == "main")
 
         if ($row_d['endtime'] > 0)
         {
-            $daten[$i]['def'] = sec2time($row_d['endtime'] - time());
+            $daten[$i]['def'] = make_timebanner($row_e['starttime'], $row_e['endtime'], $row_land['sid'], "members.php");
         }
         else
         {

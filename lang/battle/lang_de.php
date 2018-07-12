@@ -1,4 +1,3 @@
-<?PHP
 LN_battle_1="Gruppen in den Kampf schicken"
 LN_battle_2="Hier kannst du deine Gruppen in den Kampf auf ein feindliches Land schicken."
 LN_battle_3="Los schicken"
@@ -26,4 +25,3 @@ LN_battle_n_6="Daten"
 LN_battle_n_7="Kampfreport Nr.:"
 
 LN_battle_noob="Dieser Spieler steht noch unter Anf&auml;ngerschutz"
-?>

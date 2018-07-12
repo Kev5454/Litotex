@@ -1,4 +1,3 @@
-<?PHP
 PAGE_SAVE_BUTTON ="Seite speichern"
 NEW_PAGE_TITLE_TEXT ="Bitte trage hier den Seiten inhalt ein.<br>Diese kannst du anschlie&szlig;end in der &Uuml;bersicht freischalten."
 NEW_PAGE_OVER_TEXT ="Title"
@@ -13,4 +12,3 @@ PAGE_ACTIVATE_TEXT="aktivieren"
 PAGE_DEACTIVATE_TEXT="deaktivieren"
 PAGE_LIST_TEXT="Seiten &Uuml;bersicht.<br>Hier kannst du Seiten erstellen, aktivieren, oder auch deaktivieren."
 PAGE_DUB_TEXT = "Duplizieren"
-?>

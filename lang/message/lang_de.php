@@ -1,4 +1,3 @@
-<?PHP
 LN_MESSAGE_1="Status"
 LN_MESSAGE_2="Absender"
 LN_MESSAGE_3="Betreff"
@@ -6,7 +5,7 @@ LN_MESSAGE_4="Datum"
 LN_MESSAGE_5="Aktion"
 LN_MESSAGE_6="l&ouml;schen"
 LN_MESSAGE_7="ins Archiv Verschieben"
-LN_MESSAGE_8="Markierte l&ouml;;schen"
+LN_MESSAGE_8="Markierte l&ouml;schen"
 LN_MESSAGE_9="Markierte verschieben"
 LN_MESSAGE_10="Alle l&ouml;schen"
 LN_MESSAGE_11="OK"
@@ -29,4 +28,3 @@ ln_message_del = "Markierte l&ouml;schen"
 ln_message_change = "Markierte verschieben"
 ln_users_e_1="User konnte nicht gefunden werden."
 ln_system_error_m="Unbekannter Fehler"
-?>

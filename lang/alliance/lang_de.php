@@ -1,4 +1,3 @@
-<?PHP
 ln_allianz_join_1 = "Allianz eintreten"
 ln_allianz_join_2 = "Allianz gr&uuml;nden"
 ln_allis_4 = "Allianz"
@@ -37,22 +36,19 @@ ln_allis_5 = "Mitglieder"
 ln_admin_e_3 = "Auf diesen Koordinaten existiert kein Land."
 
 
-
-//ali_bewerbung.html
 ln_allianz_b_1 = "Bewerbung"
 ln_allianz_b_2 = "Du m&ouml;chtest dich bei der Allianz bewerben. Bitte gib einen kurzen Bewerbungstext ein."
 ln_allianz_b_3 = "Bewerbungstext"
 ln_allianz_b_4 = "Bewerben"
 ln_allianz_b_5 = "Bei dieser Allianz bewerben"
 
-//ali_bewerbung_in.html
 ln_allianz_b_in_1 = "Allianzbewerbungen"
 ln_allianz_b_in_2 = "Nr."
 ln_allianz_b_in_3 = "Datum"
 ln_allianz_b_in_4 = "Ablehnen"
 ln_allianz_b_in_5 = "Aufnehmen"
 
-//ali_create_rang.html und allianz_admin.php
+#ali_create_rang.html und allianz_admin.php
 ln_allianz_c_r_1 = "Option"
 ln_allianz_c_r_2 = "Allianztext bearbeiten"
 ln_allianz_c_r_3 = "Allianzr&auml;nge bearbeiten"
@@ -70,7 +66,7 @@ ln_allianz_c_r_14 = "Allianzr&auml;nge zuweisen"
 ln_allianz_c_r_15 = "Forum verwenden"
 ln_allianz_c_r_16 = "Newsletter"
 
-//ali_fahne.html
+#ali_fahne.html
 ln_allianz_f_1 = "Hier kannst du die Allianzfahne festlegen"
 ln_allianz_f_2 = "Allianzfahne"
 ln_allianz_f_3 = "Flagge"
@@ -84,7 +80,7 @@ ln_allianz_f_10 = "T&uuml;rkis"
 ln_allianz_f_11 = "Grau"
 ln_allianz_f_12 = "Wei&szlig;"
 
-//ali_forum.html
+#ali_forum.html
 ln_allianz_forum_1 = "Willkommen im Forum"
 ln_allianz_forum_2 = "Hier habt ihr die M&ouml;glichkeit euch untereinander auszutauschen."
 ln_allianz_forum_3 = "Allianz Board"
@@ -100,13 +96,13 @@ ln_allianz_forum_12 = "Nachrichten verfassen"
 ln_allianz_forum_13 = "Betreff"
 ln_allianz_forum_14 = "Text"
 
-//ali_news.html
+#ali_news.html
 ln_allianz_news_1 = "Allianznachrichten"
 ln_allianz_news_2 = "Hier kannst du die Allianznachrichten bearbeiten"
 ln_allianz_news_3 = "letzte &Auml;nderung"
 ln_allianz_news_4 = "Allianznachrichten vom"
 
-//ali_text.html
+#ali_text.html
 ln_allianz_text_1 = "Trage hier eine Kurzbeschreibung und weitere Infos ein"
 ln_allianz_text_2 = "Allianzbeschreibung"
 ln_allianz_text_3 = "Kurzbeschreibung"
@@ -115,41 +111,41 @@ ln_allianz_text_5 = "Allianzbild [bearbeiten]"
 ln_allianz_text_6 = "Bild l&ouml;schen"
 
 
-//ali_user_rang.html
+#ali_user_rang.html
 ln_allianz_user_rg_1 = "Spielername"
 ln_allianz_user_rg_2 = "Rang"
 ln_allianz_user_rg_3 = "Weise den Spielern einen Allainzrang zu"
 ln_allianz_user_rg_4 = "Allianzmitglieder-Rangvergabe"
 
-//allianz_edit.html
+#allianz_edit.html
 ln_allianz_edit_1 = "Allianz editieren"
 ln_allianz_edit_2 = "Foren (pro Zeile nur eins)"
 ln_allianz_edit_3 = "Allianzbild"
 ln_allianz_edit_4 = "(nur bei &auml;nderung)"
 ln_allianz_edit_5 = "Hier kannst du die Einstellungen der Allianz &auml;ndern!"
 
-//allianz_index.html
+#allianz_index.html
 ln_allianz_index_1 = "Allianz bearbeiten"
 ln_allianz_index_2 = "Spieler entlassen"
 ln_allianz_index_3 = "Allianz aufl&ouml;sen"
 ln_allianz_index_4 = "Verlassen"
 ln_allianz_index_5 = "Nachricht an alle"
 
-//allianz_join.html
+#allianz_join.html
 
 
-//allianz_kick.html
+#allianz_kick.html
 ln_allianz_kick_1 = "Spieler entlassen"
 ln_allianz_kick_2 = "Punkte"
 ln_allianz_kick_3 = "Aktion"
 ln_allianz_kick_4 = "Kicken"
 
-//allianz_message_bit
+#allianz_message_bit
 ln_allianz_mess_1 = "Mitteilungen"
 ln_allianz_mess_2 = "l&ouml;schen"
 ln_allianz_mess_3 = "Betreff: "
 
-//allianz_admin.php
+#allianz_admin.php
 ln_allianz_php_2 = "Du hast nicht die Berechtigung f&uuml;r diese Funktion"
 ln_allianz_php_3 = "bitte w&auml;hlen"
 ln_allianz_php_4 = "Du kannst dich nicht selber entlassen."
@@ -162,12 +158,11 @@ ln_allianz_php_10 = "Vielen Dank f&uuml;r deine Bewerbung in unserer Allianz. Le
 ln_allianz_php_11 = "Allianzbewerbung abgelehnt"
 
 
-#-------------------------------------------------------#
-# Forum #
+#-------------------------------------------------------
+# Forum 
 ln_forum_o_1 = "Forum"
 ln_forum_o_2 = "Themen"
 ln_forum_o_3 = "Antworten"
 ln_forum_o_4 = "Views"
 ln_forum_o_5 = "Ersteller"
 ln_forum_o_6 = "Letzter Poster"
-?>

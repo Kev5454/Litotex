@@ -30,67 +30,71 @@ Released under the GNU General Public License
 */
 
 session_start();
-if (!isset($_SESSION['litotex_start_g']) || !isset($_SESSION['userid']))
+if ( !isset( $_SESSION['litotex_start_g'] ) || !isset( $_SESSION['userid'] ) )
 {
-    require ('../../includes/global.php');
-    show_error("LOGIN_ERROR", 'core');
+    require ( '../../includes/global.php' );
+    show_error( "LOGIN_ERROR",'core' );
 }
 
-$action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
+$action = ( isset( $_REQUEST['action'] ) ? filter_var( $_REQUEST['action'],FILTER_SANITIZE_STRING ) : 'main' );
 $modul_name = "search";
-require ($_SESSION['litotex_start_g'] . 'includes/global.php');
+require ( $_SESSION['litotex_start_g'] . 'includes/global.php' );
 
-if (is_modul_name_aktive($modul_name) == 0)
+if ( is_modul_name_aktive( $modul_name ) == 0 )
 {
-    show_error('MODUL_LOAD_ERROR', 'core');
+    show_error( 'MODUL_LOAD_ERROR','core' );
     exit();
 }
 
-if ($action == "main")
+if ( $action == "main" )
 {
-    template_out('search.html', $modul_name);
+    $tpl->assign( 'daten',array() );
+    template_out( 'search.html',$modul_name );
     exit();
 }
 
-if ($action == "user")
+if ( $action == "user" )
 {
-    $user = c_trim($_POST['user']);
+    $user = c_trim( $_POST['user'] );
 
-    if (strlen($user) <= 1)
+    if ( strlen( $user ) <= 1 )
     {
-        show_error('SEARCH_ERROR_1', $modul_name);
+        show_error( 'SEARCH_ERROR_1',$modul_name );
         exit();
     }
 
 
-    $result = $db->query("SELECT userid FROM cc" . $n . "_users");
-    $numOfUsers = $db->num_rows($result);
+    $result = $db->query( "SELECT userid FROM cc" . $n . "_users" );
+    $numOfUsers = $db->num_rows( $result );
 
 
     $daten = array();
-    $result = $db->query("SELECT userid,username,points,allianzid,lastlogin,lastpoints,lastactive,status,umod,userpic FROM cc" .
-        $n . "_users  WHERE username LIKE '%$user%' ORDER BY points DESC ");
+    $result = $db->query( "SELECT userid,username,points,allianzid,lastlogin,lastpoints,lastactive,status,umod,userpic FROM cc" . $n . "_users  WHERE username LIKE '%$user%' ORDER BY points DESC " );
     $i = 0;
-    while ($row = $db->fetch_array($result))
+    while ( $row = $db->fetch_array( $result ) )
     {
         $username = $row['username'];
         $userpoints = $row['points'];
 
-        if ($row['lastactive'] > (time() - 3600)) $online = "<span class=\"green\">&nbsp;(Online)</span>";
-        else  $online = "<span class=\"red\">&nbsp;(Offline)</span>";
+        if ( $row['lastactive'] > ( time() - 3600 ) )
+            $online = "<span class=\"green\">&nbsp;(Online)</span>";
+        else
+            $online = "<span class=\"red\">&nbsp;(Offline)</span>";
 
 
         $alli = $row['allianzid'];
         $chpt = $row['points'] - $row['lastpoints'];
 
-        $lastlog = strftime("%d.%m. %H:%M", $row['lastlogin']);
+        $lastlog = strftime( "%d.%m. %H:%M",$row['lastlogin'] );
 
-        if ($row['allianzid'] == 0) $allianzname = "";
-        else  $allianzname = allianz($row['allianzid']);
+        if ( $row['allianzid'] == 0 )
+            $allianzname = "";
+        else
+            $allianzname = allianz( $row['allianzid'] );
 
         $userpic = "";
 
-        if ($row['userpic'] == "")
+        if ( $row['userpic'] == "" )
         {
             $userpic = LITO_IMG_PATH_URL . "members/no_user_pic.jpg";
         }
@@ -98,24 +102,18 @@ if ($action == "user")
         {
             $userpic = $row['userpic'];
         }
-        $daten[$i]['profile_link'] = generate_userlink($row['userid'], $row['username']);
+        $daten[$i]['profile_link'] = generate_userlink( $row['userid'],$row['username'] );
         $daten[$i]['name'] = $username;
         $daten[$i]['u_points'] = $userpoints;
         $daten[$i]['image'] = $userpic;
         $daten[$i]['u_online'] = $online;
         $daten[$i]['lastlogin'] = $lastlog;
         $daten[$i]['alianz'] = $allianzname;
-        $daten[$i]['message'] = generate_messagelink_smal($username);
+        $daten[$i]['message'] = generate_messagelink_smal( $username );
         $i++;
-
-
-    }
-    if ($i > 0)
-    {
-        $tpl->assign('daten', $daten);
     }
 
-    template_out('search.html', $modul_name);
-
+    $tpl->assign( 'daten',$daten );
+    template_out( 'search.html',$modul_name );
     exit();
 }

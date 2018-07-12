@@ -32,7 +32,7 @@ Released under the GNU General Public License
 class navigation
 {
 
-    private $version = "0.7.2";
+    private $version = LITO_VERSION;
     private $modul_name = "navigation";
     private $modul_type = "nav";
 

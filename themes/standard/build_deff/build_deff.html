@@ -1,7 +1,7 @@
 {include file="file:header.html"}
 {$TIME_BANNER_INIT}
 <div id="content">
-
+{if count($loop) > 0}
 <div class="box1">
   <div class="ro_box1">
     <div class="lo_box1"> 
@@ -39,6 +39,7 @@
     </div> 
   </div> 
 </div> 
+{/if}
 
 
 {foreach item=con1 from=$daten}
@@ -91,6 +92,18 @@
     </div> 
   </div> 
 </div>
+{foreachelse}<div class="box1">
+  <div class="ro_box1">
+    <div class="lo_box1"> 
+      <div class="ru_box1">
+        <div class="lu_box1">    
+          <div class="inhalt_box1_oben">Hinweis</div>  
+          <div class="inhalt_box1" style="text-align: center;">Sie haben noch keine Verteidigungseinheiten freigeschaltet!</div>
+        </div> 
+      </div> 
+    </div> 
+  </div> 
+</div> 
 {/foreach}
 </div>
 {include file="file:footer.html"}

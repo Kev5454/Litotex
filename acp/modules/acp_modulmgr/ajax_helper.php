@@ -31,42 +31,39 @@ Released under the GNU General Public License
 
 $filename = "ajax_helper.php";
 
-$action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
-require ("./../../includes/global.php");
+$action = ( isset( $_REQUEST['action'] ) ? filter_var( $_REQUEST['action'],FILTER_SANITIZE_STRING ) : 'main' );
+require ( "./../../includes/global.php" );
 
-if ($action == "make_new")
+if ( $action == "make_new" )
 {
-    $the_id = intval($_GET['new_id']);
-    $erlaubt = intval(ini_get('allow_url_fopen'));
-    if ($erlaubt == 0)
+    $the_id = intval( $_GET['new_id'] );
+    $erlaubt = intval( ini_get( 'allow_url_fopen' ) );
+    if ( $erlaubt == 0 )
     {
-        echo ("error 0x2");
+        echo ( "error 0x2" );
         exit();
     }
 
 
-    $result = $db->query("SELECT modul_name,current_version FROM cc" . $n . "_modul_admin where modul_admin_id ='" . $the_id .
-        "'");
-    $row = $db->fetch_array($result);
-    $module_name = trim($row['modul_name']);
-    $curent_version = trim($row['current_version']);
+    $result = $db->query( "SELECT modul_name,current_version FROM cc" . $n . "_modul_admin where modul_admin_id ='" . $the_id . "'" );
+    $row = $db->fetch_array( $result );
+    $module_name = trim( $row['modul_name'] );
+    $curent_version = trim( $row['current_version'] );
 
 
     $in = "http://update.freebg.de/updinfo.php?action=v&m=" . $module_name . "&n=" . LITO_ROOT_PATH_URL;
-    $version = file_get_contents($in);
-    $version_check = compare_versions_sinus($curent_version, $version);
+    $version = file_get_contents( $in );
+    $version_check = compare_versions_sinus( $curent_version,$version );
     $img = "";
-    if ($version_check == 1)
+    if ( $version_check == 1 )
     {
-        $db->unbuffered_query("UPDATE cc" . $n . "_modul_admin SET new_upd_available ='1'  WHERE modul_name ='" . $module_name .
-            "'");
+        $db->unbuffered_query( "UPDATE cc" . $n . "_modul_admin SET new_upd_available ='1'  WHERE modul_name ='" . $module_name . "'" );
         $upd_img = "<img src=\"./../../images/standard/acp_modulmgr/info.png\">";
         $upd_img = "<a href=\"datei.html\" onclick=\"fenster('http://update.freebg.de/updinfo.php?action=info&uname=$module_name');return false;\"><img src=\"./../../images/standard/acp_modulmgr/info.png\" alt=\"update Information\" title=\"Update Information\" width=\"20\" height=\"20\" border=\"0\">";
-        $img = "<a href=\"?action=remote_update&mod=" . $module_name . "\"><img src=\"./../../images/standard/acp_modulmgr/upd_ok.png\" border=\"0\"></a>" .
-            $upd_img;
+        $img = "<a href=\"?action=remote_update&mod=" . $module_name . "\"><img src=\"./../../images/standard/acp_modulmgr/upd_ok.png\" border=\"0\"></a>" . $upd_img;
 
     }
-    elseif ($version_check == 0)
+    elseif ( $version_check == 0 )
     {
         $img = "<img src=\"./../../images/standard/acp_modulmgr/stop.png\">";
     }
@@ -74,22 +71,22 @@ if ($action == "make_new")
 
     $out = "$version.$img";
 
-    echo ($out);
+    echo ( $out );
     exit();
 
-    for ($i = 0; $i < 20; $i++)
+    for ( $i = 0; $i < 20; $i++ )
     {
         $out = "bearbeite update " . $i . "<br>";
         $all .= $out;
 
-        echo ($out);
-        for ($ii = 0; $ii < 3; $ii++)
+        echo ( $out );
+        for ( $ii = 0; $ii < 3; $ii++ )
         {
-            echo ("...");
+            echo ( "..." );
         }
 
 
     }
-    echo ('clean');
-    echo ($all);
+    echo ( 'clean' );
+    echo ( $all );
 }

@@ -1,4 +1,3 @@
-<?PHP
 ELELM_DESC1="Top 10"
 ELELM_DESC2="User"
 ELELM_DESC3="Allianz"
@@ -22,5 +21,3 @@ ELEMENT3="Anzahl aktive Spieler"
 ELEMENT4="Kartengr&ouml;&szlig;e"
 ELEMENT5="Anzahl L&auml;nder"
 ELEMENT6="Anzahl freie L&auml;nder"
-
-?>

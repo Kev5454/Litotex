@@ -1,5 +1,4 @@
-<?PHP
-//ali_forum.html
+
 ln_allianz_forum_1 = "Willkommen im Forum"
 ln_allianz_forum_2 = "Hier habt ihr die M&ouml;glichkeit euch untereinander auszutauschen."
 ln_allianz_forum_3 = "Allianz Board"
@@ -25,7 +24,3 @@ ln_error_8 = "Fehlender Titel!"
 ln_error_9 = "Fehlender Text!"
 ln_error_10 = "Du bist zu dieser Funktion nicht berechtigt!"
 ln_error_11 = "Du bist in keiner Allianz.<br>Diese Funktion steht dir erst nach Eintritt zur Verf&uuml;gung."
-
-
-
-?>

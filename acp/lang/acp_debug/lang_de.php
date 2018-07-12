@@ -1,4 +1,3 @@
-<?PHP
 ELELM_DESC1="Beschreibung"
 ELELM_DESC2="Aktion"
 ELELM_DESC3 = "Alle löschen : "
@@ -13,7 +12,3 @@ ELELM_DESC11 = "User ID"
 ELELM_DESC12 = "Nachricht"
 ELELM_DESC13  = "Zeit"
 ELELM_DESC14  = "Zu dieser Funktion nicht berechtigt!"
-
-
-
-?>

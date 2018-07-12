@@ -34,14 +34,16 @@ if (version_compare(phpversion(), '5.2.0') <= 0)
     echo 'Sie benötigen mindestens PHP 5.2.0\n um diese Engine nutzen zu können!';
     exit();
 }
-if (version_compare(phpversion(), '7.0.0') >= 0)
-{
-    define('PHP7', true);
-}
 
-session_name("lito");
+if (!defined('DIRECTORY_SEPARATOR'))
+{
+    define('DIRECTORY_SEPARATOR', '/');
+}
+define('LITO_VERSION', '0.7.3.1');
+
 if (session_id() == "")
 {
+    session_name("lito");
     session_start();
 }
 
@@ -129,37 +131,37 @@ define("LITO_ROOT_PATH_URL", $litotex_url);
 
 define("LITO_THEMES_PATH", $litotex_path . 'themes' . DIRECTORY_SEPARATOR . LITO_THEMES . DIRECTORY_SEPARATOR);
 // e.g.  srv/www/vhosts/freebg.de/subdomains/dev/httpdocs/themes/standard/
-define("LITO_THEMES_PATH_URL", $litotex_url . 'themes' . DIRECTORY_SEPARATOR . LITO_THEMES . DIRECTORY_SEPARATOR);
+define("LITO_THEMES_PATH_URL", $litotex_url . 'themes/' . LITO_THEMES . '/');
 // e.g.  http://dev.freebg.de/themes/standard/
 
 define("LITO_IMG_PATH", $litotex_path . 'images' . DIRECTORY_SEPARATOR . LITO_THEMES . DIRECTORY_SEPARATOR);
 // e.g.  /srv/www/vhosts/freebg.de/subdomains/dev/httpdocs/images/standard/
-define("LITO_IMG_PATH_URL", $litotex_url . 'images' . DIRECTORY_SEPARATOR . LITO_THEMES . DIRECTORY_SEPARATOR);
+define("LITO_IMG_PATH_URL", $litotex_url . 'images/' . LITO_THEMES . '/');
 // e.g.  http://dev.freebg.de/images/standard/
 
 define("LITO_MODUL_PATH", $litotex_path . 'modules' . DIRECTORY_SEPARATOR);
 // e.g.  /srv/www/vhosts/freebg.de/subdomains/dev/httpdocs/modules/
-define("LITO_MODUL_PATH_URL", $litotex_url . 'modules' . DIRECTORY_SEPARATOR);
+define("LITO_MODUL_PATH_URL", $litotex_url . 'modules/' );
 // e.g.  http://dev.freebg.de/modules/
 
 define("LITO_LANG_PATH", $litotex_path . 'lang' . DIRECTORY_SEPARATOR);
 // e.g.  /srv/www/vhosts/freebg.de/subdomains/dev/httpdocs/lang/
-define("LITO_LANG_PATH_URL", $litotex_url . 'lang' . DIRECTORY_SEPARATOR);
+define("LITO_LANG_PATH_URL", $litotex_url . 'lang/');
 // e.g.  http://dev.freebg.de/lang/
 
-define("LITO_MAIN_CSS", $litotex_url . 'css' . DIRECTORY_SEPARATOR . LITO_THEMES);
-define("LITO_JS_URL", $litotex_url . 'js' . DIRECTORY_SEPARATOR);
-define("LITO_GLOBAL_IMAGE_URL", $litotex_url . 'images' . DIRECTORY_SEPARATOR);
+define("LITO_MAIN_CSS", $litotex_url . 'css/' . LITO_THEMES);
+define("LITO_JS_URL", $litotex_url . 'js/');
+define("LITO_GLOBAL_IMAGE_URL", $litotex_url . 'images/');
 
 $lang_suffix = (isset($_SESSION['lang']) && strlen($_SESSION['lang']) == 2 ? $_SESSION['lang'] : "de");
 
 /** get options **/
 require (LITO_ROOT_PATH . 'options' . DIRECTORY_SEPARATOR . 'options.php');
-require ('functions.php');
-require (LITO_INCLUDES_PATH . 'smarty' . DIRECTORY_SEPARATOR . 'Smarty.class.php'); // Smarty class laden und pr�fen
+require (LITO_INCLUDES_PATH . 'functions.php');
+require (LITO_INCLUDES_PATH . 'smarty' . DIRECTORY_SEPARATOR . 'SmartyBC.class.php'); // Smarty class laden und pr�fen
 
 
-$tpl = new smarty;
+$tpl = new SmartyBC;
 $tpl->template_dir = LITO_THEMES_PATH;
 $tpl->compile_dir = LITO_ROOT_PATH . 'templates_c' . DIRECTORY_SEPARATOR . LITO_THEMES;
 $tpl->cache_dir = LITO_ROOT_PATH . 'cache' . DIRECTORY_SEPARATOR . LITO_THEMES;

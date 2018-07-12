@@ -1,4 +1,3 @@
-<?PHP
 MEMBERS_INFO_L="L&auml;nder"
 MEMBERS_INFO="Informationen"
 MEMBERS_POINT="Punkte"
@@ -20,6 +19,7 @@ LN_RACE_CHOOSE_2="Bitte w&auml;hle hier deine Rasse aus. Jede rasse verf&uuml;gt
 LN_RACE_CHOOSE_3="Bild"
 LN_RACE_CHOOSE_4="Name"
 LN_RACE_CHOOSE_5="Beschreibung"
+LN_RACE_CHOOSE_6="Aktion"
 L_NO_RACE_SELECT="Keine Rasse ausgew&auml;hlt"
 L_RACE_OK="Du hast schon eine Rasse ausgew&auml;hlt"
 USERNAME="Spielername"

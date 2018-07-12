@@ -51,7 +51,7 @@ if (!defined('DIRECTORY_SEPARATOR'))
     define('DIRECTORY_SEPARATOR', '/');
 }
 
-define('LITO_VERSION', '0.7.3');
+define('LITO_VERSION', '0.7.3.1');
 define("LITO_ROOT_PATH", dirname(__file__) . DIRECTORY_SEPARATOR);
 define("LITO_SETUP_FILE", LITO_ROOT_PATH . 'setup.php');
 define("LITO_SETUP_PATH", LITO_ROOT_PATH . 'setup_tmp' . DIRECTORY_SEPARATOR);
@@ -538,15 +538,14 @@ elseif ($step == 5)
 
     $tpl = new tpl(1);
 
-    removeDirectory(LITO_ROOT_PATH . "setup");
-
     $game_path = LITO_ROOT_PATH;
     $current_url = 'http';
-    if ($_SERVER["HTTPS"] == "on")
+    if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")
     {
         $current_url .= "s";
     }
-    $current_url .= "://" . $_SERVER["SERVER_NAME"] . dirname($_SERVER['REQUEST_URI']) . DIRECTORY_SEPARATOR;
+    $current_url .= "://" . $_SERVER["SERVER_NAME"] . dirname($_SERVER['REQUEST_URI']);
+    $current_url = str_replace("\\", "/",$current_url);
 
     $_SESSION['error_msg'] = "";
     $over = "Litotex Setup -= Version:" . LITO_VERSION . " =-";
@@ -641,7 +640,10 @@ elseif ($step == 6)
         $game_url = $game_url . DIRECTORY_SEPARATOR;
     }
 
-
+    $game_path = str_replace("\\", "\\\\",$game_path);
+    $game_url = str_replace(array("\\", "//"), "/",$game_url);
+    $game_url = str_replace(array("http:/", "https:/"), array("http://", "https://"),$game_url);
+    
     $fp = fopen(LITO_ROOT_PATH . "includes/config.php", "w");
     $fw = fwrite($fp, "<?PHP
 			    \$dbhost = \"" . $_SESSION['sql_server'] . "\";
@@ -808,6 +810,7 @@ elseif ($step == 8)
 {
     session_destroy();
     removeDirectory(LITO_SETUP_PATH);
+    removeDirectory(LITO_ROOT_PATH . "setup/");
     if (file_exists(LITO_GAME_ZIP_PATH))
     {
         unlink(LITO_GAME_ZIP_PATH);
