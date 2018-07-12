@@ -1,6 +1,6 @@
 
 Litotex Browsergame Engine (http://www.litotex.info)
-	VERSION: 0.7.3
+	VERSION: 0.7.3.1
 	
 	ENTWICKELT ab 0.7.0: litotex.info (http://www.litotex.info)  
 	COPYRIGHT 2017 litotex.info (http://www.litotex.info)
