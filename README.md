@@ -20,7 +20,6 @@ d&uuml;rfen NICHT entfernt und NICHT ver&auml;ndert werden.
 
 Released under the GNU General Public License
 
-
 ALLGEMEIN
 Mit der Installation von Litotex stimmen Sie insbesondere folgenden Punkten zu: 
 *) den Urheberrechtshinweis im Footer nicht zu entfernen, durch andere technische M&ouml;glichkeiten auszublenden oder unsichtbar zu machen.
