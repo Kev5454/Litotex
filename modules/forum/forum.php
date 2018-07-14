@@ -132,6 +132,7 @@ if ($action == "show_forum")
 
     $topic_count = 1;
     $topic_a_count = 0;
+    $f_topic = array();
     $result = $db->query("SELECT * FROM cc" . $n . "_forum_topics where si_forum_id  = '$f_id' ORDER BY si_topic_last_post_time  DESC");
     while ($row = $db->fetch_array($result))
     {
@@ -183,8 +184,6 @@ if ($action == "show_forum")
 
 
         $topic_a_count++;
-
-
     }
     $ft_parent = "<a href=\"forum.php\">Forum</a>" . " / " . get_forum_from_id($f_id);
     $new_thema = "<a href=\"forum.php?action=new_threadid&ft_id=$f_id&f_id=$f_id\"><img src=\"" . LITO_IMG_PATH_URL . $modul_name .
@@ -214,6 +213,7 @@ if ($action == "new_threadid")
 
     $tpl->assign('ft_parent', $ft_parent);
     $tpl->assign('take_action', $take_action);
+    $tpl->assign('allianz_t_l', "");
 
     template_out('forum_new_topics.html', $modul_name);
 
@@ -308,6 +308,7 @@ if ($action == "show_post")
     $topic_count = 1;
     $last_post_id = 0;
     $a_count = 0;
+    $ali_admin = false;
     $result = $db->query("SELECT * FROM cc" . $n . "_forum_posts where si_forum_id = '" . $f_id . "' and si_topic_id='" . $ft_id .
         "' ORDER BY si_post_time ASC");
     while ($row = $db->fetch_array($result))
@@ -336,7 +337,7 @@ if ($action == "show_post")
             $post_edit_pic = "";
         }
         // löschen
-        $ali_admin = $userdata['isadmin'];
+        $ali_admin = $userdata['is_ali_admin'];
         if ($post_id_t == $userdata['userid'] || $ali_admin == 1)
         {
             $post_del_pic = "<a href=\"forum.php?action=delete&ft_id=$ft_id&f_id=$f_id&fp_id=$post_new_id\"><img src=\"" .
@@ -376,7 +377,7 @@ if ($action == "show_post")
     $tpl->assign('forum_posts', $forum_posts);
     $tpl->assign('new_thema', $new_thema);
     $tpl->assign('ft_parent', $ft_parent);
-    $tpl->assign('take_action', $take_action);
+    $tpl->assign('take_action', "");
 
     template_out('forum_posts.html', $modul_name);
 

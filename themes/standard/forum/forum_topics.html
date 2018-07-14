@@ -25,7 +25,7 @@
  {foreach item=con from=$forum_t_data}					
 	<tr style="background-color:{cycle values="#ffffff,#eeeeee"}">
 	  <td  width="25px">{$con.f_pic}</td>
-	  <td width="50%"><b>{$con.ft_title}</b><br>{$con.f_descr}</td>
+	  <td width="50%"><b>{$con.ft_title}</b>{if isset($con.f_descr)}<br>{$con.f_descr}{/if}</td>
 	  <td width="5%"><span class="forum_normal_text">{$con.ft_anzahl}</span></td>
 	  <td width="5%"><span class="forum_normal_text">{$con.ft_views}</span></td>
 	  <td width="20%"><span class="forum_normal_text">{$con.ft_creator}</span><br><span class="forum_smal_text">{$con.ft_creator_time}</span></td>

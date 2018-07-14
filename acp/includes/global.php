@@ -39,7 +39,8 @@ if ( !defined( 'DIRECTORY_SEPARATOR' ) )
 {
     define( 'DIRECTORY_SEPARATOR','/' );
 }
-define( 'LITO_VERSION','0.7.3.1' );
+
+define( 'LITO_VERSION','0.7.4' );
 
 if ( session_id() == "" )
 {

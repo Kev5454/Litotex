@@ -6,6 +6,7 @@
 <script language="JavaScript" src="./setup_tmp/js/scriptaculous/prototype.js"></script>
 <script language="JavaScript" src="./setup_tmp/js/scriptaculous/effects.js"></script>
 <script language="JavaScript" src="./setup_tmp/js/scriptaculous/window.js"></script>
+<script type="text/javascript" src="./setup_tmp/js/tiny_mce/tiny_mce.js"></script>
 <style type="text/css">
 <!--
 .over {
@@ -125,6 +126,15 @@ border: 1px solid #000;
 
 -->
 </style>
+<script language="javascript">
+	tinyMCE.init({
+		mode : "textareas",
+		theme : "advanced",
+		theme_advanced_toolbar_location:'top',
+		theme_advanced_buttons1 : "save,newdocument,|,bold,italic,underline,strikethrough,|,justifyleft,justifycenter,justifyright,justifyfull,|,styleselect,formatselect,fontselect,fontsizeselect",
+		theme_advanced_buttons2 : "cut,copy,paste,pastetext,pasteword,|,search,replace,|,bullist,numlist,|,outdent,indent,blockquote,|,undo,redo,|,link,unlink,anchor,image,cleanup,help,code,|,insertdate,inserttime,preview,|,forecolor,backcolor"
+	});
+</script>
 </head>
 
 <body>
@@ -132,36 +142,32 @@ border: 1px solid #000;
 var filecount = <?=$filecounter?>;
 var cur_file_count_pos=0;
 
-function startinstall(){
-	
-	if (cur_file_count_pos > filecount ){
+function startinstall(step, action)
+{
+	if (cur_file_count_pos > filecount )
+    {
 		document.getElementById("resp_id").innerHTML="done";
 		document.getElementById('submit').style.visibility = 'visible';
-		document.getElementById('frm_id').action = "setup.php?step=3";
+		document.getElementById('frm_id').action = "setup.php?step=" + step;
 		document.getElementById('submit').onclick = '';
 		return false;
-		} 
+	} 
 	
-	if (cur_file_count_pos < 1){
-	//document.getElementById('submit').style.display = 'none';
-	document.getElementById('submit').style.visibility = 'hidden';
-	
+	if (cur_file_count_pos < 1)
+    {
+	   document.getElementById('submit').style.visibility = 'hidden';
 	}
-  new Ajax.Updater('copy_files','./setup_tmp/setup/installer.php?id='+cur_file_count_pos,{ method : 'get', onSuccess : function(resp){ install_response(resp);} } );
+  new Ajax.Updater('copy_files','./setup_tmp/setup/installer.php?action='+action+'&id='+cur_file_count_pos,{ method : 'get', onSuccess : function(resp){ install_response(resp, step, action);} } );
   return false;
-
 }
-function install_response(resp){
+
+function install_response(resp, step, action)
+{
    document.getElementById("resp_id").innerHTML=resp.responseText;
-   
    cur_file_count_pos=cur_file_count_pos+1;
-
    progressBar(filecount -cur_file_count_pos);
- 
-   startinstall();
-   
+   startinstall(step, action);
    return false;
-
 }
 
 function progressBar(rest)
@@ -176,11 +182,7 @@ function progressBar(rest)
 	}
   	new Effect.Morph('progressBar', {style:'width:' + width + 'px ; '});   
   	document.getElementById('percent').innerHTML = percentage + '%' ;
-	
 }
-
-
-
 </script>
 
 <form id="frm_id" action="<?=$action?>" method="post">

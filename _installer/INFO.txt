@@ -2,7 +2,7 @@
 ###################################################################################
 
   Litotex BrowsergameEngine 
-  Copyright(C)2017 by litotex.info
+  Copyright(C)2017 - 2018 by litotex.info
   
   Download des Originals auf http://www.litotex.info
   Kommentare und Fragen bitte ins Forum auf http://litotex.info

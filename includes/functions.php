@@ -1132,11 +1132,87 @@ function auto_generate_thumbs( $pic_name )
 
 }
 
+function get_user_right($forum_id)
+{
+    global $db, $n, $userdata;
+    $ali_id = $userdata['allianzid'];
 
+    $result_last = $db->query("SELECT alli_id  FROM cc" . $n . "_forum where si_forum_id ='$forum_id'");
+    $row_last = $db->fetch_array($result_last);
+
+    if ($row_last['alli_id'] == $ali_id)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
 function get_name_from_explore( $explore_name,$race_id )
 {
     global $db,$n;
     $result = $db->query( "SELECT name FROM cc" . $n . "_explore WHERE tabless='$explore_name' and race='$race_id'" );
     $row = $db->fetch_array( $result );
     return $row['name'];
+}
+
+function get_forum_from_id($forum_id)
+{
+    global $db, $n, $userdata;
+    $result_last = $db->query("SELECT si_forum_name FROM cc" . $n . "_forum where si_forum_id ='$forum_id'");
+    $row_last = $db->fetch_array($result_last);
+    return $row_last['si_forum_name'];
+}
+function get_topic_from_id($Topic_id)
+{
+    global $db, $n, $userdata;
+    $result_last = $db->query("SELECT si_topic_title  FROM cc" . $n . "_forum_topics where si_topic_id  ='$Topic_id'");
+    $row_last = $db->fetch_array($result_last);
+    return $row_last['si_topic_title'];
+}
+function get_last_id_from_topic($forum_id, $topic_id)
+{
+    global $db, $n, $userdata;
+    $result_last = $db->query("SELECT si_post_id  FROM cc" . $n . "_forum_posts where si_forum_id  ='$forum_id' and si_topic_id ='$topic_id' order by si_post_id DESC Limit 1");
+    $row_last = $db->fetch_array($result_last);
+    return $row_last['si_post_id'];
+}
+
+// **************************************************
+//              neue nachrichten suchen
+// **************************************************
+//letzte ID_dieses Forums suchen
+function get_last_post_id_forum($forum_id)
+{
+    global $db, $n, $userdata;
+    $result_last = $db->query("SELECT si_post_id  FROM cc" . $n . "_forum_posts where si_forum_id  ='$forum_id' order by si_post_id DESC Limit 1");
+    $row_last = $db->fetch_array($result_last);
+    return intval($row_last['si_post_id']);
+}
+// letzte ID aus den angeschauten beiträgen suchen
+function get_last_show_id_forum($forum_id)
+{
+    global $db, $n, $userdata;
+    $uid = $userdata['userid'];
+    $result_last = $db->query("SELECT post_id FROM cc" . $n . "_forum_last where forum_id ='$forum_id' and user_id=$uid order by post_id DESC Limit 1");
+    $row_last = $db->fetch_array($result_last);
+    return intval($row_last['post_id']);
+}
+
+function get_last_post_id_forum_topic($forum_id, $topic_id)
+{
+    global $db, $n, $userdata;
+    $result_last = $db->query("SELECT si_post_id  FROM cc" . $n . "_forum_posts where si_forum_id  ='$forum_id' and si_topic_id ='$topic_id' order by si_post_id DESC Limit 1");
+    $row_last = $db->fetch_array($result_last);
+    return intval($row_last['si_post_id']);
+}
+// letzte ID aus den angeschauten beiträgen suchen
+function get_last_show_id_forum_topic($forum_id, $topic_id)
+{
+    global $db, $n, $userdata;
+    $uid = $userdata['userid'];
+    $result_last = $db->query("SELECT post_id FROM cc" . $n . "_forum_last where forum_id ='$forum_id' and topic_id  ='$topic_id' and user_id=$uid order by post_id DESC Limit 1");
+    $row_last = $db->fetch_array($result_last);
+    return intval($row_last['post_id']);
 }

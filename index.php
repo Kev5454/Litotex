@@ -1,10 +1,11 @@
 <?php
+
 /**
  * Litotex - Browsergame Engine
  * Copyright 2017 Das litotex.info Team, All Rights Reserved
  *
  * Website: http://www.litotex.info
- * License: GNU GENERAL PUBLIC LICENSE v3 (https://litotex.info/showthread.php?tid=3)
+ * License: GNU GENERAL PUBLIC LICENSE v3
  *
  */
 /*
@@ -29,18 +30,25 @@ Released under the GNU General Public License
 */
 session_start();
 
-require ('./includes/global.php');
+require ( './includes/global.php' );
 
 $modul_name = "index";
-
-if (isset($_REQUEST['action'])) $action = $_REQUEST['action'];
-else  $action = "main";
+$action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
 
 
-if ($action == "main")
+if ( $action == "main" )
 {
-    //$tpl ->display("login/login.html");
-    $tpl->assign('if_disable_menu', 1);
+    if ( $op_set_pageManager == "1" )
+    {
+        $_REQUEST['action'] = "main";
+        $_GET['name'] = $op_set_pageManager_name;
+        
+        include(LITO_MODUL_PATH . 'pagemanager/page.php');
+    }
+    else
+    {
+        $tpl->assign( 'if_disable_menu',1 );
 
-    template_out('index.html', $modul_name);
+        template_out( 'index.html',$modul_name );
+    }
 }

@@ -51,9 +51,12 @@ function progressBar_{/literal}{$banner_id}{literal}(rest{/literal}{$banner_id}{
     {
 	   width = percentage * maxwidth;
     }
-  
-  	new Effect.Morph('progressBar_{/literal}{$banner_id}{literal}', {style:'width:' + width + 'px ; '});   
-  	document.getElementById('percent_{/literal}{$banner_id}{literal}').innerHTML = percentage + '%' ;
+    
+    $('#progressBar_{/literal}{$banner_id}{literal}').css( "width", width + 'px' );
+    $("#percent_{/literal}{$banner_id}{literal}").html(percentage + '%');
+
+  	//new Effect.Morph('progressBar_{/literal}{$banner_id}{literal}', {style:'width:' + width + 'px ; '});   
+  	//document.getElementById('percent_{/literal}{$banner_id}{literal}').innerHTML = percentage + '%' ;
 	
 }
 </script>

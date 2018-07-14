@@ -144,6 +144,8 @@ if ($action == "main")
     $production_res4 = $op_set_res4 + ($userdata['res4mine'] * $op_mup_res4);
 
     $next4ressources = ($userdata['lastressources'] + $op_res_reload_time) - time();
+    
+    $nextTime = make_timebanner($userdata['lastressources'], time() + $next4ressources, 99999, "members.php");
 
 
     $allianzname = generate_allilink($userdata['allianzid']);
@@ -153,6 +155,7 @@ if ($action == "main")
         $is_allianz = 1;
     }
     
+    $tpl->assign('nextTime', $nextTime);
     $tpl->assign('next4ressources', sec2time($next4ressources));
     $tpl->assign('next4ressourcesTime', date('H:i:s',$userdata['lastressources'] + $op_res_reload_time));
     $tpl->assign('daten', $daten);

@@ -28,82 +28,83 @@ dürfen NICHT entfernt und NICHT verändert werden.
 Released under the GNU General Public License 
 ************************************************************  
 */
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+ini_set( 'display_errors',1 );
+ini_set( 'display_startup_errors',1 );
+error_reporting( E_ALL );
 
-if (version_compare(phpversion(), '5.2.0') <= 0)
+if ( version_compare( phpversion(),'5.2.0' ) <= 0 )
 {
     echo 'Sie benötigen mindestens PHP 5.2.0\n um diese Engine nutzen zu können!';
     exit();
 }
 
-if (!function_exists('session_unregister'))
+if ( !defined( 'DIRECTORY_SEPARATOR' ) )
 {
-    function session_unregister($name)
+    define( 'DIRECTORY_SEPARATOR','/' );
+}
+
+define( 'LITO_VERSION','0.7.4' );
+define( "LITO_ROOT_PATH",dirname( __file__ ) . DIRECTORY_SEPARATOR );
+define( "LITO_SETUP_FILE",LITO_ROOT_PATH . 'setup.php' );
+define( "LITO_SETUP_PATH",LITO_ROOT_PATH . 'setup_tmp' . DIRECTORY_SEPARATOR );
+define( "LITO_GAME_ZIP_PATH",LITO_ROOT_PATH . 'game.zip' );
+
+header( 'Content-Type: text/html; charset=ISO-8859-1' );
+
+
+if ( !function_exists( 'session_unregister' ) )
+{
+    function session_unregister( $name )
     {
-        unset($_SESSION[$name]);
+        unset( $_SESSION[$name] );
     }
 }
-
-if (!defined('DIRECTORY_SEPARATOR'))
+function removeDirectory( $dir )
 {
-    define('DIRECTORY_SEPARATOR', '/');
-}
-
-define('LITO_VERSION', '0.7.3.1');
-define("LITO_ROOT_PATH", dirname(__file__) . DIRECTORY_SEPARATOR);
-define("LITO_SETUP_FILE", LITO_ROOT_PATH . 'setup.php');
-define("LITO_SETUP_PATH", LITO_ROOT_PATH . 'setup_tmp' . DIRECTORY_SEPARATOR);
-define("LITO_GAME_ZIP_PATH", LITO_ROOT_PATH . 'game.zip');
-
-
-function removeDirectory($dir)
-{
-    if (!file_exists($dir))
+    if ( !file_exists( $dir ) )
     {
         return true;
     }
-    if (!is_dir($dir) || is_link($dir))
+    if ( !is_dir( $dir ) || is_link( $dir ) )
     {
-        return unlink($dir);
+        return unlink( $dir );
     }
-    foreach (scandir($dir) as $item)
+    foreach ( scandir( $dir ) as $item )
     {
-        if ($item == '.' || $item == '..')
+        if ( $item == '.' || $item == '..' )
         {
             continue;
         }
-        if (!removeDirectory($dir . DIRECTORY_SEPARATOR . $item, false))
+        if ( !removeDirectory( $dir . DIRECTORY_SEPARATOR . $item,false ) )
         {
-            chmod($dir . DIRECTORY_SEPARATOR . $item, 0775);
-            if (!removeDirectory($dir . DIRECTORY_SEPARATOR . $item, false))
+            chmod( $dir . DIRECTORY_SEPARATOR . $item,0775 );
+            if ( !removeDirectory( $dir . DIRECTORY_SEPARATOR . $item,false ) )
             {
                 return false;
             }
         }
     }
-    return rmdir($dir);
+    return rmdir( $dir );
 }
 
-function scanDirectory($rootDir, $results = array())
+function scanDirectory( $rootDir,$results = array() )
 {
     $invisibleFileNames = array(
         ".",
         "..",
         );
-    $dirContent = scandir($rootDir);
-    foreach ($dirContent as $key => $content)
+    $dirContent = scandir( $rootDir );
+    foreach ( $dirContent as $key => $content )
     {
         $path = $rootDir . $content;
-        if (!in_array($content, $invisibleFileNames))
+        if ( !in_array( $content,$invisibleFileNames ) )
         {
-            if (is_dir($path))
+            if ( is_dir( $path ) )
             {
                 $results[] = $path . DIRECTORY_SEPARATOR;
-                $results = scanDirectory($path . DIRECTORY_SEPARATOR, $results);
+                $results = scanDirectory( $path . DIRECTORY_SEPARATOR,$results );
             }
-            elseif (is_file($path))
+            elseif ( is_file( $path ) )
             {
                 $results[] = $path;
             }
@@ -114,20 +115,19 @@ function scanDirectory($rootDir, $results = array())
 }
 
 
-function _mkdir($directory, $public_access = true)
+function _mkdir( $directory,$public_access = true )
 {
-    $dirName = LITO_ROOT_PATH . $directory . (substr($directory, -1) == DIRECTORY_SEPARATOR ? '' : DIRECTORY_SEPARATOR);
-    if (!is_dir($dirName))
+    $dirName = LITO_ROOT_PATH . $directory . ( substr( $directory,-1 ) == DIRECTORY_SEPARATOR ? '' : DIRECTORY_SEPARATOR );
+    if ( !is_dir( $dirName ) )
     {
-        mkdir($dirName);
+        mkdir( $dirName );
     }
-    chmod($dirName, 0777);
+    chmod( $dirName,0777 );
 
-    if ($public_access == false && !file_exists($dirName . '.htaccess'))
+    if ( $public_access == false && !file_exists( $dirName . '.htaccess' ) )
     {
-        $fileName = (file_exists(LITO_SETUP_PATH . 'includes' . DIRECTORY_SEPARATOR . '.htaccess') ? LITO_SETUP_PATH :
-            LITO_ROOT_PATH) . 'includes' . DIRECTORY_SEPARATOR . '.htaccess';
-        copy($fileName, $dirName . '.htaccess');
+        $fileName = ( file_exists( LITO_SETUP_PATH . 'includes' . DIRECTORY_SEPARATOR . '.htaccess' ) ? LITO_SETUP_PATH : LITO_ROOT_PATH ) . 'includes' . DIRECTORY_SEPARATOR . '.htaccess';
+        copy( $fileName,$dirName . '.htaccess' );
     }
 }
 
@@ -136,77 +136,76 @@ session_start();
 
 
 $def_folder = time();
-mkdir($def_folder);
-if (!file_exists($def_folder))
+mkdir( $def_folder );
+if ( !file_exists( $def_folder ) )
 {
-    echo ("Das Setup hat keine Schreibrechte im aktuellen Ordner und muss daher abgebrochen werden.<br>Eventuell ist Safe_Mode aktiviert.");
+    echo ( "Das Setup hat keine Schreibrechte im aktuellen Ordner und muss daher abgebrochen werden.<br>Eventuell ist Safe_Mode aktiviert." );
     exit();
 }
 else
 {
-    rmdir($def_folder);
+    rmdir( $def_folder );
 }
 
-$step = (isset($_REQUEST['step']) ? filter_var($_REQUEST['step'], FILTER_SANITIZE_NUMBER_INT, array('options' => array('default' =>
-            1))) : 1);
+$step = ( isset( $_REQUEST['step'] ) ? filter_var( $_REQUEST['step'],FILTER_SANITIZE_NUMBER_INT,array( 'options' => array( 'default' => 1 ) ) ) : 1 );
 
-$max_step = 8;
+$max_step = 9;
 $filecounter = 0;
 
 
-if ($step == 1)
+if ( $step == 1 )
 {
 
-    if (!is_file(LITO_GAME_ZIP_PATH))
+    if ( !is_file( LITO_GAME_ZIP_PATH ) )
     {
-        echo ("Nicht alle für die Installation vorhandenen Dateien sind verfügbar. (0x0001)<br>Die Installation wurde abgebrochen.<br>Bitte wende dich an http://www.litotex.info");
+        echo ( "Nicht alle für die Installation vorhandenen Dateien sind verfügbar. (0x0001)<br>Die Installation wurde abgebrochen.<br>Bitte wende dich an http://www.litotex.info" );
         exit();
     }
 
-    if (is_dir(LITO_SETUP_PATH))
+    if ( is_dir( LITO_SETUP_PATH ) )
     {
-        removeDirectory(LITO_SETUP_PATH);
+        removeDirectory( LITO_SETUP_PATH );
     }
 
-    mkdir(LITO_SETUP_PATH);
-    chmod(LITO_SETUP_PATH, 0777);
-    if (!is_dir(LITO_SETUP_PATH))
+    mkdir( LITO_SETUP_PATH );
+    chmod( LITO_SETUP_PATH,0777 );
+    if ( !is_dir( LITO_SETUP_PATH ) )
     {
-        echo ("Bitte lege einen Ordner '" . LITO_SETUP_PATH . "' an, welcher für die Installation Schreibrechte(0777) hat.");
+        echo ( "Bitte lege einen Ordner '" . LITO_SETUP_PATH . "' an, welcher für die Installation Schreibrechte(0777) hat." );
         exit();
     }
 
-    if (!is_writable(LITO_SETUP_PATH))
+    if ( !is_writable( LITO_SETUP_PATH ) )
     {
-        echo ("Bitte setzen Sie auf den Folgenden Ordner '" . LITO_SETUP_PATH . "' die Berechtigung auf 0777.");
+        echo ( "Bitte setzen Sie auf den Folgenden Ordner '" . LITO_SETUP_PATH . "' die Berechtigung auf 0777." );
         exit();
     }
 
     $zip = new ZipArchive();
-    if ($zip->open(LITO_GAME_ZIP_PATH) === true)
+    if ( $zip->open( LITO_GAME_ZIP_PATH ) === true )
     {
-        $zip->extractTo(LITO_SETUP_PATH);
+        $zip->extractTo( LITO_SETUP_PATH );
         $zip->close();
     }
     else
     {
-        echo ('Es ist ein Fehler bei der Entpackung aufgetretten! (0x0002)<br>Die Installation wurde abgebrochen.<br>Bitte wende Sie sich an http://www.litotex.info');
+        echo ( 'Es ist ein Fehler bei der Entpackung aufgetretten! (0x0002)<br>Die Installation wurde abgebrochen.<br>Bitte wende Sie sich an http://www.litotex.info' );
         exit();
     }
 
-    if (!is_file(LITO_SETUP_PATH . "setup/class_template.php"))
+    if ( !is_file( LITO_SETUP_PATH . "setup/class_template.php" ) )
     {
-        echo ("Setup konnte nicht geladen werden. (0x0003)<br>Die Installation wurde abgebrochen.<br>Bitte wende Sie sich an http://www.litotex.info");
+        echo ( "Setup konnte nicht geladen werden. (0x0003)<br>Die Installation wurde abgebrochen.<br>Bitte wende Sie sich an http://www.litotex.info" );
         exit();
     }
 
-    require (LITO_SETUP_PATH . 'setup/class_template.php');
-    $tpl = new tpl(1);
+    require ( LITO_SETUP_PATH . 'setup/class_template.php' );
+    $tpl = new tpl( 1 );
 
 
     $over = "Litotex Setup -= Version:" . LITO_VERSION . " =-";
     $_SESSION['error_msg'] = "";
-    $content = "<span class=\"normalfont\">Dieses Setup installiert die <br>Litotex Browsergameengine auf ihrem Rechner.<br><br>Bitte wenden Sie sich im Falle von Fragen und Anregungen an unser <a href=\"http://litotex.info\" target=\"_blank\">Litotex Forum</a></span> ";
+    $content = "<span class=\"normalfont\">Dieses Setup installiert die <br>Litotex Browsergameengine auf ihrem Rechner/Server.<br><br>Bitte wenden Sie sich im Falle von Fragen und Anregungen an unser <a href=\"http://litotex.info\" target=\"_blank\">Litotex Forum</a></span> ";
     $content .= "<br><br>";
     $content .= "<span class=\"normalfont\">Litotex ist eine OpenSource Software und steht unter der GPL.<br></span> ";
     $content .= "<span class=\"normalfont\">Den genauen Wortlaut können sie der Datei LICENSE.TXT entnehmen. Eine deutsche Übersetzung ist <a href=\"http://www.gnu.de/documents/gpl.de.html\" target=\"_blank\">hier </a>einsehbar.  <br><br></span> ";
@@ -220,15 +219,15 @@ if ($step == 1)
     $action = "setup.php?step=2";
     $button = "<input type=\"submit\" class=\"buttons\" name=\"submit\" value=\"weiter\">";
 
-    session_unregister('error_msg');
+    session_unregister( 'error_msg' );
 
-    $tpl->output('setup');
+    $tpl->output( 'setup' );
 }
-elseif ($step == 2)
+elseif ( $step == 2 )
 {
 
-    require (LITO_SETUP_PATH . 'setup/class_template.php');
-    $tpl = new tpl(1);
+    require ( LITO_SETUP_PATH . 'setup/class_template.php' );
+    $tpl = new tpl( 1 );
 
     $over = "Litotex Setup -= Version:" . LITO_VERSION . " =-";
     $over_one = "<b>Herzlich Willkommen </b> Schritt " . $step . " von " . $max_step . " (Daten kopieren)";
@@ -253,19 +252,17 @@ elseif ($step == 2)
     $content .= "</div>";
     $content .= "</div></td></tr></table>";
 
-
-    $action = "setup.php?step=3";
     $action = "";
-    $button = "<input type=\"submit\" id=\"submit\"  class=\"buttons\" onclick=\"startinstall();return false;\" value=\"weiter\">";
+    $button = "<input type=\"submit\" id=\"submit\"  class=\"buttons\" onclick=\"startinstall(3, 'files');return false;\" value=\"weiter\">";
 
 
     $dirs = array();
     $files = array();
-    $all = scanDirectory(LITO_SETUP_PATH);
+    $all = scanDirectory( LITO_SETUP_PATH );
 
-    foreach ($all as $path)
+    foreach ( $all as $path )
     {
-        if (is_dir($path))
+        if ( is_dir( $path ) )
         {
             $dirs[] = $path;
         }
@@ -274,56 +271,56 @@ elseif ($step == 2)
             $files[] = $path;
         }
     }
-    $filecounter = count($files);
+    $filecounter = count( $files );
 
-    _mkdir('alli_flag');
-    _mkdir('backup', false);
-    _mkdir('battle_kr');
-    _mkdir('cache', false);
-    _mkdir('image_user');
-    _mkdir('images_sig');
-    _mkdir('images_tmp');
-    _mkdir('templates_c', false);
-    _mkdir('templates_c/standard');
-    _mkdir('acp');
-    _mkdir('acp/cache', false);
-    _mkdir('acp/templates_c', false);
-    _mkdir('acp/templates_c/standard');
-    _mkdir('acp/tmp');
+    _mkdir( 'alli_flag' );
+    _mkdir( 'backup',false );
+    _mkdir( 'battle_kr' );
+    _mkdir( 'cache',false );
+    _mkdir( 'image_user' );
+    _mkdir( 'images_sig' );
+    _mkdir( 'images_tmp' );
+    _mkdir( 'templates_c',false );
+    _mkdir( 'templates_c/standard' );
+    _mkdir( 'acp' );
+    _mkdir( 'acp/cache',false );
+    _mkdir( 'acp/templates_c',false );
+    _mkdir( 'acp/templates_c/standard' );
+    _mkdir( 'acp/tmp' );
 
-    foreach ($dirs as $directory)
+    foreach ( $dirs as $directory )
     {
-        $directory = str_replace(DIRECTORY_SEPARATOR . 'setup_tmp', '', $directory);
-        if (file_exists($directory))
+        $directory = str_replace( DIRECTORY_SEPARATOR . 'setup_tmp','',$directory );
+        if ( file_exists( $directory ) )
         {
             continue;
         }
 
-        mkdir($directory);
-        chmod($directory, 0755);
+        mkdir( $directory );
+        chmod( $directory,0755 );
     }
-    file_put_contents(LITO_ROOT_PATH . 'fileliste.json', json_encode($files));
+    file_put_contents( LITO_ROOT_PATH . 'fileliste.json',json_encode( $files ) );
 
-    $tpl->output('setup');
+    $tpl->output( 'setup' );
 }
-elseif ($step == 3)
+elseif ( $step == 3 )
 {
 
-    require (LITO_SETUP_PATH . 'setup/class_template.php');
+    require ( LITO_SETUP_PATH . 'setup/class_template.php' );
 
-    $tpl = new tpl(1);
+    $tpl = new tpl( 1 );
 
     $over = "Litotex Setup -= Version:" . LITO_VERSION . " =-";
     $over_one = "<b>Herzlich Willkommen </b> Schritt " . $step . " von " . $max_step . " (Konfiguration Datenbank)";
     $content = "";
 
-    if (is_file(LITO_ROOT_PATH . "dirliste.json"))
+    if ( is_file( LITO_ROOT_PATH . "dirliste.json" ) )
     {
-        unlink(LITO_ROOT_PATH . "dirliste.json");
+        unlink( LITO_ROOT_PATH . "dirliste.json" );
     }
-    if (is_file(LITO_ROOT_PATH . "fileliste.json"))
+    if ( is_file( LITO_ROOT_PATH . "fileliste.json" ) )
     {
-        unlink(LITO_ROOT_PATH . "fileliste.json");
+        unlink( LITO_ROOT_PATH . "fileliste.json" );
     }
 
     $error_msg = "";
@@ -334,36 +331,36 @@ elseif ($step == 3)
     $sql_db = "lito";
     $serverID = "1";
 
-    if (isset($_SESSION['error_msg']))
+    if ( isset( $_SESSION['error_msg'] ) )
     {
         $error_msg = $_SESSION['error_msg'];
     }
 
-    if (isset($_SESSION['sql_server']))
+    if ( isset( $_SESSION['sql_server'] ) )
     {
         $sql_server = $_SESSION['sql_server'];
     }
-    if (isset($_SESSION['sql_user']))
+    if ( isset( $_SESSION['sql_user'] ) )
     {
         $sql_user = $_SESSION['sql_user'];
     }
 
-    if (isset($_SESSION['sql_kennwo']))
+    if ( isset( $_SESSION['sql_kennwo'] ) )
     {
         $sql_kennwo = $_SESSION['sql_kennwo'];
     }
 
-    if (isset($_SESSION['sql_port']))
+    if ( isset( $_SESSION['sql_port'] ) )
     {
         $sql_port = $_SESSION['sql_port'];
     }
 
-    if (isset($_SESSION['sql_db']))
+    if ( isset( $_SESSION['sql_db'] ) )
     {
         $sql_db = $_SESSION['sql_db'];
     }
 
-    if (isset($_SESSION['serverID']))
+    if ( isset( $_SESSION['serverID'] ) )
     {
         $serverID = $_SESSION['serverID'];
     }
@@ -381,7 +378,7 @@ elseif ($step == 3)
     $content .= "<tr><td><span class=\"normalfont_o\">Litotex ServerID</span></td><td><input name=\"serverID\" type=\"text\" class=\"textinput\" value=\"$serverID\" size=\"10\" /></td></tr>";
     $content .= "</table>";
 
-    if ($error_msg != "")
+    if ( $error_msg != "" )
     {
         $content .= "<br><br><span class=\"error\">Fehler:" . $error_msg . "</span>";
     }
@@ -390,12 +387,12 @@ elseif ($step == 3)
     $action = "setup.php?step=4";
     $button = "<input type=\"submit\" class=\"buttons\" name=\"submit\" value=\"weiter\">";
 
-    $tpl->output('setup');
+    $tpl->output( 'setup' );
 }
-elseif ($step == 4)
+elseif ( $step == 4 )
 {
-    require (LITO_SETUP_PATH . 'setup/class_template.php');
-    require (LITO_ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'class_db_mysql.php');
+    require ( LITO_SETUP_PATH . 'setup/class_template.php' );
+    require ( LITO_ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'class_db_mysql.php' );
 
     $_SESSION['error_msg'] = "";
     $sql_server = $_POST['sql_server'];
@@ -405,10 +402,10 @@ elseif ($step == 4)
     $sql_db = $_POST['sql_db'];
     $serverID = $_POST['serverID'];
 
-    if (empty($sql_user))
+    if ( empty( $sql_user ) )
     {
         $_SESSION['error_msg'] = "Bitte SQL Username eintragen";
-        header("LOCATION: setup.php?step=4");
+        header( "LOCATION: setup.php?step=4" );
         exit();
     }
     else
@@ -417,10 +414,10 @@ elseif ($step == 4)
 
     }
 
-    if (empty($sql_server))
+    if ( empty( $sql_server ) )
     {
         $_SESSION['error_msg'] = "Bitte Seervernamen eintragen";
-        header("LOCATION: setup.php?step=4");
+        header( "LOCATION: setup.php?step=4" );
         exit();
     }
     else
@@ -428,10 +425,10 @@ elseif ($step == 4)
         $_SESSION['sql_server'] = $sql_server;
     }
 
-    if (empty($sql_kennwo))
+    if ( empty( $sql_kennwo ) )
     {
         $_SESSION['error_msg'] = "Bitte Kennwort eintragen";
-        header("LOCATION: setup.php?step=4");
+        header( "LOCATION: setup.php?step=4" );
         exit();
     }
     else
@@ -439,20 +436,20 @@ elseif ($step == 4)
         $_SESSION['sql_kennwo'] = $sql_kennwo;
     }
 
-    if ($sql_port == "")
+    if ( $sql_port == "" )
     {
         $_SESSION['error_msg'] = "Bitte Serverport eintragen";
-        header("LOCATION: setup.php?step=4");
+        header( "LOCATION: setup.php?step=4" );
         exit();
     }
     else
     {
         $_SESSION['sql_port'] = $sql_port;
     }
-    if (empty($sql_db))
+    if ( empty( $sql_db ) )
     {
         $_SESSION['error_msg'] = "Bitte eine Datenbank angeben.";
-        header("LOCATION: setup.php?step=4");
+        header( "LOCATION: setup.php?step=4" );
         exit();
     }
     else
@@ -460,10 +457,10 @@ elseif ($step == 4)
         $_SESSION['sql_db'] = $sql_db;
     }
 
-    if (empty($serverID))
+    if ( empty( $serverID ) )
     {
         $_SESSION['error_msg'] = "Bitte die Server-ID angeben.";
-        header("LOCATION: setup.php?step=4");
+        header( "LOCATION: setup.php?step=4" );
         exit();
     }
     else
@@ -472,80 +469,98 @@ elseif ($step == 4)
     }
 
 
-    $tpl = new tpl(1);
+    $tpl = new tpl( 1 );
 
 
     $over = "Litotex Setup -= Version:" . LITO_VERSION . " =-";
     $over_one = "<b>Herzlich Willkommen </b> Schritt " . $step . " von " . $max_step . " (Datenbank installieren)";
     $content = "";
 
-    $mysqli = new db($sql_server, $sql_user, $sql_kennwo, $sql_db, $sql_port, true);
+    $mysqli = new db( $sql_server,$sql_user,$sql_kennwo,$sql_db,$sql_port,true );
     $result = $mysqli->connect();
-    if ($result !== true)
+    if ( $result !== true )
     {
         $_SESSION['error_msg'] = "Es konnte keine Verbindung zum SQL Server hergestellt werden.<br>Error:" . $result;
         $mysqli->close();
-        header("LOCATION: setup.php?step=3");
+        header( "LOCATION: setup.php?step=3" );
         exit();
     }
-    $mysqli->unbuffered_query("SET character_set_client = 'utf8'");
-    $mysqli->unbuffered_query("SET character_set_connection = 'utf8'");
 
-    $count = 0;
-    $lines = file(LITO_SETUP_PATH . 'setup/db_clean.sql');
-    $toexec = '';
+    $lines = file( LITO_SETUP_PATH . 'setup/db_clean.sql' );
+    $filecounter = 0;
 
-    foreach ($lines as $line)
+    foreach ( $lines as $line )
     {
-        if (substr($line, 0, 2) == '--' || $line == '') continue;
+        if ( empty( $line ) || substr( $line,0,2 ) == '--' || $line == '' )
+            continue;
 
-        $toexec .= $line;
-        if (substr(trim($line), -1, 1) == ';')
+        if ( substr( trim( $line ),-1,1 ) == ';' )
         {
-            $toexec = str_replace('{#SERVERID#}', $serverID, $toexec);
-            if ($mysqli->unbuffered_query($toexec) !== true)
-            {
-                $_SESSION['error_msg'] = "Beim importieren ist ein Fehler aufgetreten<br>" . $toexec . "<br>" . $mysqli->error;
-                header("LOCATION: setup.php?step=3");
-                exit();
-            }
-            $toexec = '';
-            $count++;
+            $filecounter++;
         }
     }
+    $_SESSION['dbCount'] = $filecounter;
+    $_SESSION['line'] = 0;
 
     $_SESSION['error_msg'] = "";
     $content .= "<span class=\"normalfont\">Die Verbindung zum SQL Server wurde erfolgreich hergestellt.<br><br><br></span>";
-    $content .= "<span class=\"normalfont_o\">Es wurden " . $count .
-        " Einträge in der Datenbank vorgenommen.<br><br></span>";
+    $content .= "<span class=\"normalfont\">Starten Sie nun die Operationen zum Anlegen der Datenbank.<br><br>";
+    $content .= "<table border=\"0\" width=\"100%\"><tr><td >";
+
+    $content .= "<div align=\"center\"><div class=\"normalfont_o\" id =\"resp_id\">Import Mysql-Data</div></div>";
+
+    $content .= "</td></tr><tr> <td><div align=\"center\">";
+
+    $content .= "<div class =\"barContainer\" id=\"barContainer\">";
+    $content .= "<div class =\"progressBar\" id=\"progressBar\"></div>";
+    $content .= "<div class=\"progress_text\">";
+    $content .= "<div class =\"percent\" id=\"percent\"></div>";
+    $content .= "</div>";
+    $content .= "</div>";
+    $content .= "</div></td></tr></table>";
+    $button = "<input type=\"submit\" id=\"submit\"  class=\"buttons\" onclick=\"startinstall(5, 'db');return false;\" value=\"Ausführen\">";
+
+    $mysqli->close();
+    $tpl->output( 'setup' );
+}
+elseif ( $step == 5 )
+{
+    require ( LITO_SETUP_PATH . 'setup/class_template.php' );
+    $tpl = new tpl( 1 );
+
+    $over = "Litotex Setup -= Version:" . LITO_VERSION . " =-";
+    $over_one = "<b>Herzlich Willkommen </b> Schritt " . $step . " von " . $max_step . " (Datenbank installieren)";
+    $content = "";
+
+    $content .= "<span class=\"normalfont\">Die Verbindung zum SQL Server wurde erfolgreich hergestellt.<br><br><br></span>";
+    $content .= "<span class=\"normalfont_o\">Es wurden " . $_SESSION['dbCount'] . " Operationen in der Datenbank ausgeführt.<br><br></span>";
     $content .= "<span class=\"normalfont\">Die Litotex Datenbank wurde erfolgreich angelegt.<br><br>";
     $content .= "Im nächsten Schritt erfolgt das Installieren der Spieldateien.<br></span>";
     $button = "<input type=\"submit\" class=\"buttons\" name=\"submit\" value=\"weiter\">";
-    $action = "setup.php?step=5";
-    $button = "<input type=\"submit\" class=\"buttons\" name=\"submit\" value=\"weiter\">";
+    $action = "setup.php?step=6";
 
-    $mysqli->close();
-    $tpl->output('setup');
+    $_SESSION['dbCount'] = null;
+    $tpl->output( 'setup' );
 }
-elseif ($step == 5)
+elseif ( $step == 6 )
 {
-    require (LITO_SETUP_PATH . 'setup/class_template.php');
+    require ( LITO_SETUP_PATH . 'setup/class_template.php' );
 
-    if (isset($_SESSION['error_msg']))
+    if ( isset( $_SESSION['error_msg'] ) )
     {
         $error_msg = $_SESSION['error_msg'];
     }
 
-    $tpl = new tpl(1);
+    $tpl = new tpl( 1 );
 
     $game_path = LITO_ROOT_PATH;
     $current_url = 'http';
-    if (isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] == "on")
+    if ( isset( $_SERVER["HTTPS"] ) && $_SERVER["HTTPS"] == "on" )
     {
         $current_url .= "s";
     }
-    $current_url .= "://" . $_SERVER["SERVER_NAME"] . dirname($_SERVER['REQUEST_URI']);
-    $current_url = str_replace("\\", "/",$current_url);
+    $current_url .= "://" . $_SERVER["SERVER_NAME"] . dirname( $_SERVER['REQUEST_URI'] );
+    $current_url = str_replace( "\\","/",$current_url );
 
     $_SESSION['error_msg'] = "";
     $over = "Litotex Setup -= Version:" . LITO_VERSION . " =-";
@@ -558,39 +573,38 @@ elseif ($step == 5)
     $content .= "<td><input type=\"text\" name=\"admin_kwort\" class=\"textinput\"></td>";
 
     $content .= "<tr><td width=\"30%\"><span class=\"normalfont_o\">Game URL</span></td><td width=\"70%\"><input size=\"42\" name=\"game_url\" type=\"text\"   value=\"$current_url\"></td></tr>";
-    $content .= "<tr><td width=\"30%\"><span class=\"normalfont_o\">absoluter Path</span></td><td width=\"70%\"><input size=\"42\" name=\"game_path\" type=\"text\" value=\"" .
-        $game_path . "\"></td></tr>";
+    $content .= "<tr><td width=\"30%\"><span class=\"normalfont_o\">absoluter Path</span></td><td width=\"70%\"><input size=\"42\" name=\"game_path\" type=\"text\" value=\"" . $game_path . "\"></td></tr>";
 
     $content .= "</tr></table>";
     $content .= "<br><br>";
     $content .= "Als Game URL bitte die komplette Adresse (incl. http://www.) eingeben, unter welche das Spiel und die Installation zu erreichen ist.<br>";
     $content .= "Als absoluter Path bitte den kompletten Path, unter welchen das Spiel installiert ist, eingeben.<br>";
     $content .= "<span class=\"normalfont_o\">Die hier automatisch eingetragenen Werte sind automatisch ermittelt, und können daher abweichen.</span>";
-    if ($error_msg != "")
+    if ( $error_msg != "" )
     {
         $content .= "<br><br><span class=\"error\">Fehler:" . $error_msg . "</span>";
     }
 
     $button = "<input type=\"submit\" class=\"buttons\" name=\"submit\" value=\"weiter\">";
-    $action = "setup.php?step=6";
+    $action = "setup.php?step=7";
 
-    $tpl->output('setup');
+    $tpl->output( 'setup' );
 }
-elseif ($step == 6)
+elseif ( $step == 7 )
 {
-    require (LITO_SETUP_PATH . 'setup/class_template.php');
+    require ( LITO_SETUP_PATH . 'setup/class_template.php' );
 
-    $admin_name = filter_var($_POST['admin_name'], FILTER_SANITIZE_STRING);
-    $admin_kwort = filter_var($_POST['admin_kwort'], FILTER_SANITIZE_STRING);
+    $admin_name = filter_var( $_POST['admin_name'],FILTER_SANITIZE_STRING );
+    $admin_kwort = filter_var( $_POST['admin_kwort'],FILTER_SANITIZE_STRING );
 
 
     $game_path = $_POST['game_path'];
     $game_url = $_POST['game_url'];
 
-    if (empty($admin_name))
+    if ( empty( $admin_name ) )
     {
         $_SESSION['error_msg'] = "Bitte einen Adminstratornamen angeben!";
-        header("LOCATION: setup.php?step=5");
+        header( "LOCATION: setup.php?step=6" );
         exit();
     }
     else
@@ -598,10 +612,10 @@ elseif ($step == 6)
         $_SESSION['admin_name'] = $admin_name;
     }
 
-    if (empty($admin_kwort))
+    if ( empty( $admin_kwort ) )
     {
         $_SESSION['error_msg'] = "Bitte einen Adminstratorkennwort angeben!";
-        header("LOCATION: setup.php?step=5");
+        header( "LOCATION: setup.php?step=6" );
         exit();
     }
     else
@@ -609,20 +623,20 @@ elseif ($step == 6)
         $_SESSION['admin_kwort'] = $admin_kwort;
     }
 
-    if (empty($game_path))
+    if ( empty( $game_path ) )
     {
         $_SESSION['error_msg'] = "Bitte einen Gamepath angeben!";
-        header("LOCATION: setup.php?step=5");
+        header( "LOCATION: setup.php?step=6" );
         exit();
     }
     else
     {
         $_SESSION['game_path'] = $game_path;
     }
-    if (empty($game_url))
+    if ( empty( $game_url ) )
     {
         $_SESSION['error_msg'] = "Bitte eine Game URL angeben!";
-        header("LOCATION: setup.php?step=5");
+        header( "LOCATION: setup.php?step=6" );
         exit();
     }
     else
@@ -631,21 +645,21 @@ elseif ($step == 6)
     }
     $serverID = $_SESSION['serverID'];
 
-    if (substr($game_path, -(strlen(DIRECTORY_SEPARATOR))) != DIRECTORY_SEPARATOR)
+    if ( substr( $game_path,-( strlen( DIRECTORY_SEPARATOR ) ) ) != DIRECTORY_SEPARATOR )
     {
         $game_path = $game_path . DIRECTORY_SEPARATOR;
     }
-    if (substr($game_url, -(strlen(DIRECTORY_SEPARATOR))) != DIRECTORY_SEPARATOR)
+    if ( substr( $game_url,-( strlen( DIRECTORY_SEPARATOR ) ) ) != DIRECTORY_SEPARATOR )
     {
         $game_url = $game_url . DIRECTORY_SEPARATOR;
     }
 
-    $game_path = str_replace("\\", "\\\\",$game_path);
-    $game_url = str_replace(array("\\", "//"), "/",$game_url);
-    $game_url = str_replace(array("http:/", "https:/"), array("http://", "https://"),$game_url);
-    
-    $fp = fopen(LITO_ROOT_PATH . "includes/config.php", "w");
-    $fw = fwrite($fp, "<?PHP
+    $game_path = str_replace( "\\","\\\\",$game_path );
+    $game_url = str_replace( array( "\\","//" ),"/",$game_url );
+    $game_url = str_replace( array( "http:/","https:/" ),array( "http://","https://" ),$game_url );
+
+    $fp = fopen( LITO_ROOT_PATH . "includes/config.php","w" );
+    $fw = fwrite( $fp,"<?PHP
 			    \$dbhost = \"" . $_SESSION['sql_server'] . "\";
 			    \$dbuser = \"" . $_SESSION['sql_user'] . "\";
 			    \$dbpassword = \"" . $_SESSION['sql_kennwo'] . "\";
@@ -653,10 +667,10 @@ elseif ($step == 6)
 			    \$dbport = \"" . $_SESSION['sql_port'] . "\";
 			    \$litotex_path = \"" . $game_path . "\";
 			    \$litotex_url = \"" . $game_url . "\";
-			    \$n = " . $serverID . ";");
-    fclose($fp);
+			    \$n = " . $serverID . ";" );
+    fclose( $fp );
 
-    $tpl = new tpl(1);
+    $tpl = new tpl( 1 );
     $error_msg = $_SESSION['error_msg'];
     $_SESSION['error_msg'] = "";
 
@@ -671,56 +685,65 @@ elseif ($step == 6)
 
     $content .= "<tr><td width=\"30%\"><span class=\"normalfont_o\">Admin Email</span></td><td width=\"70%\"><input size=\"42\" name=\"admin_email\" type=\"text\" ></td></tr>";
     $content .= "<tr><td width=\"30%\"><span class=\"normalfont_o\">Support Email</span></td><td width=\"70%\"><input size=\"42\" name=\"support_email\" type=\"text\"></td></tr>";
+    $content .= "<tr><td width=\"30%\"><span class=\"normalfont_o\">Kontaktdaten</span></td><td width=\"70%\"><textarea rows=\"10\" id=\"contact_data\"  class=\"textarea\" cols=\"50\" name=\"contact_data\"></textarea></td></tr>";
 
     $content .= "</tr></table>";
-    if ($error_msg != "")
+    if ( $error_msg != "" )
     {
         $content .= "<br><br><span class=\"error\">Fehler:" . $error_msg . "</span>";
     }
 
     $button = "<input type=\"submit\" class=\"buttons\" name=\"submit\" value=\"weiter\">";
-    $action = "setup.php?step=7";
+    $action = "setup.php?step=8";
 
-    $tpl->output('setup');
+    $tpl->output( 'setup' );
 }
-elseif ($step == 7)
+elseif ( $step == 8 )
 {
-    require (LITO_SETUP_PATH . 'setup/class_template.php');
-    require (LITO_ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'class_options.php');
-    require (LITO_ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'class_db_mysql.php');
+    require ( LITO_SETUP_PATH . 'setup/class_template.php' );
+    require ( LITO_ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'class_options.php' );
+    require ( LITO_ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'class_db_mysql.php' );
 
-    $tpl = new tpl(1);
+    $tpl = new tpl( 1 );
 
-    $game_name = filter_var($_POST['game_name'], FILTER_SANITIZE_STRING);
-    $game_author = filter_var($_POST['game_author'], FILTER_SANITIZE_STRING);
-    $admin_email = filter_var($_POST['admin_email'], FILTER_SANITIZE_EMAIL);
-    $support_email = filter_var($_POST['support_email'], FILTER_SANITIZE_EMAIL);
+    $game_name = filter_var( $_POST['game_name'],FILTER_SANITIZE_STRING );
+    $game_author = filter_var( $_POST['game_author'],FILTER_SANITIZE_STRING );
+    $admin_email = filter_var( $_POST['admin_email'],FILTER_SANITIZE_EMAIL );
+    $support_email = filter_var( $_POST['support_email'],FILTER_SANITIZE_EMAIL );
+    $contact_data = htmlspecialchars( $_POST['game_author'] );
 
-    if (empty($game_name))
+    if ( empty( $game_name ) )
     {
         $_SESSION['error_msg'] = "Bitte einen Game Namen angeben!";
-        header("LOCATION: setup.php?step=6");
+        header( "LOCATION: setup.php?step=7" );
         exit();
     }
 
-    if (empty($game_author))
+    if ( empty( $game_author ) )
     {
         $_SESSION['error_msg'] = "Bitte einen Author angeben!";
-        header("LOCATION: setup.php?step=6");
+        header( "LOCATION: setup.php?step=7" );
         exit();
     }
 
-    if (empty($admin_email))
+    if ( empty( $admin_email ) )
     {
         $_SESSION['error_msg'] = "Bitte einen Admin E-mail Adresse angeben!";
-        header("LOCATION: setup.php?step=6");
+        header( "LOCATION: setup.php?step=7" );
         exit();
     }
 
-    if (empty($support_email))
+    if ( empty( $support_email ) )
     {
         $_SESSION['error_msg'] = "Bitte einen Support E-mail Adresse angeben!";
-        header("LOCATION: setup.php?step=6");
+        header( "LOCATION: setup.php?step=7" );
+        exit();
+    }
+
+    if ( empty( $contact_data ) )
+    {
+        $_SESSION['error_msg'] = "Bitte geben Sie ihre Kontaktdaten ein!";
+        header( "LOCATION: setup.php?step=7" );
         exit();
     }
 
@@ -737,33 +760,30 @@ elseif ($step == 7)
     $game_path = $_SESSION['game_path'];
     $game_url = $_SESSION['game_url'];
 
-    $mysqli = new db($sql_server, $sql_user, $sql_kennwo, $sql_db, $sql_port, true);
+    $mysqli = new db( $sql_server,$sql_user,$sql_kennwo,$sql_db,$sql_port,true );
     $result = $mysqli->connect();
-    if ($result !== true)
+    if ( $result !== true )
     {
         $_SESSION['error_msg'] = "Es konnte keine Verbindung zum SQL Server hergestellt werden.<br>Error:" . $result;
         $mysqli->close();
-        header("LOCATION: setup.php?step=4");
+        header( "LOCATION: setup.php?step=4" );
         exit();
     }
 
 
-    list($usec, $sec) = explode(' ', microtime());
-    mt_srand((float)$sec + ((float)$usec * 100000));
-    $op_api_key = md5(mt_rand());
+    list( $usec,$sec ) = explode( ' ',microtime() );
+    mt_srand( ( float )$sec + ( ( float )$usec * 100000 ) );
+    $op_api_key = md5( mt_rand() );
 
 
-    $result = $mysqli->query("SELECT * FROM cc" . $serverID . "_crand ORDER BY rand()");
+    $result = $mysqli->query( "SELECT * FROM cc" . $serverID . "_crand ORDER BY rand()" );
     $land = $result->fetch_array();
 
-    $md5_pw = md5($admin_kwort);
-    $mysqli->query("INSERT INTO cc" . $serverID . "_users (username,email,password, serveradmin,register_date) VALUES ('" .
-        $admin_name . "','','$md5_pw',  1,'" . time() . "')");
+    $md5_pw = md5( $admin_kwort );
+    $mysqli->query( "INSERT INTO cc" . $serverID . "_users (username,email,password, serveradmin,register_date) VALUES ('" . $admin_name . "','" . $admin_email . "','$md5_pw',  1,'" . time() . "')" );
     $userid_r = $mysqli->insert_id();
 
-    $mysqli->query("INSERT INTO cc" . $serverID .
-        "_countries (res1,res2,res3,res4,userid,lastressources,picid,x,y,size) VALUES ('4000','4000','4000','4000','$userid_r','" .
-        time() . "','1','$land[x]','$land[y]','500')");
+    $mysqli->query( "INSERT INTO cc" . $serverID . "_countries (res1,res2,res3,res4,userid,lastressources,picid,x,y,size) VALUES ('4000','4000','4000','4000','$userid_r','" . time() . "','1','$land[x]','$land[y]','500')" );
     $islandid_r = $mysqli->insert_id();
 
     $sql = 'UPDATE cc' . $serverID . '_crand SET used=\'1\' WHERE x=\'' . $land['x'] . '\' AND y=\'' . $land['y'] . '\';';
@@ -777,10 +797,11 @@ elseif ($step == 7)
     $sql .= 'UPDATE `cc' . $serverID . '_menu_admin_opt` SET `value` = \'' . $admin_email . '\' WHERE `varname` = \'op_admin_email\';';
     $sql .= 'UPDATE `cc' . $serverID . '_menu_admin_opt` SET `value` = \'' . $support_email . '\' WHERE `varname` = \'op_support_email\';';
     $sql .= 'UPDATE `cc' . $serverID . '_menu_admin_opt` SET `value` = \'' . $game_author . '\' WHERE `varname` = \'op_set_game_author\';';
-    $mysqli->multi_query($sql);
+    $sql .= 'UPDATE `cc' . $serverID . '_menu_admin_opt` SET `value` = \'' . $contact_data . '\' WHERE `varname` = \'op_webseitenBetreiber\';';
+    $mysqli->multi_query( $sql );
 
-    $option_w = new option(LITO_ROOT_PATH . 'options' . DIRECTORY_SEPARATOR);
-    $option_w->writeByDB($mysqli, $serverID);
+    $option_w = new option( LITO_ROOT_PATH . 'options' . DIRECTORY_SEPARATOR );
+    $option_w->writeByDB( $mysqli,$serverID );
 
     $mysqli->close();
 
@@ -802,23 +823,23 @@ elseif ($step == 7)
     $content .= "Bitte auf 'Abschließen' klicken umd die temporären Installationsdateien vom Server zu löschen.";
 
     $button = "<input type=\"submit\" class=\"buttons\" name=\"submit\" value=\"Abschließen\">";
-    $action = "setup.php?step=8";
+    $action = "setup.php?step=9";
 
-    $tpl->output('setup');
+    $tpl->output( 'setup' );
 }
-elseif ($step == 8)
+elseif ( $step == 9 )
 {
     session_destroy();
-    removeDirectory(LITO_SETUP_PATH);
-    removeDirectory(LITO_ROOT_PATH . "setup/");
-    if (file_exists(LITO_GAME_ZIP_PATH))
+    removeDirectory( LITO_SETUP_PATH );
+    removeDirectory( LITO_ROOT_PATH . "setup/" );
+    if ( file_exists( LITO_GAME_ZIP_PATH ) )
     {
-        unlink(LITO_GAME_ZIP_PATH);
+        unlink( LITO_GAME_ZIP_PATH );
     }
-    if (file_exists(LITO_SETUP_FILE))
+    if ( file_exists( LITO_SETUP_FILE ) )
     {
-        unlink(LITO_SETUP_FILE);
+        unlink( LITO_SETUP_FILE );
     }
-    echo ("Die tempor&auml;re Installationsdateien wurden vom Server gel&ouml;scht.");
+    echo ( "Die tempor&auml;re Installationsdateien wurden vom Server gel&ouml;scht." );
     exit();
 }

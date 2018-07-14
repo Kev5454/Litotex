@@ -9,56 +9,61 @@
  *
  */
 
-session_start();
 
-$action = (isset($_REQUEST['action']) ? filter_var($_REQUEST['action'], FILTER_SANITIZE_STRING) : 'main');
-$modul_name = "pagemanager";
-require ('../../includes/global.php');
-
-if (is_modul_name_aktive($modul_name) == 0)
+if ( !defined( 'LITO_VERSION' ) )
 {
-    show_error('MODUL_LOAD_ERROR', 'core');
+    session_start();
+    require ( '../../includes/global.php' );
+}
+else
+{
+    
+}
+
+$action = ( isset( $_REQUEST['action'] ) ? filter_var( $_REQUEST['action'],FILTER_SANITIZE_STRING ) : 'main' );
+$modul_name = "pagemanager";
+
+if ( is_modul_name_aktive( $modul_name ) == 0 )
+{
+    show_error( 'MODUL_LOAD_ERROR','core' );
     exit();
 }
 
 
-if ($action == "main")
+if ( $action == "main" )
 {
 
-    $getName = (isset($_GET['name']) ? filter_var($_GET['name'], FILTER_SANITIZE_STRING) : null);
-    if ($getName == null)
+    $getName = ( isset( $_GET['name'] ) ? filter_var( $_GET['name'],FILTER_SANITIZE_STRING ) : null );
+    if ( $getName == null )
     {
-        template_out('notFound.html', $modul_name);
+        template_out( 'notFound.html',$modul_name );
         exit();
     }
 
-    $result_news = $db->query("SELECT * FROM cc" . $n . "_pages WHERE isActive='1' && getName = '$getName'");
-    if ($db->num_rows($result_news) == 0)
+    $result_news = $db->query( "SELECT * FROM cc" . $n . "_pages WHERE isActive='1' && getName = '$getName'" );
+    if ( $db->num_rows( $result_news ) == 0 )
     {
-        template_out('notFound.html', $modul_name);
+        template_out( 'notFound.html',$modul_name );
         exit();
     }
-    $row_g = $db->fetch_array($result_news);
+    $row_g = $db->fetch_array( $result_news );
 
-    if ($row_g['access'] == 'member' && !isset($_SESSION['userid']) || $row_g['access'] == 'support' && !isset($_SESSION['userid']) ||
-        $row_g['access'] == 'admin' && !isset($_SESSION['userid']) || $row_g['access'] == 'member' && !isset($userdata) || $row_g['access'] ==
-        'support' && !isset($userdata) || $row_g['access'] == 'admin' && !isset($userdata))
+    if ( $row_g['access'] == 'member' && !isset( $_SESSION['userid'] ) || $row_g['access'] == 'support' && !isset( $_SESSION['userid'] ) || $row_g['access'] == 'admin' && !isset( $_SESSION['userid'] ) || $row_g['access'] == 'member' && !isset( $userdata ) || $row_g['access'] == 'support' && !isset( $userdata ) || $row_g['access'] == 'admin' && !isset( $userdata ) )
     {
-        template_out('notFound.html', $modul_name);
+        template_out( 'notFound.html',$modul_name );
         exit();
     }
 
-    if ($row_g['access'] == 'admin' && !$userdata['serveradmin'] || $row_g['access'] == 'support' || $row_g['access'] ==
-        'member')
+    if ( $row_g['access'] == 'admin' && !$userdata['serveradmin'] || $row_g['access'] == 'support' || $row_g['access'] == 'member' )
     {
-        if ($row_g['access'] == 'admin' && $row['group'] != 2 || $row_g['access'] == 'support' && $row['group'] == 1)
+        if ( $row_g['access'] == 'admin' && $row['group'] != 2 || $row_g['access'] == 'support' && $row['group'] == 1 )
         {
-            template_out('notFound.html', $modul_name);
+            template_out( 'notFound.html',$modul_name );
             exit();
         }
     }
-    
-    $content = htmlspecialchars_decode($row_g['content']);
+
+    $content = htmlspecialchars_decode( $row_g['content'] );
     $search = array(
         '{$LITO_GLOBAL_IMAGE_URL}',
         '{$LITO_IMG_PATH}',
@@ -71,6 +76,7 @@ if ($action == "main")
         '{$GAME_AUTHOR}',
         '{$ADMIN_EMAIL}',
         '{$SUPPORT_EMAIL}',
+        '{$WEBSEITEN_BETREIBER}',
         '{$RES1_NAME}',
         '{$RES2_NAME}',
         '{$RES3_NAME}',
@@ -88,13 +94,16 @@ if ($action == "main")
         $op_set_game_author,
         $op_admin_email,
         $op_support_email,
+        $op_webseitenBetreiber,
         $op_set_n_res1,
         $op_set_n_res2,
         $op_set_n_res3,
         $op_set_n_res4,
         );
-    $content = str_replace($search, $replace, $content);
-    $tpl->assign('TITLE', $row_g['title']);
-    $tpl->assign('CONTENT', $content);
-    template_out('page.html', $modul_name);
+    
+    $content = str_replace( $search,$replace,$content );
+    
+    $tpl->assign( 'TITLE',$row_g['title'] );
+    $tpl->assign( 'CONTENT',$content );
+    template_out( 'page.html',$modul_name );
 }

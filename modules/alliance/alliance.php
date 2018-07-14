@@ -659,6 +659,8 @@ if ($action == "change_forum")
         $ali_count++;
     }
 
+    $tpl->assign('allianz_boards', "");
+    $tpl->assign('descript', "");
     $tpl->assign('ali_forum', $ali_forum);
 
     template_out('ali_board_a.html', $modul_name);

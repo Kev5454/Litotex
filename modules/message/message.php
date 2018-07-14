@@ -156,7 +156,7 @@ if ( $action == "submit_send" )
             show_error( 'ln_users_e_1',$modul_name );
             exit();
         }
-        $db->query( "INSERT INTO cc" . $n . "_messages (username,fromuserid,touserid,text,time,isnew,inbox,subject,pri) VALUES ('" . $userdata['username'] . "','" . $userdata['userid'] . "','" . $userid_c . "','" . mysql_real_escape_string( $text ) . "','" . time() . "','1','1','" . mysql_real_escape_string( $subject ) . "','" . $pri . "')" );
+        $db->query( "INSERT INTO cc" . $n . "_messages (username,fromuserid,touserid,text,time,isnew,inbox,subject,pri) VALUES ('" . $userdata['username'] . "','" . $userdata['userid'] . "','" . $userid_c . "','" . $db->escape_string( $text ) . "','" . time() . "','1','1','" . $db->escape_string( $subject ) . "','" . $pri . "')" );
 
     }
     header( "LOCATION: message.php" );
